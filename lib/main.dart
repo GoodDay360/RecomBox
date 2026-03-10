@@ -94,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
 				child: ElevatedButton(
 					onPressed: () async {
 						try{
-							getTorrentInfo(torrentFile: r"D:\Codes\RecomBox\rust\test4.torrent")
+							getTorrentInfo(torrentFile: r"D:\Codes\RecomBox\rust\test.torrent")
 								.then((result){
 									logger.i(result.name);
 									logger.i(result.files);
