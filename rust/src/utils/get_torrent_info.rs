@@ -7,7 +7,7 @@ use serde_json::{to_string};
 use super::torrent_session::TorrentSession;
 
 
-pub async fn new(torrent_file: &PathBuf) -> Result<TorrentMetaV1Info<ByteBufOwned>, Box<dyn Error>>{
+pub async fn new(torrent_source: &PathBuf) -> Result<TorrentMetaV1Info<ByteBufOwned>, Box<dyn Error>>{
     let session = TorrentSession::get()?;
 
     let mut options = AddTorrentOptions::default();
@@ -17,7 +17,7 @@ pub async fn new(torrent_file: &PathBuf) -> Result<TorrentMetaV1Info<ByteBufOwne
     
     let add_torrent_res = session
         .add_torrent(
-            AddTorrent::from_local_filename(torrent_file.to_str().ok_or("Unable to convert to str")?)?,
+            AddTorrent::from_url(torrent_source.to_str().ok_or("Unable to convert to str")?),
             Some(options),
         )
         .await?;

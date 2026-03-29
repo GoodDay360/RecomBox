@@ -8,9 +8,9 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`, `fmt`
 
-Future<OutputPayload> getTorrentInfo({required String torrentFile}) =>
+Future<OutputPayload> getTorrentInfo({required String torrentSource}) =>
     RustLib.instance.api
-        .crateMethodGetTorrentInfoGetTorrentInfo(torrentFile: torrentFile);
+        .crateMethodGetTorrentInfoGetTorrentInfo(torrentSource: torrentSource);
 
 class Files {
   final String? path;

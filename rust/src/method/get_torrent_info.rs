@@ -1,4 +1,4 @@
-use librqbit_core::lengths;
+
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
@@ -20,9 +20,10 @@ pub struct OutputPayload {
 }
 
 
-pub async fn get_torrent_info(torrent_file: &str) -> Result<OutputPayload, String> {
+pub async fn get_torrent_info(torrent_source: String) -> Result<OutputPayload, String> {
+    
 
-    let torrent_info = utils::get_torrent_info::new(&PathBuf::from(torrent_file))
+    let torrent_info = utils::get_torrent_info::new(&PathBuf::from(torrent_source))
         .await
         .map_err(|e| e.to_string())?;
 

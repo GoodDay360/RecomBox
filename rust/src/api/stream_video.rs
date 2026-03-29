@@ -18,10 +18,17 @@ use crate::utils::torrent_handle::TORRENT_HANDLE;
 pub async fn new(req: HttpRequest) -> HttpResponse {
     let headers = req.headers();
 
-    let torrent_file = PathBuf::from(r"D:\\Codes\\RecomBox\\rust\\test.torrent");
-    let file_id = 1;
+    let torrent_source = "https://yts.bz/torrent/download/CE202BCAE070A04BFBFB2C96355B058612B05493";
+    let file_id = 0;
     
-    let mut stream = TORRENT_HANDLE.get(&torrent_file).unwrap().clone()
+    for entry in TORRENT_HANDLE.iter() {
+        println!("key: {}", entry.key());
+        for entry2 in entry.value().iter() {
+            println!("value: {}", entry2.key());
+        }
+    }
+
+    let mut stream = TORRENT_HANDLE.get(torrent_source).unwrap().clone()
         .get(&file_id).unwrap().clone()
         .stream(file_id).unwrap();
     

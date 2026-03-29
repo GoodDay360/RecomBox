@@ -1,4 +1,3 @@
-use librqbit_core::lengths;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use tokio;
@@ -21,11 +20,9 @@ pub struct OutputPayload {
 }
 
 
-pub async fn generate_torrent_handle(torrent_file: &str, file_id: usize) -> Result<(), String> {
-
-    let torrent_file = PathBuf::from(torrent_file);
+pub async fn generate_torrent_handle(torrent_source: String, file_id: usize) -> Result<(), String> {
     tokio::spawn(async move {
-        utils::generate_torrent_handle::new(&torrent_file, file_id)
+        utils::generate_torrent_handle::new(&torrent_source, file_id)
             .await
             .map_err(|e| e.to_string()).unwrap();
     }).await

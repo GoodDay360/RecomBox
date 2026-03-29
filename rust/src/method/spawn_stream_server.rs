@@ -23,6 +23,7 @@ pub async fn spawn_stream_server() -> Result<(), String> {
         HttpServer::new(|| {
             App::new()
                 .service(stream_video::new)
+                .route("/ping", actix_web::web::get().to(|| async { HttpResponse::Ok().body("pong") }))
         })
             .bind(addr).unwrap()
             .run()

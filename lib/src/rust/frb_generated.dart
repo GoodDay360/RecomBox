@@ -83,10 +83,10 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 
 abstract class RustLibApi extends BaseApi {
   Future<void> crateMethodGenerateTorrentHandleGenerateTorrentHandle(
-      {required String torrentFile, required BigInt fileId});
+      {required String torrentSource, required BigInt fileId});
 
   Future<OutputPayload> crateMethodGetTorrentInfoGetTorrentInfo(
-      {required String torrentFile});
+      {required String torrentSource});
 
   Future<void> crateMethodInitTorrentSessionInitTorrentSession();
 
@@ -103,11 +103,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @override
   Future<void> crateMethodGenerateTorrentHandleGenerateTorrentHandle(
-      {required String torrentFile, required BigInt fileId}) {
+      {required String torrentSource, required BigInt fileId}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_String(torrentFile, serializer);
+        sse_encode_String(torrentSource, serializer);
         sse_encode_usize(fileId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 1, port: port_);
@@ -118,7 +118,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       ),
       constMeta:
           kCrateMethodGenerateTorrentHandleGenerateTorrentHandleConstMeta,
-      argValues: [torrentFile, fileId],
+      argValues: [torrentSource, fileId],
       apiImpl: this,
     ));
   }
@@ -127,16 +127,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       get kCrateMethodGenerateTorrentHandleGenerateTorrentHandleConstMeta =>
           const TaskConstMeta(
             debugName: "generate_torrent_handle",
-            argNames: ["torrentFile", "fileId"],
+            argNames: ["torrentSource", "fileId"],
           );
 
   @override
   Future<OutputPayload> crateMethodGetTorrentInfoGetTorrentInfo(
-      {required String torrentFile}) {
+      {required String torrentSource}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_String(torrentFile, serializer);
+        sse_encode_String(torrentSource, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 2, port: port_);
       },
@@ -145,7 +145,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_String,
       ),
       constMeta: kCrateMethodGetTorrentInfoGetTorrentInfoConstMeta,
-      argValues: [torrentFile],
+      argValues: [torrentSource],
       apiImpl: this,
     ));
   }
@@ -153,7 +153,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateMethodGetTorrentInfoGetTorrentInfoConstMeta =>
       const TaskConstMeta(
         debugName: "get_torrent_info",
-        argNames: ["torrentFile"],
+        argNames: ["torrentSource"],
       );
 
   @override

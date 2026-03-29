@@ -1,6 +1,7 @@
 # Miscellaneous
 tmp/
 rust/tmp/
+rust/crates/
 *.torrent
 *.class
 *.log

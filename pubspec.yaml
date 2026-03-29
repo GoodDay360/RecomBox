@@ -39,11 +39,12 @@ dependencies:
   media_kit: ^1.2.6 # Primary package.
   media_kit_video: ^2.0.1 # For video rendering.
   media_kit_libs_video: ^1.0.7 # Native video dependencies.
-  media_kit_libs_audio: ^1.0.7 # Native audio dependencies.
   rust_lib_recombox:
     path: rust_builder
   flutter_rust_bridge: 2.11.1
   logger: ^2.6.2
+  flutter_launcher_icons: ^0.14.4
+  window_manager: ^0.5.1
 
 dev_dependencies:
   flutter_test:
@@ -54,9 +55,12 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^4.0.0
+  flutter_lints: ^6.0.0
   integration_test:
     sdk: flutter
+
+
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -70,9 +74,10 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/
+    - assets/icon/
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

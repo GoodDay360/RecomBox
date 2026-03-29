@@ -67,7 +67,7 @@ fn wire__crate__method__generate_torrent_handle__generate_torrent_handle_impl(
             };
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_torrent_file = <String>::sse_decode(&mut deserializer);
+            let api_torrent_source = <String>::sse_decode(&mut deserializer);
             let api_file_id = <usize>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
@@ -75,7 +75,7 @@ fn wire__crate__method__generate_torrent_handle__generate_torrent_handle_impl(
                     (move || async move {
                         let output_ok =
                             crate::method::generate_torrent_handle::generate_torrent_handle(
-                                &api_torrent_file,
+                                api_torrent_source,
                                 api_file_id,
                             )
                             .await?;
@@ -109,13 +109,13 @@ fn wire__crate__method__get_torrent_info__get_torrent_info_impl(
             };
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_torrent_file = <String>::sse_decode(&mut deserializer);
+            let api_torrent_source = <String>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, String>(
                     (move || async move {
                         let output_ok =
-                            crate::method::get_torrent_info::get_torrent_info(&api_torrent_file)
+                            crate::method::get_torrent_info::get_torrent_info(api_torrent_source)
                                 .await?;
                         Ok(output_ok)
                     })()
