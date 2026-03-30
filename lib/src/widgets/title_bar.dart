@@ -14,6 +14,8 @@ class TitleBar extends StatefulWidget {
 
 class _TitleBarState extends State<TitleBar> {
 
+  var appColors = appColorsNotifier.value;
+
 	@override
 	void initState() {
 		super.initState();
@@ -54,7 +56,7 @@ class _TitleBarState extends State<TitleBar> {
 								cursor: SystemMouseCursors.click,
 								child: Icon(
 									Icons.minimize,
-									color: AppColor.secondary,
+									color: appColors.secondary,
 								),
 							),
 						),
@@ -72,7 +74,7 @@ class _TitleBarState extends State<TitleBar> {
 								cursor: SystemMouseCursors.click,
 								child: Icon(
 									Icons.rectangle_outlined,
-									color: AppColor.secondary,
+									color: appColors.secondary,
 								),
 							),
 						),
@@ -98,7 +100,7 @@ class _TitleBarState extends State<TitleBar> {
 								cursor: SystemMouseCursors.click,
 								child: Icon(
 									Icons.close,
-									color: AppColor.secondary,
+									color: appColors.secondary,
 								),
 							),
 						),

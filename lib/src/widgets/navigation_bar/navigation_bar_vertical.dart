@@ -2,23 +2,26 @@ import 'package:flutter/material.dart';
 
 import 'package:recombox/src/global/app_color.dart';
 
-class NavigationBarWide extends StatefulWidget {
-	const NavigationBarWide({super.key, required this.currentIndex});
+class NavigationBarVertical extends StatefulWidget {
+	const NavigationBarVertical({super.key, required ,required this.currentIndex});
 
 	final int currentIndex;
 
 	@override
-	State<NavigationBarWide> createState() => _NavigationBarWideState();
+	State<NavigationBarVertical> createState() => _NavigationBarVerticalState();
 }
 
-class _NavigationBarWideState extends State<NavigationBarWide> {
+class _NavigationBarVerticalState extends State<NavigationBarVertical> {
 
 	late int currentIndex = 0;
+
+  late AppColorsScheme appColors = appColorsNotifier.value;
 
 	@override
 	void initState() {
 		super.initState();
 		currentIndex = widget.currentIndex;
+    
 	}
 
 	void navigate(int index) {
@@ -45,23 +48,24 @@ class _NavigationBarWideState extends State<NavigationBarWide> {
 					),
 					Expanded(
 						child: NavigationRail(
+              
 							// -> Styles
 							labelType: NavigationRailLabelType.all,
-							backgroundColor: AppColor.primary,
+							backgroundColor: appColors.primary,
 
-							unselectedIconTheme: const IconThemeData(color: AppColor.secondary),
+							unselectedIconTheme: IconThemeData(color: appColors.secondary),
 
 							selectedIconTheme: IconThemeData(
-								color: AppColor.primary,
+								color: appColors.primary,
 							),
 
-							selectedLabelTextStyle: const TextStyle(
-								color: AppColor.textPrimary,
+							selectedLabelTextStyle: TextStyle(
+								color: appColors.textPrimary,
 							),
-							unselectedLabelTextStyle: const TextStyle(
-								color: AppColor.textPrimary,
+							unselectedLabelTextStyle: TextStyle(
+								color: appColors.textPrimary,
 							),
-							indicatorColor: AppColor.secondary,
+							indicatorColor: appColors.secondary,
 							// <-
 
 							selectedIndex: currentIndex,

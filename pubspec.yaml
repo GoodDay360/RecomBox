@@ -45,6 +45,10 @@ dependencies:
   logger: ^2.6.2
   flutter_launcher_icons: ^0.14.4
   window_manager: ^0.5.1
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  carousel_slider: ^5.1.2
+  google_fonts: ^8.0.2
 
 dev_dependencies:
   flutter_test:
