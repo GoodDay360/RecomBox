@@ -26,28 +26,29 @@ class AppColorsScheme {
   });
 
   static AppColorsScheme dark = AppColorsScheme(
-      primary: Color(0xFF000000),
-      secondary: Color(0xFFFFFFFF),
-      tertiary: Color(0xFF1E1E1E),
-      textPrimary: Color(0xFFFFFFFF),
-      textSecondary: Color(0xFFDEDEDE),
-      accentPrimary: Color(0xFFFF0000),
-      accentSecondary: Color(0xFF6D6D6D),
-      strokePrimary: Color(0xFF6D6D6D),
-    );
+    primary: Color(0xFF000000),
+    secondary: Color(0xFFFFFFFF),
+    tertiary: Color(0xFF1E1E1E),
+    textPrimary: Color(0xFFFFFFFF),
+    textSecondary: Color(0xFFDEDEDE),
+    accentPrimary: Color(0xFFFF0000),
+    accentSecondary: Color(0xFF6D6D6D),
+    strokePrimary: Color(0xFF6D6D6D),
+  );
 
-    static Future<AppColorsScheme> load() async {
-        var box = await Hive.openBox('settings');
-        var theme = box.get('theme')?.toString() ?? "";
+  static Future<AppColorsScheme> load() async {
+    var box = await Hive.openBox('settings');
+    var theme = box.get('theme')?.toString() ?? "";
 
-        switch (theme.toLowerCase()) {
-          case "dark": return dark;
-          default: return dark;
-        }
+    switch (theme.toLowerCase()) {
+      case "dark":
+        return dark;
+      default:
+        return dark;
     }
+  }
 }
 
 final appColorsNotifier = ValueNotifier<AppColorsScheme>(
   AppColorsScheme.dark, // default scheme
 );
-

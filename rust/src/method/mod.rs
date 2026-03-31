@@ -9,3 +9,5 @@ pub mod init_torrent_session;
 pub mod get_torrent_info;
 pub mod spawn_stream_server;
 pub mod generate_torrent_handle;
+pub mod metadata_provider;
+

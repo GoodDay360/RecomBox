@@ -58,6 +58,23 @@ Future<void> main() async {
 	runApp(const App());
 }
 
+class NoTransitionsBuilder extends PageTransitionsBuilder {
+  const NoTransitionsBuilder();
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    // Just return the child directly, no animation
+    return child;
+  }
+}
+
+
 class App extends StatelessWidget {
 	const App({super.key});
 	
@@ -67,6 +84,17 @@ class App extends StatelessWidget {
 			valueListenable: appColorsNotifier,
 			builder: (context, colors, _) {
 				return  MaterialApp(
+          theme: ThemeData(
+            pageTransitionsTheme: const PageTransitionsTheme(
+              builders: {
+                TargetPlatform.android: NoTransitionsBuilder(),
+                TargetPlatform.iOS: NoTransitionsBuilder(),
+                TargetPlatform.macOS: NoTransitionsBuilder(),
+                TargetPlatform.windows: NoTransitionsBuilder(),
+                TargetPlatform.linux: NoTransitionsBuilder(),
+              },
+            ),
+          ),
           scrollBehavior: const MaterialScrollBehavior().copyWith(
             dragDevices: {PointerDeviceKind.mouse},
           ),
