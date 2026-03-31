@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "recombox" "\0"
+            VALUE "CompanyName", "io.github.RecomBox" "\0"
+            VALUE "FileDescription", "RecomBox" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "recombox" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 com.example. All rights reserved." "\0"
+            VALUE "InternalName", "RecomBox" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 io.github.RecomBox. All rights reserved." "\0"
             VALUE "OriginalFilename", "recombox.exe" "\0"
-            VALUE "ProductName", "recombox" "\0"
+            VALUE "ProductName", "RecomBox" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

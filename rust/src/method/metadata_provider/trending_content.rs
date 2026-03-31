@@ -5,6 +5,11 @@ use recombox_metadata_provider::global_types::Source;
 
 use flutter_rust_bridge::frb;
 use serde::{Deserialize, Serialize};
+use chrono::{Utc, DateTime, Duration};
+use std::path::PathBuf;
+use std::fs;
+
+use crate::utils::settings::Settings;
 
 
 #[frb(json_serializable)]
@@ -18,9 +23,82 @@ pub struct TrendingContentInfo {
     pub thumbnail_url: String,
 }
 
-pub async fn trending_content(source: &str) -> Result<Vec<TrendingContentInfo>, String> {
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Cache{
+	last_update: String,
+	data: Vec<TrendingContentInfo>,
+}
+
+impl Cache{
+	fn save(source: &Source, data: &Vec<TrendingContentInfo>) -> Result<(), String> {
+		let settings = Settings::get()
+			.map_err(|e| e.to_string())?;
+
+		let app_cache_dir = PathBuf::from(settings.paths.app_cache_dir.clone())
+			.join("trending_content");
+
+		fs::create_dir_all(&app_cache_dir)
+			.map_err(|e| e.to_string())?;
+
+		let file_path = app_cache_dir
+			.join(format!("{}.json", source.to_string()));
+
+		let new_cache = Cache{
+			last_update: Utc::now().to_rfc3339(),
+			data: data.clone(),
+		};
+
+		let data = serde_json::to_string(&new_cache)
+			.map_err(|e| e.to_string())?;
+
+		fs::write(file_path, data)
+			.map_err(|e| e.to_string())?;
+
+		return Ok(());
+	}
+
+	fn load(source: &Source) -> Result<Option<Cache>, String> {
+		let settings = Settings::get()
+			.map_err(|e| e.to_string())?;
+
+		let app_cache_dir = PathBuf::from(settings.paths.app_cache_dir.clone())
+			.join("trending_content");
+
+		let file_path = app_cache_dir
+			.join(format!("{}.json", source.to_string()));
+
+		let data = fs::read_to_string(file_path)
+			.map_err(|e| e.to_string())?;
+
+		let cache: Cache = serde_json::from_str(&data)
+			.map_err(|e| e.to_string())?;
+
+		let last_update = DateTime::parse_from_rfc3339(&cache.last_update)
+			.map_err(|e| e.to_string())?
+			.with_timezone(&Utc);
+
+		if (Utc::now() - last_update) > Duration::hours(3) {
+			return Ok(None);
+		}
+
+		return Ok(Some(cache));
+	}
+
+}
+
+pub async fn trending_content(source: &str, from_cache: bool) -> Result<Vec<TrendingContentInfo>, String> {
 
 	let source = Source::from_str(source);
+
+	if from_cache {
+		match Cache::load(&source) {
+			Ok(Some(cache)) => {
+				return Ok(cache.data);
+			},
+			_ => {}
+		}
+	}
 
 	let data = trending_content::new(&source)
 		.await
@@ -37,5 +115,7 @@ pub async fn trending_content(source: &str) -> Result<Vec<TrendingContentInfo>, 
 		})
 		.collect();
 	
+	Cache::save(&source,&result)?;
+
 	return Ok(result);
 }

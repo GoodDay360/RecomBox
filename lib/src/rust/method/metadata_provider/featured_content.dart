@@ -9,12 +9,15 @@ import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'featured_content.freezed.dart';
 part 'featured_content.g.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `fmt`
+// These functions are ignored because they are not marked as `pub`: `load`, `save`
+// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `Cache`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `fmt`, `fmt`
 
-Future<List<FeaturedContentInfo>> featuredContent({required String source}) =>
+Future<List<FeaturedContentInfo>> featuredContent(
+        {required String source, required bool fromCache}) =>
     RustLib.instance.api
         .crateMethodMetadataProviderFeaturedContentFeaturedContent(
-            source: source);
+            source: source, fromCache: fromCache);
 
 @freezed
 sealed class FeaturedContentInfo with _$FeaturedContentInfo {

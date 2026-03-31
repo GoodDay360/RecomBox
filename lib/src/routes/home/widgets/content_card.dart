@@ -42,7 +42,7 @@ class _ContentCardState extends State<ContentCard> {
                       ),
                       width: 150,
                       height: 225,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fill,
                     ),
                     Text(
                       widget.trendingContentInfo.title,

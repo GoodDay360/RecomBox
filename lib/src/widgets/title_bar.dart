@@ -28,6 +28,10 @@ class _TitleBarState extends State<TitleBar> {
         : await windowManager.maximize();
   }
 
+  Future<void> close() async {
+    await windowManager.close();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -76,7 +80,7 @@ class _TitleBarState extends State<TitleBar> {
                   ),
                 ),
                 TextButton(
-                  onPressed: fullscreen,
+                  onPressed: close,
                   style: ButtonStyle(
                     shape: WidgetStateProperty.all(
                       RoundedRectangleBorder(

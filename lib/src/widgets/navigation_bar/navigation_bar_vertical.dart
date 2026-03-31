@@ -5,9 +5,16 @@ import 'package:recombox/src/widgets/navigation_bar/navigate_handler.dart';
 
 class NavigationBarVertical extends StatefulWidget {
   const NavigationBarVertical(
-      {super.key, required, required this.currentIndex});
+      {
+        super.key, required, 
+        required this.currentIndex,
+        this.useRefresh=false,
+        this.onRefresh,
+      });
 
   final int currentIndex;
+  final bool useRefresh;
+  final VoidCallback? onRefresh;
 
   @override
   State<NavigationBarVertical> createState() => _NavigationBarVerticalState();
@@ -34,67 +41,84 @@ class _NavigationBarVerticalState extends State<NavigationBarVertical> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
-              child: Image.asset(
-                'assets/icon/icon-transparent-white.png',
-                width: 30,
-                height: 30,
-                fit: BoxFit.cover,
-              ),
+      padding: const EdgeInsets.all(8),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
+            child: Image.asset(
+              'assets/icon/icon-transparent-white.png',
+              width: 30,
+              height: 30,
+              fit: BoxFit.cover,
             ),
-            Expanded(
-              child: NavigationRail(
-                // -> Styles
-                labelType: NavigationRailLabelType.all,
-                backgroundColor: appColors.primary,
+          ),
+          Expanded(
+            child: NavigationRail(
+              // -> Styles
+              labelType: NavigationRailLabelType.all,
+              backgroundColor: appColors.primary,
 
-                unselectedIconTheme: IconThemeData(color: appColors.secondary),
+              unselectedIconTheme: IconThemeData(color: appColors.secondary),
 
-                selectedIconTheme: IconThemeData(
-                  color: appColors.primary,
-                ),
-
-                selectedLabelTextStyle: TextStyle(
-                  color: appColors.textPrimary,
-                ),
-                unselectedLabelTextStyle: TextStyle(
-                  color: appColors.textPrimary,
-                ),
-                indicatorColor: appColors.secondary,
-                // <-
-
-                selectedIndex: currentIndex,
-                onDestinationSelected: navigate,
-                destinations: const [
-                  NavigationRailDestination(
-                    icon: MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: Icon(Icons.home),
-                    ),
-                    label: Text('Home'),
-                  ),
-                  NavigationRailDestination(
-                    icon: MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: Icon(Icons.search),
-                    ),
-                    label: Text('Search'),
-                  ),
-                  NavigationRailDestination(
-                    icon: MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: Icon(Icons.settings),
-                    ),
-                    label: Text('Settings'),
-                  ),
-                ],
+              selectedIconTheme: IconThemeData(
+                color: appColors.primary,
               ),
+
+              selectedLabelTextStyle: TextStyle(
+                color: appColors.textPrimary,
+              ),
+              unselectedLabelTextStyle: TextStyle(
+                color: appColors.textPrimary,
+              ),
+              indicatorColor: appColors.secondary,
+              // <-
+
+              selectedIndex: currentIndex,
+              onDestinationSelected: navigate,
+              destinations: const [
+                NavigationRailDestination(
+                  icon: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: Icon(Icons.home),
+                  ),
+                  label: Text('Home'),
+                ),
+                NavigationRailDestination(
+                  icon: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: Icon(Icons.search),
+                  ),
+                  label: Text('Search'),
+                ),
+                NavigationRailDestination(
+                  icon: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: Icon(Icons.settings),
+                  ),
+                  label: Text('Settings'),
+                ),
+              ],
             ),
-          ],
-        ));
+          ),
+
+          if (widget.useRefresh)
+            Container(
+              padding: const EdgeInsets.all(12),
+              child: IconButton(
+                mouseCursor: SystemMouseCursors.click,
+                onPressed: () {
+                  widget.onRefresh?.call();
+                },
+                icon: Icon(
+                  color: appColors.secondary,
+                  Icons.refresh
+                )
+              )
+            ),
+
+        ],
+      )
+    );
   }
 }

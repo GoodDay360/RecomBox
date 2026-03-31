@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:recombox/src/rust/frb_generated.dart';
+import 'package:recombox/src/rust/method/init/init_settings.dart';
+import 'package:recombox/src/rust/utils/settings.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,21 +20,26 @@ import 'dart:ui';
 var logger = Logger();
 
 Future<void> main() async {
-	// -> Flutter Rust Bridge
+	// -> Flutter Rust Bridge and Initialization
 	await RustLib.init();
 	WidgetsFlutterBinding.ensureInitialized();
+  initSettings(settings: Settings(
+    paths: Paths(
+      appSupportDir: (await getApplicationSupportDirectory()).path,
+      appCacheDir: (await getApplicationCacheDirectory()).path, 
+      tempDir: (await getTemporaryDirectory()).path
+    )
+  ));
 	// <-
 
 	// -> Hive DB
 	WidgetsFlutterBinding.ensureInitialized();
-
 	await Hive.initFlutter();
 
 	// <- 
 
-	// -> Window Manager
+	// -> Flutter Widgets
 	WidgetsFlutterBinding.ensureInitialized();
-	await windowManager.ensureInitialized();
 	// <-
 
 	// -> App Colors
@@ -41,7 +49,8 @@ Future<void> main() async {
 	var appColors = appColorsNotifier.value;
 	// <-
 	
-
+	// -> Window Manager
+	await windowManager.ensureInitialized();
 	WindowOptions windowOptions = WindowOptions(
 		size: Size(800, 600),
 		center: true,
@@ -49,6 +58,7 @@ Future<void> main() async {
 		skipTaskbar: false,
 		titleBarStyle: TitleBarStyle.hidden,
 	);
+
 	windowManager.waitUntilReadyToShow(windowOptions, () async {
 		await windowManager.show();
 		await windowManager.focus();
@@ -58,47 +68,29 @@ Future<void> main() async {
 	runApp(const App());
 }
 
-class NoTransitionsBuilder extends PageTransitionsBuilder {
-  const NoTransitionsBuilder();
-
-  @override
-  Widget buildTransitions<T>(
-    PageRoute<T> route,
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-    Widget child,
-  ) {
-    // Just return the child directly, no animation
-    return child;
-  }
-}
-
 
 class App extends StatelessWidget {
 	const App({super.key});
-	
 	@override
 	Widget build(BuildContext context) {
 		return ValueListenableBuilder<AppColorsScheme>(
 			valueListenable: appColorsNotifier,
 			builder: (context, colors, _) {
 				return  MaterialApp(
-          theme: ThemeData(
-            pageTransitionsTheme: const PageTransitionsTheme(
-              builders: {
-                TargetPlatform.android: NoTransitionsBuilder(),
-                TargetPlatform.iOS: NoTransitionsBuilder(),
-                TargetPlatform.macOS: NoTransitionsBuilder(),
-                TargetPlatform.windows: NoTransitionsBuilder(),
-                TargetPlatform.linux: NoTransitionsBuilder(),
-              },
-            ),
-          ),
-          scrollBehavior: const MaterialScrollBehavior().copyWith(
-            dragDevices: {PointerDeviceKind.mouse},
-          ),
-
+					theme: ThemeData(
+						pageTransitionsTheme: const PageTransitionsTheme(
+							builders: {
+								TargetPlatform.android: NoTransitionsBuilder(),
+								TargetPlatform.iOS: NoTransitionsBuilder(),
+								TargetPlatform.macOS: NoTransitionsBuilder(),
+								TargetPlatform.windows: NoTransitionsBuilder(),
+								TargetPlatform.linux: NoTransitionsBuilder(),
+							},
+						),
+					),
+					scrollBehavior: const MaterialScrollBehavior().copyWith(
+						dragDevices: {PointerDeviceKind.mouse},
+					),
 					debugShowCheckedModeBanner: false,
 					initialRoute: "/",
 					title: 'RecomBox',
@@ -110,4 +102,20 @@ class App extends StatelessWidget {
 			}
 		);
 	}
+}
+
+class NoTransitionsBuilder extends PageTransitionsBuilder {
+	const NoTransitionsBuilder();
+
+	@override
+	Widget buildTransitions<T>(
+		PageRoute<T> route,
+		BuildContext context,
+		Animation<double> animation,
+		Animation<double> secondaryAnimation,
+		Widget child,
+	) {
+		
+		return child;
+  }
 }

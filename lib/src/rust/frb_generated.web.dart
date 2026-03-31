@@ -11,11 +11,13 @@ import 'dart:convert';
 import 'frb_generated.dart';
 import 'method/generate_torrent_handle.dart';
 import 'method/get_torrent_info.dart';
-import 'method/init_torrent_session.dart';
+import 'method/init/init_settings.dart';
+import 'method/init/init_torrent_session.dart';
 import 'method/metadata_provider/featured_content.dart';
 import 'method/metadata_provider/trending_content.dart';
 import 'method/spawn_stream_server.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_web.dart';
+import 'utils/settings.dart';
 
 abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RustLibApiImplPlatform({
@@ -26,7 +28,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   });
 
   @protected
+  AnyhowException dco_decode_AnyhowException(dynamic raw);
+
+  @protected
   String dco_decode_String(dynamic raw);
+
+  @protected
+  bool dco_decode_bool(dynamic raw);
+
+  @protected
+  Settings dco_decode_box_autoadd_settings(dynamic raw);
 
   @protected
   BigInt dco_decode_box_autoadd_u_64(dynamic raw);
@@ -71,6 +82,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   OutputPayload dco_decode_output_payload(dynamic raw);
 
   @protected
+  Paths dco_decode_paths(dynamic raw);
+
+  @protected
+  Settings dco_decode_settings(dynamic raw);
+
+  @protected
   TrendingContentInfo dco_decode_trending_content_info(dynamic raw);
 
   @protected
@@ -86,7 +103,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BigInt dco_decode_usize(dynamic raw);
 
   @protected
+  AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
+
+  @protected
   String sse_decode_String(SseDeserializer deserializer);
+
+  @protected
+  bool sse_decode_bool(SseDeserializer deserializer);
+
+  @protected
+  Settings sse_decode_box_autoadd_settings(SseDeserializer deserializer);
 
   @protected
   BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer);
@@ -134,6 +160,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   OutputPayload sse_decode_output_payload(SseDeserializer deserializer);
 
   @protected
+  Paths sse_decode_paths(SseDeserializer deserializer);
+
+  @protected
+  Settings sse_decode_settings(SseDeserializer deserializer);
+
+  @protected
   TrendingContentInfo sse_decode_trending_content_info(
       SseDeserializer deserializer);
 
@@ -153,10 +185,17 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int sse_decode_i_32(SseDeserializer deserializer);
 
   @protected
-  bool sse_decode_bool(SseDeserializer deserializer);
+  void sse_encode_AnyhowException(
+      AnyhowException self, SseSerializer serializer);
 
   @protected
   void sse_encode_String(String self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_bool(bool self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_settings(Settings self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer);
@@ -205,6 +244,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_output_payload(OutputPayload self, SseSerializer serializer);
 
   @protected
+  void sse_encode_paths(Paths self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_settings(Settings self, SseSerializer serializer);
+
+  @protected
   void sse_encode_trending_content_info(
       TrendingContentInfo self, SseSerializer serializer);
 
@@ -222,9 +267,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_bool(bool self, SseSerializer serializer);
 }
 
 // Section: wire_class

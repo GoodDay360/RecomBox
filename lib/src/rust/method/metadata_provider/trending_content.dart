@@ -9,12 +9,13 @@ import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'trending_content.freezed.dart';
 part 'trending_content.g.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `fmt`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `fmt`, `fmt`
 
-Future<List<TrendingContentInfo>> trendingContent({required String source}) =>
+Future<List<TrendingContentInfo>> trendingContent(
+        {required String source, required bool fromCache}) =>
     RustLib.instance.api
         .crateMethodMetadataProviderTrendingContentTrendingContent(
-            source: source);
+            source: source, fromCache: fromCache);
 
 @freezed
 sealed class TrendingContentInfo with _$TrendingContentInfo {
