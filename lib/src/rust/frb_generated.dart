@@ -12,6 +12,7 @@ import 'method/generate_torrent_handle.dart';
 import 'method/get_torrent_info.dart';
 import 'method/init/init_torrent_session.dart';
 import 'method/metadata_provider/featured_content.dart';
+import 'method/metadata_provider/search_content.dart';
 import 'method/metadata_provider/trending_content.dart';
 import 'method/settings/init_settings.dart';
 import 'method/spawn_stream_server.dart';
@@ -75,7 +76,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.12.0';
 
   @override
-  int get rustContentHash => -482939301;
+  int get rustContentHash => -925145405;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -101,6 +102,13 @@ abstract class RustLibApi extends BaseApi {
       {required Settings settings});
 
   Future<void> crateMethodInitInitTorrentSessionInitTorrentSession();
+
+  Future<List<SearchContentInfo>>
+      crateMethodMetadataProviderSearchContentSearchContent(
+          {required String source,
+          required String search,
+          required BigInt sort,
+          required BigInt page});
 
   Future<void> crateMethodSpawnStreamServerSpawnStreamServer();
 
@@ -254,12 +262,47 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           );
 
   @override
+  Future<List<SearchContentInfo>>
+      crateMethodMetadataProviderSearchContentSearchContent(
+          {required String source,
+          required String search,
+          required BigInt sort,
+          required BigInt page}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(source, serializer);
+        sse_encode_String(search, serializer);
+        sse_encode_u_64(sort, serializer);
+        sse_encode_u_64(page, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 6, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_search_content_info,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta:
+          kCrateMethodMetadataProviderSearchContentSearchContentConstMeta,
+      argValues: [source, search, sort, page],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateMethodMetadataProviderSearchContentSearchContentConstMeta =>
+          const TaskConstMeta(
+            debugName: "search_content",
+            argNames: ["source", "search", "sort", "page"],
+          );
+
+  @override
   Future<void> crateMethodSpawnStreamServerSpawnStreamServer() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 6, port: port_);
+            funcId: 7, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -287,7 +330,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(source, serializer);
         sse_encode_bool(fromCache, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 7, port: port_);
+            funcId: 8, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_trending_content_info,
@@ -405,6 +448,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<SearchContentInfo> dco_decode_list_search_content_info(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_search_content_info).toList();
+  }
+
+  @protected
   List<TrendingContentInfo> dco_decode_list_trending_content_info(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>)
@@ -453,6 +502,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       appSupportDir: dco_decode_String(arr[0]),
       appCacheDir: dco_decode_String(arr[1]),
       tempDir: dco_decode_String(arr[2]),
+    );
+  }
+
+  @protected
+  SearchContentInfo dco_decode_search_content_info(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    return SearchContentInfo(
+      source: dco_decode_String(arr[0]),
+      id: dco_decode_String(arr[1]),
+      title: dco_decode_String(arr[2]),
+      year: dco_decode_String(arr[3]),
+      rank: dco_decode_opt_box_autoadd_u_64(arr[4]),
+      thumbnailUrl: dco_decode_String(arr[5]),
     );
   }
 
@@ -624,6 +689,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<SearchContentInfo> sse_decode_list_search_content_info(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <SearchContentInfo>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_search_content_info(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
   List<TrendingContentInfo> sse_decode_list_trending_content_info(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -688,6 +766,25 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         appSupportDir: var_appSupportDir,
         appCacheDir: var_appCacheDir,
         tempDir: var_tempDir);
+  }
+
+  @protected
+  SearchContentInfo sse_decode_search_content_info(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_source = sse_decode_String(deserializer);
+    var var_id = sse_decode_String(deserializer);
+    var var_title = sse_decode_String(deserializer);
+    var var_year = sse_decode_String(deserializer);
+    var var_rank = sse_decode_opt_box_autoadd_u_64(deserializer);
+    var var_thumbnailUrl = sse_decode_String(deserializer);
+    return SearchContentInfo(
+        source: var_source,
+        id: var_id,
+        title: var_title,
+        year: var_year,
+        rank: var_rank,
+        thumbnailUrl: var_thumbnailUrl);
   }
 
   @protected
@@ -846,6 +943,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_search_content_info(
+      List<SearchContentInfo> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_search_content_info(item, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_list_trending_content_info(
       List<TrendingContentInfo> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -900,6 +1007,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.appSupportDir, serializer);
     sse_encode_String(self.appCacheDir, serializer);
     sse_encode_String(self.tempDir, serializer);
+  }
+
+  @protected
+  void sse_encode_search_content_info(
+      SearchContentInfo self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.source, serializer);
+    sse_encode_String(self.id, serializer);
+    sse_encode_String(self.title, serializer);
+    sse_encode_String(self.year, serializer);
+    sse_encode_opt_box_autoadd_u_64(self.rank, serializer);
+    sse_encode_String(self.thumbnailUrl, serializer);
   }
 
   @protected

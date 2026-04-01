@@ -43,7 +43,6 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> initMetadataProvider({bool fromCache=true}) async {
-    debugPrint((await getApplicationCacheDirectory()).path);
     setState(() {
       isLoading = true;
     });
@@ -90,84 +89,80 @@ class _HomeState extends State<Home> {
               },
             ),
           Expanded(
-            child: Stack(
-              children: [
-                if (isLoading)
-                  Container(
-                    alignment: Alignment.center,
-                    child: CircularProgressIndicator(
-                      color: appColors.secondary,
-                    )
-                  ),
-                if (!isLoading)
-                  SizedBox(
-                    height: double.infinity,
-                    child: SingleChildScrollView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        child: Column(
-                          children: [
-                            Stack(
-                              children: [
-                                CarouselSlider(
-                                  options: CarouselOptions(
-                                    height: MediaQuery.of(context).size.height * 0.55,
-                                    viewportFraction: 1.0,
-                                    autoPlay: featuredContentList.isEmpty ? false : true,
-                                    autoPlayInterval: Duration(seconds: 8),
-                                    pauseAutoPlayOnTouch: true,
-                                    pauseAutoPlayOnManualNavigate: true,
-                                  ),
-                                  items: [
-                                    for (final item in featuredContentList)
-                                      FeaturedSection(
-                                        featuredContentInfo: item,
-                                      ),
-                                  ],
-                                ),
-                                
-                                if (!((Platform.isWindows || Platform.isLinux || Platform.isMacOS)))
-                                  Container(
-                                    padding: EdgeInsets.only(right: 10, top: 10),
-                                    alignment: Alignment.topRight,
-                                    child: InkWell(
-                                        mouseCursor: SystemMouseCursors.click,
-                                        onTap: () {
-                                          initMetadataProvider(fromCache: false);
-                                        },
-                                        child: Icon(
-                                          color: appColors.secondary,
-                                          Icons.refresh
-                                        )
-                                      )
-                                  ),
-                                  
-                              ]
-                            ),
-                            for (final source in trendingContentMap.keys)
-                              ContentSection(
-                                label: "Trending ${source.label}",
-                                trendingContentList: trendingContentMap[source]!,
-                              ),
-                          ]
-                        )
-                      ),
-                  ),
-                  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
-                    Positioned(top: 0, left: 0, right: 0, child: TitleBar()),
-                  if ((Platform.isWindows || Platform.isLinux || Platform.isMacOS) && (MediaQuery.of(context).size.width < 600))
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      left: 0,
-                      child: NavigationBarHorizontal(
-                        currentIndex: 0,
-                        
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              body: Stack(
+                children: [
+                  if (isLoading)
+                    Container(
+                      alignment: Alignment.center,
+                      child: CircularProgressIndicator(
+                        color: appColors.secondary,
                       )
                     ),
-                  
-              ],
-            )
-            
+                  if (!isLoading)
+                    SizedBox(
+                      height: double.infinity,
+                      child: SingleChildScrollView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          child: Column(
+                            children: [
+                              Stack(
+                                children: [
+                                  CarouselSlider(
+                                    options: CarouselOptions(
+                                      height: MediaQuery.of(context).size.height * 0.55,
+                                      viewportFraction: 1.0,
+                                      autoPlay: featuredContentList.isEmpty ? false : true,
+                                      autoPlayInterval: Duration(seconds: 8),
+                                      pauseAutoPlayOnTouch: true,
+                                      pauseAutoPlayOnManualNavigate: true,
+                                    ),
+                                    items: [
+                                      for (final item in featuredContentList)
+                                        FeaturedSection(
+                                          featuredContentInfo: item,
+                                        ),
+                                    ],
+                                  ),
+                                  
+                                  if (!((Platform.isWindows || Platform.isLinux || Platform.isMacOS)))
+                                    Container(
+                                      padding: EdgeInsets.only(right: 10, top: 10),
+                                      alignment: Alignment.topRight,
+                                      child: InkWell(
+                                          mouseCursor: SystemMouseCursors.click,
+                                          onTap: () {
+                                            initMetadataProvider(fromCache: false);
+                                          },
+                                          child: Icon(
+                                            color: appColors.secondary,
+                                            Icons.refresh
+                                          )
+                                        )
+                                    ),
+                                    
+                                ]
+                              ),
+                              for (final source in trendingContentMap.keys)
+                                ContentSection(
+                                  label: "Trending ${source.label}",
+                                  trendingContentList: trendingContentMap[source]!,
+                                ),
+                            ]
+                          )
+                        ),
+                    ),
+                    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                      Positioned(top: 0, left: 0, right: 0, child: TitleBar()),
+                ],
+              ),
+              bottomNavigationBar: ((Platform.isWindows || Platform.isLinux || Platform.isMacOS) && (MediaQuery.of(context).size.width < 600)) 
+                ?  NavigationBarHorizontal(
+                    currentIndex: 0,
+                  )
+                : null,
+            ),
           )
         ],
       )

@@ -27,9 +27,15 @@ class _ContentSectionState extends State<ContentSection> {
   AppColorsScheme appColors = appColorsNotifier.value;
 
   @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.only(top: 15, right: 15),
+        padding: (MediaQuery.of(context).size.width < 600) ? EdgeInsets.all(15) : EdgeInsets.only(top: 15, right: 15),
         child: Column(
           spacing: 12,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,36 +43,39 @@ class _ContentSectionState extends State<ContentSection> {
             Text(
               widget.label,
               style: GoogleFonts.nunito(
+                fontWeight: FontWeight(700),
                 color: appColors.textPrimary,
                 fontSize: 24,
                 decoration: TextDecoration.none,
               ),
             ),
             SizedBox(
-                width: double.infinity,
-                height: 280,
-                // color: Colors.green,
-                child: Scrollbar(
+              width: double.infinity,
+              height: 280,
+              // color: Colors.green,
+              child: Scrollbar(
+                  controller: _scrollController,
+                  thickness: (Platform.isWindows ||
+                          Platform.isLinux ||
+                          Platform.isMacOS)
+                      ? null
+                      : 0,
+                  child: ListView.separated(
                     controller: _scrollController,
-                    thickness: (Platform.isWindows ||
-                            Platform.isLinux ||
-                            Platform.isMacOS)
-                        ? null
-                        : 0,
-                    child: ListView.separated(
-                      controller: _scrollController,
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      scrollDirection: Axis.horizontal,
-                      itemCount: widget.trendingContentList.length,
-                      itemBuilder: (context, index) {
-                        return ContentCard(
-                          trendingContentInfo: widget.trendingContentList[index],
-                        );
-                      },
-                      separatorBuilder: (context, index) {
-                        return const SizedBox(width: 18);
-                      },
-                    )))
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: widget.trendingContentList.length,
+                    itemBuilder: (context, index) {
+                      return ContentCard(
+                        trendingContentInfo: widget.trendingContentList[index],
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return const SizedBox(width: 18);
+                    },
+                  )
+                )
+              )
           ],
         ));
   }

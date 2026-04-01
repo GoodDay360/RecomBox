@@ -11,6 +11,7 @@ import 'method/generate_torrent_handle.dart';
 import 'method/get_torrent_info.dart';
 import 'method/init/init_torrent_session.dart';
 import 'method/metadata_provider/featured_content.dart';
+import 'method/metadata_provider/search_content.dart';
 import 'method/metadata_provider/trending_content.dart';
 import 'method/settings/init_settings.dart';
 import 'method/spawn_stream_server.dart';
@@ -65,6 +66,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
+  List<SearchContentInfo> dco_decode_list_search_content_info(dynamic raw);
+
+  @protected
   List<TrendingContentInfo> dco_decode_list_trending_content_info(dynamic raw);
 
   @protected
@@ -81,6 +85,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Paths dco_decode_paths(dynamic raw);
+
+  @protected
+  SearchContentInfo dco_decode_search_content_info(dynamic raw);
 
   @protected
   Settings dco_decode_settings(dynamic raw);
@@ -142,6 +149,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
+  List<SearchContentInfo> sse_decode_list_search_content_info(
+      SseDeserializer deserializer);
+
+  @protected
   List<TrendingContentInfo> sse_decode_list_trending_content_info(
       SseDeserializer deserializer);
 
@@ -159,6 +170,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Paths sse_decode_paths(SseDeserializer deserializer);
+
+  @protected
+  SearchContentInfo sse_decode_search_content_info(
+      SseDeserializer deserializer);
 
   @protected
   Settings sse_decode_settings(SseDeserializer deserializer);
@@ -226,6 +241,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       Uint8List self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_search_content_info(
+      List<SearchContentInfo> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_trending_content_info(
       List<TrendingContentInfo> self, SseSerializer serializer);
 
@@ -243,6 +262,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_paths(Paths self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_search_content_info(
+      SearchContentInfo self, SseSerializer serializer);
 
   @protected
   void sse_encode_settings(Settings self, SseSerializer serializer);

@@ -34,7 +34,15 @@ class _NavigationBarHorizontalState extends State<NavigationBarHorizontal> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              width: 1,
+              color: appColors.strokePrimary,
+            )
+          ),
+        ),
         padding: const EdgeInsets.all(0),
         child: Row(
           children: [

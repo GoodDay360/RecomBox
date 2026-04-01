@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:recombox/src/routes/search/search.dart';
 import 'package:recombox/src/rust/frb_generated.dart';
 import 'package:recombox/src/rust/method/settings/init_settings.dart';
 import 'package:recombox/src/rust/utils/settings.dart';
@@ -80,11 +81,11 @@ class App extends StatelessWidget {
 					theme: ThemeData(
 						pageTransitionsTheme: const PageTransitionsTheme(
 							builders: {
-								TargetPlatform.android: NoTransitionsBuilder(),
-								TargetPlatform.iOS: NoTransitionsBuilder(),
-								TargetPlatform.macOS: NoTransitionsBuilder(),
-								TargetPlatform.windows: NoTransitionsBuilder(),
-								TargetPlatform.linux: NoTransitionsBuilder(),
+								TargetPlatform.android: TransitionsBuilder(),
+								TargetPlatform.iOS: TransitionsBuilder(),
+								TargetPlatform.macOS: TransitionsBuilder(),
+								TargetPlatform.windows: TransitionsBuilder(),
+								TargetPlatform.linux: TransitionsBuilder(),
 							},
 						),
 					),
@@ -92,11 +93,11 @@ class App extends StatelessWidget {
 						dragDevices: {PointerDeviceKind.mouse},
 					),
 					debugShowCheckedModeBanner: false,
-					initialRoute: "/",
+					initialRoute: "/search",
 					title: 'RecomBox',
 					routes: {
 						"/": (context) => const Home(),
-						// "/2": (context) => const MyHomePage(),
+            "/search": (context) => const Search(),
 					},
 				);
 			}
@@ -104,8 +105,10 @@ class App extends StatelessWidget {
 	}
 }
 
-class NoTransitionsBuilder extends PageTransitionsBuilder {
-	const NoTransitionsBuilder();
+class TransitionsBuilder extends PageTransitionsBuilder {
+	const TransitionsBuilder();
+
+  AppColorsScheme get appColors => appColorsNotifier.value;
 
 	@override
 	Widget buildTransitions<T>(
@@ -116,6 +119,9 @@ class NoTransitionsBuilder extends PageTransitionsBuilder {
 		Widget child,
 	) {
 		
-		return child;
+		return ColoredBox(
+      color: appColors.primary,
+      child: child,
+    );
   }
 }
