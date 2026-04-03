@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/types.dart';
-import 'package:recombox/src/routes/search/widgets/search_card.dart';
+import 'package:recombox/src/routes/search/widgets/search_tile.dart';
 import 'package:recombox/src/rust/method/metadata_provider/search_content.dart';
 import 'package:recombox/src/widgets/navigation_bar/navigation_bar_horizontal.dart';
 import 'package:recombox/src/widgets/navigation_bar/navigation_bar_vertical.dart';
@@ -139,249 +139,251 @@ class _SearchState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: Row(
-        children: [
-          if (MediaQuery.of(context).size.width >= 600)
-            NavigationBarVertical(
-              currentIndex: 1,
-            ),
-          Expanded(
-            child: Scaffold(
-              backgroundColor: Colors.transparent,
-              body: Column(
-                spacing: 0,
-                children: [
-                  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
-                    TitleBar(),
-                  Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          width: 1,
-                          color: appColors.strokePrimary
-                        )
-                      )
-                    ),
-                    child:Row(
-                      children: [
-                        for (final source in Source.values)
-                          Expanded(
-                            flex: 1,
-                            child: InkWell(
-                              mouseCursor: SystemMouseCursors.click,
-                              onTap: (){
-                                changeSource(source);
-                              },
-                              child: Container(
-                                padding: EdgeInsets.all(15),
-                                decoration: BoxDecoration(
-                                  border: currentSource == source
-                                    ? Border(
-                                      bottom: BorderSide(
-                                        color: appColors.accentPrimary,
-                                        width: 2,
-                                      )
-                                    )
-                                    : null,
-                                ),
-                                child: Text(
-                                  source.label,
-                                  style: TextStyle(
-                                    color: appColors.textPrimary,
-                                  
-                                  ),
-                                  textAlign: TextAlign.center,
-                                )
-                              )
-                              
-                            ),
+    return SafeArea(
+      child: Material(
+        color: Colors.transparent,
+        child: Row(
+          children: [
+            if (MediaQuery.of(context).size.width >= 600)
+              NavigationBarVertical(
+                currentIndex: 1,
+              ),
+            Expanded(
+              child: Scaffold(
+                backgroundColor: Colors.transparent,
+                body: Column(
+                  spacing: 0,
+                  children: [
+                    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                      TitleBar(),
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            width: 1,
+                            color: appColors.strokePrimary
                           )
-                      ],
-                    )
-                  ),
-                  // -> SearchScreen TextField Widgets
-                  Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.only(right: 10),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          width: 1,
-                          color: appColors.strokePrimary
                         )
-                      )
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: (){
-                              searchFocus.requestFocus();
-                            },
-                            child: Container(
-                              padding: EdgeInsets.only(left: 10),
-                              height: 60,
-                              child: Row(
-                                spacing: 8,
-                                children: [
-                                  Icon(
-                                    Icons.search,
-                                    color: appColors.textPrimary,
-                                  ),
-                                  Expanded(
-                                    child: TextField(
-                                      controller: _textEditingController,
-                                      onChanged: (value)=>{
-                                        currentSearch = value,
-                                        if (searchContentResult.isNotEmpty){
-                                          setState(() {
-                                            searchContentResult = [];
-                                            currentPage = 1;
-                                            noMore = false;
-                                          })
-                                        }
-                                        
-                                      },
-                                      onSubmitted: (_) => onSubmit(),
-                                      cursorColor: appColors.textPrimary,
-                                      focusNode: searchFocus,
-                                      style: GoogleFonts.nunito(
-                                        fontSize: 24,
-                                        color: appColors.textPrimary,
-                                      ),
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        hintText: "Search",
-                                        hintStyle: TextStyle(
-                                          color: appColors.textPrimary,
-                                        )
-                                      ),
-                                    )
-                                  )
-                                ],
-                              )
-                            )
-                          )
-                        ),
-                        IconButton(
-                          mouseCursor: SystemMouseCursors.click,
-                          onPressed: (){
-
-                          },
-                          icon: Icon(
-                            Icons.refresh,
-                            color: appColors.textPrimary,
-                          ),
-                        )
-                      ]
-                    )
-                  ),
-                  // <-
-                  Container(
-                    padding: EdgeInsets.all(15),
-                    width: double.infinity,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      child: Row(
-                        spacing: 8,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                      ),
+                      child:Row(
                         children: [
-                          Text(
-                            "SORT BY: ",
-                            style: GoogleFonts.nunito(
-                              fontWeight: FontWeight(900),
-                              fontSize: 15,
-                              color: appColors.textSecondary,
-                            ),
-                          ),
-                          for (final entry in availableSorts.entries)
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                enabledMouseCursor: SystemMouseCursors.click,
-                                disabledMouseCursor: SystemMouseCursors.forbidden,
-                                backgroundColor: currentSortIndex == entry.key ? appColors.accentPrimary : Colors.transparent,
-                                foregroundColor: appColors.textPrimary,
-                                textStyle: GoogleFonts.nunito(
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 16,
-                                  color: appColors.textPrimary,
-                                ),
+                          for (final source in Source.values)
+                            Expanded(
+                              flex: 1,
+                              child: InkWell(
+                                mouseCursor: SystemMouseCursors.click,
+                                onTap: (){
+                                  changeSource(source);
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(15),
+                                  decoration: BoxDecoration(
+                                    border: currentSource == source
+                                      ? Border(
+                                        bottom: BorderSide(
+                                          color: appColors.accentPrimary,
+                                          width: 2,
+                                        )
+                                      )
+                                      : null,
+                                  ),
+                                  child: Text(
+                                    source.label,
+                                    style: TextStyle(
+                                      color: appColors.textPrimary,
+                                    
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  )
+                                )
                                 
                               ),
-                              onPressed: (){
-                                changeSortIndex(entry.key);
-                              },
-                              child: Text(entry.value),
-                            ),
+                            )
                         ],
                       )
-                    )
-                    
-                  ),
-                
-                  
-                  Expanded(
-                    child: (searchContentResult.isEmpty)
-                      ? (isLoading)
-                          ? Container(
-                            alignment: Alignment.center,
-                            child: CircularProgressIndicator(
-                              color: appColors.secondary,
-                            )
+                    ),
+                    // -> SearchScreen TextField Widgets
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.only(right: 10),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            width: 1,
+                            color: appColors.strokePrimary
                           )
-                          : Container(
-                            alignment: Alignment.center,
-                            child: Text(
-                              "Try searching for something.",
-                              style: GoogleFonts.nunito(
-                                color: appColors.textPrimary,
-                                fontSize: 24,
-                                fontWeight: FontWeight(800)
-                              ),
+                        )
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: (){
+                                searchFocus.requestFocus();
+                              },
+                              child: Container(
+                                padding: EdgeInsets.only(left: 10),
+                                height: 60,
+                                child: Row(
+                                  spacing: 8,
+                                  children: [
+                                    Icon(
+                                      Icons.search,
+                                      color: appColors.textPrimary,
+                                    ),
+                                    Expanded(
+                                      child: TextField(
+                                        controller: _textEditingController,
+                                        onChanged: (value)=>{
+                                          currentSearch = value,
+                                          if (searchContentResult.isNotEmpty){
+                                            setState(() {
+                                              searchContentResult = [];
+                                              currentPage = 1;
+                                              noMore = false;
+                                            })
+                                          }
+                                          
+                                        },
+                                        onSubmitted: (_) => onSubmit(),
+                                        cursorColor: appColors.textPrimary,
+                                        focusNode: searchFocus,
+                                        style: GoogleFonts.nunito(
+                                          fontSize: 24,
+                                          color: appColors.textPrimary,
+                                        ),
+                                        decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                          hintText: "Search",
+                                          hintStyle: TextStyle(
+                                            color: appColors.textPrimary,
+                                          )
+                                        ),
+                                      )
+                                    )
+                                  ],
+                                )
+                              )
+                            )
+                          ),
+                          IconButton(
+                            mouseCursor: SystemMouseCursors.click,
+                            onPressed: (){
+
+                            },
+                            icon: Icon(
+                              Icons.refresh,
+                              color: appColors.textPrimary,
                             ),
                           )
-                      : SizedBox(
-                        width: double.infinity,
-                        child: Scrollbar(
-                          controller: _scrollController,
-                          thickness: (Platform.isWindows ||
-                                  Platform.isLinux ||
-                                  Platform.isMacOS)
-                              ? null
-                              : 0,
-                          child: ListView.separated(
-                            controller: _scrollController,
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            scrollDirection: Axis.vertical,
-                            itemCount: searchContentResult.length,
-                            itemBuilder: (context, index) {
-                              return SearchCard(searchContentInfo: searchContentResult[index]);
-                            },
-                            separatorBuilder: (context, index) {
-                              return const SizedBox(width: 18);
-                            },
-                          )
+                        ]
+                      )
+                    ),
+                    // <-
+                    Container(
+                      padding: EdgeInsets.all(15),
+                      width: double.infinity,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: Row(
+                          spacing: 8,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "SORT BY: ",
+                              style: GoogleFonts.nunito(
+                                fontWeight: FontWeight(900),
+                                fontSize: 15,
+                                color: appColors.textSecondary,
+                              ),
+                            ),
+                            for (final entry in availableSorts.entries)
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  enabledMouseCursor: SystemMouseCursors.click,
+                                  disabledMouseCursor: SystemMouseCursors.forbidden,
+                                  backgroundColor: currentSortIndex == entry.key ? appColors.accentPrimary : Colors.transparent,
+                                  foregroundColor: appColors.textPrimary,
+                                  textStyle: GoogleFonts.nunito(
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 16,
+                                    color: appColors.textPrimary,
+                                  ),
+                                  
+                                ),
+                                onPressed: (){
+                                  changeSortIndex(entry.key);
+                                },
+                                child: Text(entry.value),
+                              ),
+                          ],
                         )
                       )
                       
-                  )
+                    ),
                   
-                ],
-              ),
-              bottomNavigationBar: ((Platform.isWindows || Platform.isLinux || Platform.isMacOS) && (MediaQuery.of(context).size.width < 600)) 
-                ? NavigationBarHorizontal(
-                  currentIndex: 1,
-                )
-                : null
+                    
+                    Expanded(
+                      child: (searchContentResult.isEmpty)
+                        ? (isLoading)
+                            ? Container(
+                              alignment: Alignment.center,
+                              child: CircularProgressIndicator(
+                                color: appColors.secondary,
+                              )
+                            )
+                            : Container(
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Try searching for something.",
+                                style: GoogleFonts.nunito(
+                                  color: appColors.textPrimary,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight(800)
+                                ),
+                              ),
+                            )
+                        : SizedBox(
+                          width: double.infinity,
+                          child: Scrollbar(
+                            controller: _scrollController,
+                            thickness: (Platform.isWindows ||
+                                    Platform.isLinux ||
+                                    Platform.isMacOS)
+                                ? null
+                                : 0,
+                            child: ListView.separated(
+                              controller: _scrollController,
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              scrollDirection: Axis.vertical,
+                              itemCount: searchContentResult.length,
+                              itemBuilder: (context, index) {
+                                return SearchTile(searchContentInfo: searchContentResult[index]);
+                              },
+                              separatorBuilder: (context, index) {
+                                return const SizedBox(width: 18);
+                              },
+                            )
+                          )
+                        )
+                        
+                    )
+                    
+                  ],
+                ),
+                bottomNavigationBar: ((Platform.isWindows || Platform.isLinux || Platform.isMacOS) && (MediaQuery.of(context).size.width < 600)) 
+                  ? NavigationBarHorizontal(
+                    currentIndex: 1,
+                  )
+                  : null
+              )
             )
-          )
-        ],
+          ],
+        )
       )
     );
   }

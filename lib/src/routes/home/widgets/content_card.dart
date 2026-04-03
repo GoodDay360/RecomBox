@@ -18,6 +18,10 @@ class ContentCard extends StatefulWidget {
 class _ContentCardState extends State<ContentCard> {
   AppColorsScheme appColors = appColorsNotifier.value;
 
+  void onNavigate(){
+    Navigator.pushNamed(context, '/view');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -26,7 +30,7 @@ class _ContentCardState extends State<ContentCard> {
         color: Colors.transparent,
         child: InkWell(
             onTap: () {
-              debugPrint("Card tapped!");
+              onNavigate();
             },
             mouseCursor: SystemMouseCursors.click,
             child: Container(

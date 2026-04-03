@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/types.dart';
+import 'package:recombox/src/routes/view/view.dart';
 import 'package:recombox/src/rust/method/metadata_provider/featured_content.dart';
 
 class FeaturedSection extends StatefulWidget {
@@ -20,14 +21,23 @@ class FeaturedSection extends StatefulWidget {
 class _FeaturedSectionState extends State<FeaturedSection> {
   AppColorsScheme get appColors => appColorsNotifier.value;
 
+  void onNavigate(){
+    Navigator.pushNamed(
+      context,
+      '/view',
+      arguments: ViewScreenArguments(
+        source: SourceExtension.fromString(widget.featuredContentInfo.source), 
+        id: widget.featuredContentInfo.id
+      )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
         color: Colors.transparent,
         child: InkWell(
-            onTap: () {
-              debugPrint("Card tapped!");
-            },
+            onTap: onNavigate,
             mouseCursor: SystemMouseCursors.click,
             child: Stack(
               children: [
@@ -91,7 +101,8 @@ class _FeaturedSectionState extends State<FeaturedSection> {
                                     ),
                                   ),
                               ],
-                            )),
+                            )
+                          ),
                         SizedBox(height: 12),
                         Container(
                           width: double.infinity,

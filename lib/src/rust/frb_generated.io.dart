@@ -13,6 +13,7 @@ import 'method/init/init_torrent_session.dart';
 import 'method/metadata_provider/featured_content.dart';
 import 'method/metadata_provider/search_content.dart';
 import 'method/metadata_provider/trending_content.dart';
+import 'method/metadata_provider/view_content.dart';
 import 'method/settings/init_settings.dart';
 import 'method/spawn_stream_server.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_io.dart';
@@ -45,6 +46,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BigInt dco_decode_box_autoadd_usize(dynamic raw);
 
   @protected
+  EpisodeInfo dco_decode_episode_info(dynamic raw);
+
+  @protected
   double dco_decode_f_32(dynamic raw);
 
   @protected
@@ -54,13 +58,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Files dco_decode_files(dynamic raw);
 
   @protected
+  PlatformInt64 dco_decode_i_64(dynamic raw);
+
+  @protected
   List<String> dco_decode_list_String(dynamic raw);
+
+  @protected
+  List<EpisodeInfo> dco_decode_list_episode_info(dynamic raw);
 
   @protected
   List<FeaturedContentInfo> dco_decode_list_featured_content_info(dynamic raw);
 
   @protected
   List<Files> dco_decode_list_files(dynamic raw);
+
+  @protected
+  List<List<EpisodeInfo>> dco_decode_list_list_episode_info(dynamic raw);
 
   @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
@@ -108,6 +121,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BigInt dco_decode_usize(dynamic raw);
 
   @protected
+  ViewContentInfo dco_decode_view_content_info(dynamic raw);
+
+  @protected
   AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
 
   @protected
@@ -126,6 +142,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BigInt sse_decode_box_autoadd_usize(SseDeserializer deserializer);
 
   @protected
+  EpisodeInfo sse_decode_episode_info(SseDeserializer deserializer);
+
+  @protected
   double sse_decode_f_32(SseDeserializer deserializer);
 
   @protected
@@ -136,7 +155,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Files sse_decode_files(SseDeserializer deserializer);
 
   @protected
+  PlatformInt64 sse_decode_i_64(SseDeserializer deserializer);
+
+  @protected
   List<String> sse_decode_list_String(SseDeserializer deserializer);
+
+  @protected
+  List<EpisodeInfo> sse_decode_list_episode_info(SseDeserializer deserializer);
 
   @protected
   List<FeaturedContentInfo> sse_decode_list_featured_content_info(
@@ -144,6 +169,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<Files> sse_decode_list_files(SseDeserializer deserializer);
+
+  @protected
+  List<List<EpisodeInfo>> sse_decode_list_list_episode_info(
+      SseDeserializer deserializer);
 
   @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
@@ -195,6 +224,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BigInt sse_decode_usize(SseDeserializer deserializer);
 
   @protected
+  ViewContentInfo sse_decode_view_content_info(SseDeserializer deserializer);
+
+  @protected
   int sse_decode_i_32(SseDeserializer deserializer);
 
   @protected
@@ -217,6 +249,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_box_autoadd_usize(BigInt self, SseSerializer serializer);
 
   @protected
+  void sse_encode_episode_info(EpisodeInfo self, SseSerializer serializer);
+
+  @protected
   void sse_encode_f_32(double self, SseSerializer serializer);
 
   @protected
@@ -227,7 +262,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_files(Files self, SseSerializer serializer);
 
   @protected
+  void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_String(List<String> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_episode_info(
+      List<EpisodeInfo> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_featured_content_info(
@@ -235,6 +277,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_list_files(List<Files> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_list_episode_info(
+      List<List<EpisodeInfo>> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_prim_u_8_strict(
@@ -285,6 +331,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_usize(BigInt self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_view_content_info(
+      ViewContentInfo self, SseSerializer serializer);
 
   @protected
   void sse_encode_i_32(int self, SseSerializer serializer);

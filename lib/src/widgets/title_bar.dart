@@ -57,7 +57,7 @@ class _TitleBarState extends State<TitleBar> {
                   child: MouseRegion(
                     cursor: SystemMouseCursors.click,
                     child: Icon(
-                      Icons.minimize,
+                      Icons.minimize_rounded,
                       color: appColors.secondary,
                     ),
                   ),
@@ -99,7 +99,7 @@ class _TitleBarState extends State<TitleBar> {
                   child: MouseRegion(
                     cursor: SystemMouseCursors.click,
                     child: Icon(
-                      Icons.close,
+                      Icons.close_rounded,
                       color: appColors.secondary,
                     ),
                   ),

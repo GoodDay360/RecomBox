@@ -4,8 +4,8 @@ import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/rust/method/metadata_provider/search_content.dart';
 
-class SearchCard extends StatefulWidget {
-  const SearchCard({
+class SearchTile extends StatefulWidget {
+  const SearchTile({
     super.key,
     required this.searchContentInfo
   });
@@ -13,10 +13,10 @@ class SearchCard extends StatefulWidget {
   final SearchContentInfo searchContentInfo;
 
   @override
-  State<SearchCard> createState() => _SearchCardState();
+  State<SearchTile> createState() => _SearchTileState();
 }
 
-class _SearchCardState extends State<SearchCard> {
+class _SearchTileState extends State<SearchTile> {
 
   
   AppColorsScheme appColors = appColorsNotifier.value;

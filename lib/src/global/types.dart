@@ -15,4 +15,17 @@ extension SourceExtension on Source {
         return "TV"; // special case so it’s not just "Tv"
     }
   }
+
+  static Source fromString(String source) {
+    switch (source.toLowerCase()) {
+      case "anime":
+        return Source.anime;
+      case "movies":
+        return Source.movies;
+      case "tv":
+        return Source.tv;
+      default:
+        return Source.anime;
+    }
+  }
 }
