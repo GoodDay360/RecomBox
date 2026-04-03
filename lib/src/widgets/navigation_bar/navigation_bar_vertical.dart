@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/widgets/navigation_bar/navigate_handler.dart';
+import 'package:window_manager/window_manager.dart';
 
 class NavigationBarVertical extends StatefulWidget {
   const NavigationBarVertical(
@@ -36,12 +37,15 @@ class _NavigationBarVerticalState extends State<NavigationBarVertical> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        GestureDetector(
+          onPanStart: (_) async {
+            await windowManager.startDragging();
+          },
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
             child: Image.asset(
               'assets/icon/icon-transparent-white.png',
               width: 30,
@@ -49,7 +53,11 @@ class _NavigationBarVerticalState extends State<NavigationBarVertical> {
               fit: BoxFit.cover,
             ),
           ),
-          Expanded(
+        ),
+        
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.only(left: 8, right: 8),
             child: NavigationRail(
               // -> Styles
               labelType: NavigationRailLabelType.all,
@@ -96,9 +104,11 @@ class _NavigationBarVerticalState extends State<NavigationBarVertical> {
                 ),
               ],
             ),
-          ),
-        ],
-      )
+          
+          
+          )
+        ),
+      ],
     );
   }
 }

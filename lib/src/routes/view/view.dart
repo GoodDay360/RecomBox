@@ -60,6 +60,10 @@ class _ViewState extends State<ViewScreen> {
     });
   }
 
+  void onRefresh(){
+    initViewContentInfo(fromCache: false);
+  }
+
   void onBack(){
     Navigator.pop(context);
   }
@@ -89,11 +93,11 @@ class _ViewState extends State<ViewScreen> {
     });
   }
 
-  Future<void> initViewContentInfo() async {
+  Future<void> initViewContentInfo({bool fromCache=true}) async {
     setState(() {
       isLoading = true;
     });
-    var data = await viewContent(source: args.source.name, id: args.id, fromCache: true);
+    var data = await viewContent(source: args.source.name, id: args.id, fromCache: fromCache);
     
     setState(() {
       viewContentInfoResult = data;
@@ -112,11 +116,46 @@ class _ViewState extends State<ViewScreen> {
     return SafeArea(
       child: Material(
         color: Colors.transparent,
-        child: isLoading
-          ? Container()
-          
-          : Stack(
-            children: [
+        child: Stack(
+          children: [
+            if (isLoading) ...[
+              if (!(Platform.isWindows || Platform.isLinux || Platform.isMacOS))
+                Positioned(top: 0, left: 0, right: 0, 
+                  child: Container(
+                    padding: EdgeInsets.only(left: 8, right: 8,),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        IconButton(
+                          mouseCursor: SystemMouseCursors.click,
+                          onPressed: onBack,
+                          icon: Icon(
+                            Icons.arrow_back_ios,
+                            color: appColors.secondary,
+                          ),
+                        ),
+                        IconButton(
+                          mouseCursor: SystemMouseCursors.click,
+                          onPressed: onRefresh,
+                          icon: Icon(
+                            Icons.refresh_rounded,
+                            color: appColors.secondary,
+                          ),
+                        ),
+                      ],
+                    )
+                  )
+                ),
+              
+              Container(
+                alignment: Alignment.center,
+                child: CircularProgressIndicator(
+                  color: appColors.secondary,
+                )
+              ),
+            ],
+            if (!isLoading)
               SingleChildScrollView(
                 child: Column(
                   children: [
@@ -209,9 +248,7 @@ class _ViewState extends State<ViewScreen> {
                                     ),
                                     IconButton(
                                       mouseCursor: SystemMouseCursors.click,
-                                      onPressed: () {
-                                        
-                                      },
+                                      onPressed: onRefresh,
                                       icon: Icon(
                                         Icons.refresh_rounded,
                                         color: appColors.secondary,
@@ -494,40 +531,40 @@ class _ViewState extends State<ViewScreen> {
                   // <-
                 )
               ),
-              if (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
-                Positioned(top: 0, left: 0, right: 0, 
-                  child: Container(
-                    padding: EdgeInsets.only(left: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        IconButton(
-                          mouseCursor: SystemMouseCursors.click,
-                          onPressed: onBack,
-                          icon: Icon(
-                            Icons.arrow_back_ios,
-                            color: appColors.secondary,
-                          ),
-                        ),
-                        IconButton(
-                          mouseCursor: SystemMouseCursors.click,
-                          onPressed: () {
-                            
-                          },
-                          icon: Icon(
-                            Icons.refresh_rounded,
-                            color: appColors.secondary,
-                          ),
-                        ),
-                        Expanded(child: TitleBar())
-                      ],
-                    )
-                  )
-                ),
+            
               
-            ]
-          )
+            if (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+              Positioned(top: 0, left: 0, right: 0, 
+                child: Container(
+                  padding: EdgeInsets.only(left: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      IconButton(
+                        mouseCursor: SystemMouseCursors.click,
+                        onPressed: onBack,
+                        icon: Icon(
+                          Icons.arrow_back_ios,
+                          color: appColors.secondary,
+                        ),
+                      ),
+                      IconButton(
+                        mouseCursor: SystemMouseCursors.click,
+                        onPressed: onRefresh,
+                        icon: Icon(
+                          Icons.refresh_rounded,
+                          color: appColors.secondary,
+                        ),
+                      ),
+                      Expanded(child: TitleBar())
+                    ],
+                  )
+                )
+              ),
+            
+          ]
+        )
       )
     );
   }

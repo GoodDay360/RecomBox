@@ -199,7 +199,7 @@ class _HomeState extends State<HomeScreen> {
                         ),
                   ],
                 ),
-                bottomNavigationBar: ((Platform.isWindows || Platform.isLinux || Platform.isMacOS) && (MediaQuery.of(context).size.width < 600)) 
+                bottomNavigationBar: (MediaQuery.of(context).size.width < 600)
                   ?  NavigationBarHorizontal(
                       currentIndex: 0,
                     )

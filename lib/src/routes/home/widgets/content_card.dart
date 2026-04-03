@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:recombox/src/global/app_color.dart';
+import 'package:recombox/src/global/types.dart';
+import 'package:recombox/src/routes/view/view.dart';
 import 'package:recombox/src/rust/method/metadata_provider/trending_content.dart';
 
 class ContentCard extends StatefulWidget {
@@ -19,7 +21,14 @@ class _ContentCardState extends State<ContentCard> {
   AppColorsScheme appColors = appColorsNotifier.value;
 
   void onNavigate(){
-    Navigator.pushNamed(context, '/view');
+    Navigator.pushNamed(
+      context,
+      '/view',
+      arguments: ViewScreenArguments(
+        source: SourceExtension.fromString(widget.trendingContentInfo.source), 
+        id: widget.trendingContentInfo.id
+      )
+    );
   }
 
   @override
