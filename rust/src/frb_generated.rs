@@ -744,6 +744,7 @@ impl SseDecode for crate::method::metadata_provider::view_content::ViewContentIn
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_source = <String>::sse_decode(deserializer);
+        let mut var_externalId = <String>::sse_decode(deserializer);
         let mut var_url = <String>::sse_decode(deserializer);
         let mut var_title = <String>::sse_decode(deserializer);
         let mut var_thumbnailUrl = <String>::sse_decode(deserializer);
@@ -758,6 +759,7 @@ impl SseDecode for crate::method::metadata_provider::view_content::ViewContentIn
         >>::sse_decode(deserializer);
         return crate::method::metadata_provider::view_content::ViewContentInfo {
             source: var_source,
+            external_id: var_externalId,
             url: var_url,
             title: var_title,
             thumbnail_url: var_thumbnailUrl,
@@ -1060,6 +1062,7 @@ impl flutter_rust_bridge::IntoDart
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
             self.source.into_into_dart().into_dart(),
+            self.external_id.into_into_dart().into_dart(),
             self.url.into_into_dart().into_dart(),
             self.title.into_into_dart().into_dart(),
             self.thumbnail_url.into_into_dart().into_dart(),
@@ -1355,6 +1358,7 @@ impl SseEncode for crate::method::metadata_provider::view_content::ViewContentIn
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <String>::sse_encode(self.source, serializer);
+        <String>::sse_encode(self.external_id, serializer);
         <String>::sse_encode(self.url, serializer);
         <String>::sse_encode(self.title, serializer);
         <String>::sse_encode(self.thumbnail_url, serializer);

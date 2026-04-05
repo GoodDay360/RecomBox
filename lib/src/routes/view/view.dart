@@ -6,7 +6,7 @@ import 'package:recombox/src/routes/view/widgets/episode_tile.dart';
 import 'package:recombox/src/rust/method/metadata_provider/view_content.dart';
 import 'dart:io';
 import 'dart:math';
-
+import 'dart:async';
 import 'package:recombox/src/widgets/title_bar.dart';
 
 class ViewScreenArguments {
@@ -56,9 +56,10 @@ class _ViewState extends State<ViewScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     _episodeScrollController.dispose();
     _seasonScrollController.dispose();
+    countdownTimer?.cancel();
+    super.dispose();
   }
 
   late ViewScreenArguments args;
@@ -71,6 +72,8 @@ class _ViewState extends State<ViewScreen> {
   AppColorsScheme appColors = appColorsNotifier.value;
 
   late ViewContentInfo viewContentInfoResult;
+  Timer? countdownTimer;
+  List<int>? countdown;
 
   bool isLoading = false;
   int currentSeasonIndex = 0;
@@ -85,6 +88,54 @@ class _ViewState extends State<ViewScreen> {
       "label": "Pictures"
     }
   ];
+
+  
+  Future<void> initViewContentInfo({bool fromCache=true}) async {
+    countdownTimer?.cancel();
+    setState(() {
+      isLoading = true;
+    });
+    var data = await viewContent(source: args.source.name, id: args.id, fromCache: fromCache);
+    debugPrint(data.countdown.toString());
+    setState(() {
+      viewContentInfoResult = data;
+    });
+    if (viewContentInfoResult.countdown > 0){
+      countdownTimer = Timer.periodic(
+        const Duration(seconds: 1),
+        (_) => updateCountdown(),
+      );
+    }
+    
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  void updateCountdown() {
+    // Convert seconds → milliseconds
+    DateTime future = DateTime.fromMillisecondsSinceEpoch(
+      viewContentInfoResult.countdown * 1000,
+      isUtc: true,
+    );
+    DateTime now = DateTime.now().toUtc();
+    Duration diff = future.difference(now);
+
+    setState(() {
+      countdown = [
+        diff.inDays,
+        diff.inHours.remainder(24),
+        diff.inMinutes.remainder(60),
+        diff.inSeconds.remainder(60),
+      ];
+    });
+
+    // Optional: stop timer when finished
+    if (diff.isNegative || diff.inSeconds <= 0) {
+      countdownTimer?.cancel();
+    }
+  }
+
 
   void onSeasonChange(int index){
     setState(() {
@@ -102,21 +153,6 @@ class _ViewState extends State<ViewScreen> {
 
   
 
-  Future<void> initViewContentInfo({bool fromCache=true}) async {
-    setState(() {
-      isLoading = true;
-    });
-    var data = await viewContent(source: args.source.name, id: args.id, fromCache: fromCache);
-    
-    setState(() {
-      viewContentInfoResult = data;
-    });
-
-    debugPrint(data.toString());
-    setState(() {
-      isLoading = false;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -174,7 +210,9 @@ class _ViewState extends State<ViewScreen> {
                       child: Stack(
                         children: [
                           Ink.image(
-                            image: NetworkImage(viewContentInfoResult.bannerUrl),
+                            image: viewContentInfoResult.bannerUrl.isNotEmpty
+                              ? NetworkImage(viewContentInfoResult.bannerUrl)
+                              : const AssetImage('assets/default_banner.png'),
                             width: double.infinity,
                             height: double.infinity,
                             fit: BoxFit.cover,
@@ -196,6 +234,7 @@ class _ViewState extends State<ViewScreen> {
                                 children: [
                                   Container(
                                     padding: EdgeInsets.all(12),
+                                    width: double.infinity,
                                     child: Text(
                                       viewContentInfoResult.title,
                                       style: GoogleFonts.nunito(
@@ -204,8 +243,9 @@ class _ViewState extends State<ViewScreen> {
                                         color: appColors.textPrimary,
                                         decoration: TextDecoration.none,
                                       ),
-                                      maxLines: 1,
+                                      maxLines: 3,
                                       overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.start,
                                     ),
                                   ),
                                   SingleChildScrollView(
@@ -332,6 +372,7 @@ class _ViewState extends State<ViewScreen> {
                     if (viewContentInfoResult.description.isNotEmpty)
                       Container(
                         padding: EdgeInsets.only(left: 10, right: 10),
+                        width: double.infinity,
                         child: Text(
                           viewContentInfoResult.description,
                           style: GoogleFonts.nunito(
@@ -342,6 +383,7 @@ class _ViewState extends State<ViewScreen> {
                           ),
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
                         ),
                       ),
                     // <-
@@ -351,67 +393,68 @@ class _ViewState extends State<ViewScreen> {
                       ),
 
                     // -> Countdown
-                    Container(
-                      padding: EdgeInsets.all(10),
-                      color: appColors.tertiary,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: 10,
-                        children: [
-                          Text(
-                            "Countdown to next release:",
-                            style: GoogleFonts.nunito(
-                              fontSize: MediaQuery.of(context).size.width > 600 ? 32 : MediaQuery.of(context).size.width * 0.05,
-                              fontWeight: FontWeight(800),
-                              color: appColors.textPrimary,
-                              decoration: TextDecoration.none,
+                    if (viewContentInfoResult.countdown > 0)
+                      Container(
+                        padding: EdgeInsets.all(10),
+                        color: appColors.tertiary,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: 10,
+                          children: [
+                            Text(
+                              "Countdown to next release:",
+                              style: GoogleFonts.nunito(
+                                fontSize: MediaQuery.of(context).size.width > 600 ? 32 : MediaQuery.of(context).size.width * 0.05,
+                                fontWeight: FontWeight(800),
+                                color: appColors.textPrimary,
+                                decoration: TextDecoration.none,
+                              ),
+                              textAlign: TextAlign.start,
                             ),
-                            textAlign: TextAlign.start,
-                          ),
 
-                          Container(
-                            decoration: BoxDecoration(
-                              color: appColors.primary,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            padding: EdgeInsets.all(10),
-                            child: Row(
-                              spacing: 8,
-                              children: [
-                                for (var entry in ["Days", "Hours", "Minutes", "Seconds"].asMap().entries)
-                                  Expanded(
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          "6",
-                                          style: GoogleFonts.nunito(
-                                            fontSize: MediaQuery.of(context).size.width > 600 ? 32 : MediaQuery.of(context).size.width * 0.05,
-                                            fontWeight: FontWeight(800),
-                                            color: appColors.textPrimary,
-                                            decoration: TextDecoration.none,
+                            Container(
+                              decoration: BoxDecoration(
+                                color: appColors.primary,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              padding: EdgeInsets.all(10),
+                              child: Row(
+                                spacing: 8,
+                                children: [
+                                  for (var entry in ["Days", "Hours", "Minutes", "Seconds"].asMap().entries)
+                                    Expanded(
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            (countdown?[entry.key] ?? 0).toString(),
+                                            style: GoogleFonts.nunito(
+                                              fontSize: MediaQuery.of(context).size.width > 600 ? 32 : MediaQuery.of(context).size.width * 0.05,
+                                              fontWeight: FontWeight(800),
+                                              color: appColors.textPrimary,
+                                              decoration: TextDecoration.none,
+                                            ),
+                                            maxLines: 1,
                                           ),
-                                          maxLines: 1,
-                                        ),
-                                        Text(
-                                          entry.value,
-                                          style: GoogleFonts.nunito(
-                                            fontSize: MediaQuery.of(context).size.width > 600 ? 32 : MediaQuery.of(context).size.width * 0.05,
-                                            fontWeight: FontWeight(800),
-                                            color: appColors.textPrimary,
-                                            decoration: TextDecoration.none,
-                                          ),
-                                          maxLines: 1,
-                                        )
-                                      ],
+                                          Text(
+                                            entry.value,
+                                            style: GoogleFonts.nunito(
+                                              fontSize: MediaQuery.of(context).size.width > 600 ? 32 : MediaQuery.of(context).size.width * 0.05,
+                                              fontWeight: FontWeight(800),
+                                              color: appColors.textPrimary,
+                                              decoration: TextDecoration.none,
+                                            ),
+                                            maxLines: 1,
+                                          )
+                                        ],
+                                      )
+                                      
                                     )
-                                    
-                                  )
-                              ],
-                            )
-                          ),
-                        ],
+                                ],
+                              )
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
                     // <-
 
                     // -> SeasonList

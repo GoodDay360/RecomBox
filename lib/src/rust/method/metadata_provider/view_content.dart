@@ -34,6 +34,7 @@ sealed class EpisodeInfo with _$EpisodeInfo {
 sealed class ViewContentInfo with _$ViewContentInfo {
   const factory ViewContentInfo({
     required String source,
+    required String externalId,
     required String url,
     required String title,
     required String thumbnailUrl,

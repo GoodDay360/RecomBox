@@ -640,20 +640,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ViewContentInfo dco_decode_view_content_info(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 11)
-      throw Exception('unexpected arr length: expect 11 but see ${arr.length}');
+    if (arr.length != 12)
+      throw Exception('unexpected arr length: expect 12 but see ${arr.length}');
     return ViewContentInfo(
       source: dco_decode_String(arr[0]),
-      url: dco_decode_String(arr[1]),
-      title: dco_decode_String(arr[2]),
-      thumbnailUrl: dco_decode_String(arr[3]),
-      bannerUrl: dco_decode_String(arr[4]),
-      contextual: dco_decode_list_String(arr[5]),
-      description: dco_decode_String(arr[6]),
-      trailerUrl: dco_decode_String(arr[7]),
-      countdown: dco_decode_i_64(arr[8]),
-      pictures: dco_decode_list_String(arr[9]),
-      episodes: dco_decode_list_list_episode_info(arr[10]),
+      externalId: dco_decode_String(arr[1]),
+      url: dco_decode_String(arr[2]),
+      title: dco_decode_String(arr[3]),
+      thumbnailUrl: dco_decode_String(arr[4]),
+      bannerUrl: dco_decode_String(arr[5]),
+      contextual: dco_decode_list_String(arr[6]),
+      description: dco_decode_String(arr[7]),
+      trailerUrl: dco_decode_String(arr[8]),
+      countdown: dco_decode_i_64(arr[9]),
+      pictures: dco_decode_list_String(arr[10]),
+      episodes: dco_decode_list_list_episode_info(arr[11]),
     );
   }
 
@@ -966,6 +967,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ViewContentInfo sse_decode_view_content_info(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_source = sse_decode_String(deserializer);
+    var var_externalId = sse_decode_String(deserializer);
     var var_url = sse_decode_String(deserializer);
     var var_title = sse_decode_String(deserializer);
     var var_thumbnailUrl = sse_decode_String(deserializer);
@@ -978,6 +980,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_episodes = sse_decode_list_list_episode_info(deserializer);
     return ViewContentInfo(
         source: var_source,
+        externalId: var_externalId,
         url: var_url,
         title: var_title,
         thumbnailUrl: var_thumbnailUrl,
@@ -1255,6 +1258,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       ViewContentInfo self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.source, serializer);
+    sse_encode_String(self.externalId, serializer);
     sse_encode_String(self.url, serializer);
     sse_encode_String(self.title, serializer);
     sse_encode_String(self.thumbnailUrl, serializer);

@@ -344,6 +344,7 @@ class __$EpisodeInfoCopyWithImpl<$Res> implements _$EpisodeInfoCopyWith<$Res> {
 /// @nodoc
 mixin _$ViewContentInfo {
   String get source;
+  String get externalId;
   String get url;
   String get title;
   String get thumbnailUrl;
@@ -372,6 +373,8 @@ mixin _$ViewContentInfo {
         (other.runtimeType == runtimeType &&
             other is ViewContentInfo &&
             (identical(other.source, source) || other.source == source) &&
+            (identical(other.externalId, externalId) ||
+                other.externalId == externalId) &&
             (identical(other.url, url) || other.url == url) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.thumbnailUrl, thumbnailUrl) ||
@@ -395,6 +398,7 @@ mixin _$ViewContentInfo {
   int get hashCode => Object.hash(
       runtimeType,
       source,
+      externalId,
       url,
       title,
       thumbnailUrl,
@@ -408,7 +412,7 @@ mixin _$ViewContentInfo {
 
   @override
   String toString() {
-    return 'ViewContentInfo(source: $source, url: $url, title: $title, thumbnailUrl: $thumbnailUrl, bannerUrl: $bannerUrl, contextual: $contextual, description: $description, trailerUrl: $trailerUrl, countdown: $countdown, pictures: $pictures, episodes: $episodes)';
+    return 'ViewContentInfo(source: $source, externalId: $externalId, url: $url, title: $title, thumbnailUrl: $thumbnailUrl, bannerUrl: $bannerUrl, contextual: $contextual, description: $description, trailerUrl: $trailerUrl, countdown: $countdown, pictures: $pictures, episodes: $episodes)';
   }
 }
 
@@ -420,6 +424,7 @@ abstract mixin class $ViewContentInfoCopyWith<$Res> {
   @useResult
   $Res call(
       {String source,
+      String externalId,
       String url,
       String title,
       String thumbnailUrl,
@@ -446,6 +451,7 @@ class _$ViewContentInfoCopyWithImpl<$Res>
   @override
   $Res call({
     Object? source = null,
+    Object? externalId = null,
     Object? url = null,
     Object? title = null,
     Object? thumbnailUrl = null,
@@ -461,6 +467,10 @@ class _$ViewContentInfoCopyWithImpl<$Res>
       source: null == source
           ? _self.source
           : source // ignore: cast_nullable_to_non_nullable
+              as String,
+      externalId: null == externalId
+          ? _self.externalId
+          : externalId // ignore: cast_nullable_to_non_nullable
               as String,
       url: null == url
           ? _self.url
@@ -599,6 +609,7 @@ extension ViewContentInfoPatterns on ViewContentInfo {
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
             String source,
+            String externalId,
             String url,
             String title,
             String thumbnailUrl,
@@ -617,6 +628,7 @@ extension ViewContentInfoPatterns on ViewContentInfo {
       case _ViewContentInfo() when $default != null:
         return $default(
             _that.source,
+            _that.externalId,
             _that.url,
             _that.title,
             _that.thumbnailUrl,
@@ -649,6 +661,7 @@ extension ViewContentInfoPatterns on ViewContentInfo {
   TResult when<TResult extends Object?>(
     TResult Function(
             String source,
+            String externalId,
             String url,
             String title,
             String thumbnailUrl,
@@ -666,6 +679,7 @@ extension ViewContentInfoPatterns on ViewContentInfo {
       case _ViewContentInfo():
         return $default(
             _that.source,
+            _that.externalId,
             _that.url,
             _that.title,
             _that.thumbnailUrl,
@@ -695,6 +709,7 @@ extension ViewContentInfoPatterns on ViewContentInfo {
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
             String source,
+            String externalId,
             String url,
             String title,
             String thumbnailUrl,
@@ -712,6 +727,7 @@ extension ViewContentInfoPatterns on ViewContentInfo {
       case _ViewContentInfo() when $default != null:
         return $default(
             _that.source,
+            _that.externalId,
             _that.url,
             _that.title,
             _that.thumbnailUrl,
@@ -733,6 +749,7 @@ extension ViewContentInfoPatterns on ViewContentInfo {
 class _ViewContentInfo implements ViewContentInfo {
   const _ViewContentInfo(
       {required this.source,
+      required this.externalId,
       required this.url,
       required this.title,
       required this.thumbnailUrl,
@@ -751,6 +768,8 @@ class _ViewContentInfo implements ViewContentInfo {
 
   @override
   final String source;
+  @override
+  final String externalId;
   @override
   final String url;
   @override
@@ -810,6 +829,8 @@ class _ViewContentInfo implements ViewContentInfo {
         (other.runtimeType == runtimeType &&
             other is _ViewContentInfo &&
             (identical(other.source, source) || other.source == source) &&
+            (identical(other.externalId, externalId) ||
+                other.externalId == externalId) &&
             (identical(other.url, url) || other.url == url) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.thumbnailUrl, thumbnailUrl) ||
@@ -833,6 +854,7 @@ class _ViewContentInfo implements ViewContentInfo {
   int get hashCode => Object.hash(
       runtimeType,
       source,
+      externalId,
       url,
       title,
       thumbnailUrl,
@@ -846,7 +868,7 @@ class _ViewContentInfo implements ViewContentInfo {
 
   @override
   String toString() {
-    return 'ViewContentInfo(source: $source, url: $url, title: $title, thumbnailUrl: $thumbnailUrl, bannerUrl: $bannerUrl, contextual: $contextual, description: $description, trailerUrl: $trailerUrl, countdown: $countdown, pictures: $pictures, episodes: $episodes)';
+    return 'ViewContentInfo(source: $source, externalId: $externalId, url: $url, title: $title, thumbnailUrl: $thumbnailUrl, bannerUrl: $bannerUrl, contextual: $contextual, description: $description, trailerUrl: $trailerUrl, countdown: $countdown, pictures: $pictures, episodes: $episodes)';
   }
 }
 
@@ -860,6 +882,7 @@ abstract mixin class _$ViewContentInfoCopyWith<$Res>
   @useResult
   $Res call(
       {String source,
+      String externalId,
       String url,
       String title,
       String thumbnailUrl,
@@ -886,6 +909,7 @@ class __$ViewContentInfoCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   $Res call({
     Object? source = null,
+    Object? externalId = null,
     Object? url = null,
     Object? title = null,
     Object? thumbnailUrl = null,
@@ -901,6 +925,10 @@ class __$ViewContentInfoCopyWithImpl<$Res>
       source: null == source
           ? _self.source
           : source // ignore: cast_nullable_to_non_nullable
+              as String,
+      externalId: null == externalId
+          ? _self.externalId
+          : externalId // ignore: cast_nullable_to_non_nullable
               as String,
       url: null == url
           ? _self.url

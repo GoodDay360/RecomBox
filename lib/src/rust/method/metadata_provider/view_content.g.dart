@@ -22,6 +22,7 @@ Map<String, dynamic> _$EpisodeInfoToJson(_EpisodeInfo instance) =>
 _ViewContentInfo _$ViewContentInfoFromJson(Map<String, dynamic> json) =>
     _ViewContentInfo(
       source: json['source'] as String,
+      externalId: json['externalId'] as String,
       url: json['url'] as String,
       title: json['title'] as String,
       thumbnailUrl: json['thumbnailUrl'] as String,
@@ -44,6 +45,7 @@ _ViewContentInfo _$ViewContentInfoFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$ViewContentInfoToJson(_ViewContentInfo instance) =>
     <String, dynamic>{
       'source': instance.source,
+      'externalId': instance.externalId,
       'url': instance.url,
       'title': instance.title,
       'thumbnailUrl': instance.thumbnailUrl,

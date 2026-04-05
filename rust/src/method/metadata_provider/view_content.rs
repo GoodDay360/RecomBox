@@ -24,6 +24,7 @@ pub struct EpisodeInfo{
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ViewContentInfo {
 	pub source: String,
+	pub external_id: String,
     pub url: String,
     pub title: String,
     pub thumbnail_url: String,
@@ -133,6 +134,7 @@ pub async fn view_content(source: &str, id: &str, from_cache: bool) -> Result<Vi
 
 	let result: ViewContentInfo = ViewContentInfo {
 		source: source.to_string(),
+		external_id: data.external_id,
 		url: data.url,
 		title: data.title,
 		thumbnail_url: data.thumbnail_url,
