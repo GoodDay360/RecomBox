@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/routes/home/widgets/content_section.dart';
@@ -14,7 +13,6 @@ import 'dart:math';
 // -> Local Widgets
 import 'package:recombox/src/widgets/navigation_bar/navigation_bar_vertical.dart';
 import 'package:recombox/src/widgets/title_bar.dart';
-import 'package:shimmer/shimmer.dart';
 import 'widgets/featured_section.dart';
 // <-
 

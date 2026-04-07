@@ -22,20 +22,25 @@ pub struct Paths {
 
 
 impl Settings {
-    pub fn temp_init() -> Settings {
+    pub fn temp_init() -> anyhow::Result<()> {
         use std::env;
         let temp_dir = env::temp_dir()
             .join("recombox_temp");
 
         std::fs::create_dir_all(&temp_dir).unwrap();
 
-        Settings {
+        let temp_settings = Settings {
             paths: Paths {
                 app_support_dir: temp_dir.to_string_lossy().to_string(),
                 app_cache_dir: temp_dir.to_string_lossy().to_string(),
                 temp_dir: temp_dir.to_string_lossy().to_string(),
             }
-        }
+        };
+        let mut guard = SETTIGNS.lock()
+            .map_err(|e| anyhow::Error::msg(e.to_string()))?;
+        *guard = Some(Arc::new(temp_settings));
+
+        return Ok(());
     }
 
     pub fn init(settings: Settings) -> anyhow::Result<()> {

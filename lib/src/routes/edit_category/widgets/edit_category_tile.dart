@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/routes/edit_category/dialogs/rename_category.dart';
-import 'package:recombox/src/rust/method/favorite.dart';
 import 'package:recombox/src/rust/method/favorite/delete_category.dart';
-import 'package:recombox/src/rust/method/favorite/get_all_category.dart';
-import 'package:recombox/src/rust/method/favorite/set_category.dart';
-import 'package:recombox/src/rust/method/favorite/unset_category.dart';
 
 class EditCategoryTile extends StatefulWidget {
   const EditCategoryTile({

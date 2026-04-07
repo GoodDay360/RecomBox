@@ -1,5 +1,5 @@
 use std::path::PathBuf;
-use redb::{Database, ReadableTable, TableDefinition};
+use redb::{Database, ReadableTable};
 use snowid::SnowID;
 
 use super::{CATEGORY_TABLE, CATEGORY_ORDER_TABLE, DATABASE_NAME};

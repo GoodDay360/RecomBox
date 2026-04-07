@@ -1,18 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:recombox/src/global/app_color.dart';
-import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/routes/edit_category/dialogs/add_category.dart';
 import 'package:recombox/src/routes/edit_category/widgets/edit_category_tile.dart';
-import 'package:recombox/src/routes/search/widgets/search_tile.dart';
 import 'package:recombox/src/rust/method/favorite.dart';
-import 'package:recombox/src/rust/method/favorite/add_category.dart';
 import 'package:recombox/src/rust/method/favorite/get_all_category.dart';
 import 'package:recombox/src/rust/method/favorite/get_category_order.dart';
 import 'package:recombox/src/rust/method/favorite/swap_category_order.dart';
-import 'package:recombox/src/rust/method/metadata_provider/search_content.dart';
-import 'package:recombox/src/widgets/navigation_bar/navigation_bar_horizontal.dart';
-import 'package:recombox/src/widgets/navigation_bar/navigation_bar_vertical.dart';
 import 'dart:io';
 
 import 'package:recombox/src/widgets/title_bar.dart';

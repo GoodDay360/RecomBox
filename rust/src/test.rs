@@ -22,8 +22,25 @@ mod tests {
     }
 
 
+    // #[tokio::test] 
+    async fn test_get_installed_plugins() {
+        use crate::{method::plugin_provider::get_installed_plugins::get_installed_plugins};
+        use crate::utils::settings::Settings;
+
+        Settings::temp_init().unwrap();
+
+        let result = get_installed_plugins("anime").await.unwrap();
+        println!("{:?}", result);
+    }
+
     #[tokio::test] 
-    async fn test_add_category() {
-        
+    async fn test_get_plugin_list() {
+        use crate::{method::plugin_provider::get_plugin_list::get_plugin_list};
+        use crate::utils::settings::Settings;
+
+        Settings::temp_init().unwrap();
+
+        let result = get_plugin_list("anime").await.unwrap();
+        println!("{:?}", result);
     }
 }

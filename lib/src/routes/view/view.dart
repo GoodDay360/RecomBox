@@ -7,7 +7,6 @@ import 'package:recombox/src/routes/view/widgets/episode_tile.dart';
 import 'package:recombox/src/rust/method/favorite/is_in_category.dart';
 import 'package:recombox/src/rust/method/metadata_provider/view_content.dart';
 import 'dart:io';
-import 'dart:math';
 import 'dart:async';
 import 'package:recombox/src/widgets/title_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -234,7 +233,7 @@ class _ViewState extends State<ViewScreen> {
               SingleChildScrollView(
                 child: Column(
                   children: [
-                    Container(
+                    SizedBox(
                       width: double.infinity,
                       height: MediaQuery.of(context).size.height * 0.55,
                       child: Stack(

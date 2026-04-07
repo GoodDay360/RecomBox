@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:recombox/src/global/app_color.dart';
-import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/routes/home/widgets/content_card.dart';
 import 'dart:io';
 

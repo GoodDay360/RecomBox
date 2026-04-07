@@ -9,7 +9,6 @@ import 'package:recombox/src/rust/method/settings/init_settings.dart';
 import 'package:recombox/src/rust/utils/settings.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 
 import 'package:recombox/src/global/app_color.dart';

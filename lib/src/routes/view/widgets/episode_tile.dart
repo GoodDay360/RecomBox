@@ -28,7 +28,7 @@ class _EpisodeTileState extends State<EpisodeTile> {
 
         },
         mouseCursor: SystemMouseCursors.click,
-        child: Container(
+        child: SizedBox(
             width: double.infinity,
             height: 100,
             child: Row(
