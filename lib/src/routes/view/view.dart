@@ -718,7 +718,11 @@ class _ViewState extends State<ViewScreen> {
                                       Expanded(
                                         child: TextField(
                                           controller: _textEditingController,
-                                          
+                                          onChanged: (_){
+                                            setState(() {
+                                              onFilterChange(viewContentInfoResult!.episodes[currentSeasonIndex]);
+                                            });
+                                          },
                                           onSubmitted: (value){
                                             setState(() {
                                               filteredEpisodes = onFilterChange(viewContentInfoResult!.episodes[currentSeasonIndex]);
