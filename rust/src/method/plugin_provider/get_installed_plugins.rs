@@ -47,6 +47,7 @@ pub async fn get_installed_plugins(source: &str) -> Result<HashMap<String, Insta
                     plugin_path: v.plugin_path.clone(),
                     plugin_version: v.plugin_version.clone(),
                 },
+                
             )
         })
         .collect();

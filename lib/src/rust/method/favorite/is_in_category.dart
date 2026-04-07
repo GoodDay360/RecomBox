@@ -6,5 +6,10 @@
 import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-Future<bool> isInCategory({required String itemId}) => RustLib.instance.api
-    .crateMethodFavoriteIsInCategoryIsInCategory(itemId: itemId);
+
+            
+
+            Future<bool>  isInCategory({required String itemId }) => RustLib.instance.api.crateMethodFavoriteIsInCategoryIsInCategory(itemId: itemId);
+
+            
+            

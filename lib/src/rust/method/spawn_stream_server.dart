@@ -6,5 +6,10 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-Future<void> spawnStreamServer() =>
-    RustLib.instance.api.crateMethodSpawnStreamServerSpawnStreamServer();
+
+            
+
+            Future<void>  spawnStreamServer() => RustLib.instance.api.crateMethodSpawnStreamServerSpawnStreamServer();
+
+            
+            

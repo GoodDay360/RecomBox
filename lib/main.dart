@@ -16,6 +16,7 @@ import 'package:recombox/src/global/app_color.dart';
 import 'src/routes/home/home.dart';
 
 import 'dart:ui';
+import 'dart:io';
 
 // Routes Imports
 
@@ -26,11 +27,11 @@ Future<void> main() async {
 	await RustLib.init();
 	WidgetsFlutterBinding.ensureInitialized();
   initSettings(settings: Settings(
-	paths: Paths(
-	  appSupportDir: (await getApplicationSupportDirectory()).path,
-	  appCacheDir: (await getApplicationCacheDirectory()).path, 
-	  tempDir: (await getTemporaryDirectory()).path
-	)
+    paths: Paths(
+      appSupportDir: (await getApplicationSupportDirectory()).path,
+      appCacheDir: (await getApplicationCacheDirectory()).path, 
+      tempDir: (await getTemporaryDirectory()).path
+    )
   ));
 	// <-
 
@@ -52,19 +53,22 @@ Future<void> main() async {
 	// <-
 	
 	// -> Window Manager
-	await windowManager.ensureInitialized();
-	WindowOptions windowOptions = WindowOptions(
-		size: Size(800, 600),
-		center: true,
-		backgroundColor: appColors.primary,
-		skipTaskbar: false,
-		titleBarStyle: TitleBarStyle.hidden,
-	);
+  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    await windowManager.ensureInitialized();
+    WindowOptions windowOptions = WindowOptions(
+      size: Size(800, 600),
+      center: true,
+      backgroundColor: appColors.primary,
+      skipTaskbar: false,
+      titleBarStyle: TitleBarStyle.hidden,
+    );
 
-	windowManager.waitUntilReadyToShow(windowOptions, () async {
-		await windowManager.show();
-		await windowManager.focus();
-	});
+    windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.show();
+      await windowManager.focus();
+    });
+  }
+	
 	// <-
 
 	runApp(const App());

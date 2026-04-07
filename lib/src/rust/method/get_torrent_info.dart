@@ -6,56 +6,59 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`, `fmt`
 
-Future<OutputPayload> getTorrentInfo({required String torrentSource}) =>
-    RustLib.instance.api
-        .crateMethodGetTorrentInfoGetTorrentInfo(torrentSource: torrentSource);
+            // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`, `fmt`
 
-class Files {
-  final String? path;
-  final BigInt? length;
-  final String? sha1;
 
-  const Files({
-    this.path,
-    this.length,
-    this.sha1,
-  });
+            Future<OutputPayload>  getTorrentInfo({required String torrentSource }) => RustLib.instance.api.crateMethodGetTorrentInfoGetTorrentInfo(torrentSource: torrentSource);
 
-  @override
-  int get hashCode => path.hashCode ^ length.hashCode ^ sha1.hashCode;
+            class Files  {
+                final String? path;
+final BigInt? length;
+final String? sha1;
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Files &&
-          runtimeType == other.runtimeType &&
-          path == other.path &&
-          length == other.length &&
-          sha1 == other.sha1;
-}
+                const Files({this.path ,this.length ,this.sha1 ,});
 
-class OutputPayload {
-  final String? name;
-  final BigInt? length;
-  final List<Files> files;
+                
+                
 
-  const OutputPayload({
-    this.name,
-    this.length,
-    required this.files,
-  });
+                
+        @override
+        int get hashCode => path.hashCode^length.hashCode^sha1.hashCode;
+        
 
-  @override
-  int get hashCode => name.hashCode ^ length.hashCode ^ files.hashCode;
+                
+        @override
+        bool operator ==(Object other) =>
+            identical(this, other) ||
+            other is Files &&
+                runtimeType == other.runtimeType
+                && path == other.path&& length == other.length&& sha1 == other.sha1;
+        
+            }
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is OutputPayload &&
-          runtimeType == other.runtimeType &&
-          name == other.name &&
-          length == other.length &&
-          files == other.files;
-}
+class OutputPayload  {
+                final String? name;
+final BigInt? length;
+final List<Files> files;
+
+                const OutputPayload({this.name ,this.length ,required this.files ,});
+
+                
+                
+
+                
+        @override
+        int get hashCode => name.hashCode^length.hashCode^files.hashCode;
+        
+
+                
+        @override
+        bool operator ==(Object other) =>
+            identical(this, other) ||
+            other is OutputPayload &&
+                runtimeType == other.runtimeType
+                && name == other.name&& length == other.length&& files == other.files;
+        
+            }
+            
