@@ -425,6 +425,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "base62"
+version = "2.2.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cd637ac531c60eb7fbc4684dc061c2d7d90d73d758181aa02eeff0464b9eee4b"
+
+[[package]]
 name = "base64"
 version = "0.22.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1467,7 +1473,7 @@ dependencies = [
  "libc",
  "percent-encoding",
  "pin-project-lite",
- "socket2 0.5.10",
+ "socket2 0.6.3",
  "system-configuration",
  "tokio",
  "tower-service",
@@ -2403,7 +2409,7 @@ dependencies = [
  "quinn-udp",
  "rustc-hash",
  "rustls 0.23.37",
- "socket2 0.5.10",
+ "socket2 0.6.3",
  "thiserror 2.0.18",
  "tokio",
  "tracing",
@@ -2441,7 +2447,7 @@ dependencies = [
  "cfg_aliases",
  "libc",
  "once_cell",
- "socket2 0.5.10",
+ "socket2 0.6.3",
  "tracing",
  "windows-sys 0.60.2",
 ]
@@ -2544,7 +2550,7 @@ dependencies = [
 [[package]]
 name = "recombox_metadata_provider"
 version = "0.1.0"
-source = "git+https://github.com/RecomBox/recombox_metadata_provider#402b9e3f917588264cbc7a7dba3a1d259383759a"
+source = "git+https://github.com/RecomBox/recombox_metadata_provider#07fef42de1bb9b17f1cf6a6701ecabc7f0b60896"
 dependencies = [
  "anyhow",
  "chrono",
@@ -2560,6 +2566,15 @@ dependencies = [
  "url",
  "urlencoding",
  "visdom",
+]
+
+[[package]]
+name = "redb"
+version = "4.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "67f7f231ea7b1172b7ac00ccf96b1250f0fb5a16d5585836aa4ebc997df7cbde"
+dependencies = [
+ "libc",
 ]
 
 [[package]]
@@ -2785,8 +2800,10 @@ dependencies = [
  "librqbit",
  "once_cell",
  "recombox_metadata_provider",
+ "redb",
  "serde",
  "serde_json",
+ "snowid",
  "tokio",
  "tokio-util",
 ]
@@ -3139,6 +3156,15 @@ name = "smallvec"
 version = "1.15.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "67b1b7a3b5fe4f1376887184045fcf45c69e92af734b7aaddc05fb777b6fbd03"
+
+[[package]]
+name = "snowid"
+version = "2.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6a4a7c8ca9aab5eb7665429806d7f5f3e2ce5f5cfb7ea17b33f4170e5a7f540d"
+dependencies = [
+ "base62",
+]
 
 [[package]]
 name = "socket2"

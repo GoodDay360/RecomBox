@@ -8,6 +8,7 @@ class AppColorsScheme {
 
   final Color textPrimary;
   final Color textSecondary;
+  final Color textError;
 
   final Color accentPrimary;
   final Color accentSecondary;
@@ -20,6 +21,7 @@ class AppColorsScheme {
     required this.tertiary,
     required this.textPrimary,
     required this.textSecondary,
+    required this.textError,
     required this.accentPrimary,
     required this.accentSecondary,
     required this.strokePrimary,
@@ -31,6 +33,7 @@ class AppColorsScheme {
     tertiary: Color(0xFF1E1E1E),
     textPrimary: Color(0xFFFFFFFF),
     textSecondary: Color(0xFFDEDEDE),
+    textError: Colors.red,
     accentPrimary: Color(0xFFFF0000),
     accentSecondary: Color(0xFF6D6D6D),
     strokePrimary: Color(0xFF6D6D6D),

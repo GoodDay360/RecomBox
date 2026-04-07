@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:recombox/src/routes/edit_category/edit_category.dart';
 import 'package:recombox/src/routes/search/search.dart';
 import 'package:recombox/src/routes/view/view.dart';
 import 'package:recombox/src/rust/frb_generated.dart';
@@ -100,6 +101,7 @@ class App extends StatelessWidget {
 						"/": (context) => const HomeScreen(),
 						"/search": (context) => const SearchScreen(),
 						"/view": (context) => const ViewScreen(),
+            "/edit_category": (context) => const EditCategory(),
 					},
 				);
 			}
@@ -109,8 +111,8 @@ class App extends StatelessWidget {
 
 class TransitionsBuilder extends PageTransitionsBuilder {
 	const TransitionsBuilder();
-
-  AppColorsScheme get appColors => appColorsNotifier.value;
+	
+	AppColorsScheme get appColors => appColorsNotifier.value;
 
 	@override
 	Widget buildTransitions<T>(
@@ -125,5 +127,5 @@ class TransitionsBuilder extends PageTransitionsBuilder {
 			color: appColors.primary,
 			child: child,
 		);
-  }
+	}
 }

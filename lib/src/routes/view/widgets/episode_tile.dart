@@ -68,14 +68,14 @@ class _EpisodeTileState extends State<EpisodeTile> {
                     )
                   )
                 ),
-                Container(
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.only(right: 5, left: 5),
-                  child: Icon(
-                    Icons.save_rounded,
-                    color: appColors.secondary,
-                  )
-                )
+                // Container(
+                //   alignment: Alignment.center,
+                //   padding: EdgeInsets.only(right: 5, left: 5),
+                //   child: Icon(
+                //     Icons.save_rounded,
+                //     color: appColors.secondary,
+                //   )
+                // )
               ],
             ),
           ),

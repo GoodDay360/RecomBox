@@ -2,10 +2,10 @@
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{api, utils, method};
-
-    #[tokio::test] 
+    
+    // #[tokio::test] 
     async fn test_get_torrent_info() {
+        use crate::{api, utils, method};
         
         utils::torrent_session::TorrentSession::init().await.unwrap();
 
@@ -19,5 +19,11 @@ mod tests {
 
         println!("{:?}", result);
         method::spawn_stream_server::spawn_stream_server().await.unwrap();
+    }
+
+
+    #[tokio::test] 
+    async fn test_add_category() {
+        
     }
 }

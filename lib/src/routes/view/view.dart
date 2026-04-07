@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:recombox/src/global/dialogs/favorite/set_category.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/routes/view/widgets/episode_tile.dart';
+import 'package:recombox/src/rust/method/favorite/is_in_category.dart';
 import 'package:recombox/src/rust/method/metadata_provider/view_content.dart';
 import 'dart:io';
 import 'dart:math';
 import 'dart:async';
 import 'package:recombox/src/widgets/title_bar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ViewScreenArguments {
   Source source;
@@ -49,7 +52,6 @@ class _ViewState extends State<ViewScreen> {
 
       debugPrint(args.toString());
       initViewContentInfo();
-
       
     });
   }
@@ -66,12 +68,17 @@ class _ViewState extends State<ViewScreen> {
 
   final _seasonScrollController = ScrollController();
   final _episodeScrollController = ScrollController();
+  final TextEditingController _textEditingController = TextEditingController(text: '');
+  FocusNode searchFocus = FocusNode();
+  bool isInFavorite = false;
+
+
 
 
   
   AppColorsScheme appColors = appColorsNotifier.value;
 
-  late ViewContentInfo viewContentInfoResult;
+  ViewContentInfo? viewContentInfoResult;
   Timer? countdownTimer;
   List<int>? countdown;
 
@@ -96,16 +103,22 @@ class _ViewState extends State<ViewScreen> {
       isLoading = true;
     });
     var data = await viewContent(source: args.source.name, id: args.id, fromCache: fromCache);
-    debugPrint(data.countdown.toString());
+    debugPrint(data.trailerUrl);
     setState(() {
       viewContentInfoResult = data;
     });
-    if (viewContentInfoResult.countdown > 0){
+    if (viewContentInfoResult!.countdown > 0){
       countdownTimer = Timer.periodic(
         const Duration(seconds: 1),
         (_) => updateCountdown(),
       );
     }
+
+    bool inFavorite = await isInCategory(itemId: args.id);
+    setState(() {
+      isInFavorite = inFavorite;
+    });
+    
     
     setState(() {
       isLoading = false;
@@ -115,7 +128,7 @@ class _ViewState extends State<ViewScreen> {
   void updateCountdown() {
     // Convert seconds → milliseconds
     DateTime future = DateTime.fromMillisecondsSinceEpoch(
-      viewContentInfoResult.countdown * 1000,
+      viewContentInfoResult!.countdown * 1000,
       isUtc: true,
     );
     DateTime now = DateTime.now().toUtc();
@@ -130,9 +143,10 @@ class _ViewState extends State<ViewScreen> {
       ];
     });
 
-    // Optional: stop timer when finished
+    // Reached the end
     if (diff.isNegative || diff.inSeconds <= 0) {
       countdownTimer?.cancel();
+      initViewContentInfo(fromCache: false);
     }
   }
 
@@ -142,6 +156,19 @@ class _ViewState extends State<ViewScreen> {
       currentSeasonIndex = index;
     });
   }
+
+  List<EpisodeInfo> onFilterChange(List<EpisodeInfo> episodes) {
+    return episodes.asMap().entries
+      .where((entry) {
+        final item = entry.value;
+        return item.title.toLowerCase().contains(_textEditingController.text.toLowerCase())
+          || entry.key.toString().contains(_textEditingController.text.toLowerCase())
+          || (entry.key+1).toString().contains(_textEditingController.text.toLowerCase());
+      })
+      .map((entry) => entry.value) // only return EpisodeInfo
+      .toList();
+  }
+
 
   void onRefresh(){
     initViewContentInfo(fromCache: false);
@@ -156,6 +183,9 @@ class _ViewState extends State<ViewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List<EpisodeInfo> filteredEpisodes = (viewContentInfoResult != null)
+      ? onFilterChange(viewContentInfoResult!.episodes[currentSeasonIndex])
+      : <EpisodeInfo>[];
 
 
     return SafeArea(
@@ -176,7 +206,7 @@ class _ViewState extends State<ViewScreen> {
                           mouseCursor: SystemMouseCursors.click,
                           onPressed: onBack,
                           icon: Icon(
-                            Icons.arrow_back_ios,
+                            Icons.arrow_back_rounded,
                             color: appColors.secondary,
                           ),
                         ),
@@ -210,8 +240,8 @@ class _ViewState extends State<ViewScreen> {
                       child: Stack(
                         children: [
                           Ink.image(
-                            image: viewContentInfoResult.bannerUrl.isNotEmpty
-                              ? NetworkImage(viewContentInfoResult.bannerUrl)
+                            image: viewContentInfoResult!.bannerUrl.isNotEmpty
+                              ? NetworkImage(viewContentInfoResult!.bannerUrl)
                               : const AssetImage('assets/default_banner.png'),
                             width: double.infinity,
                             height: double.infinity,
@@ -236,7 +266,7 @@ class _ViewState extends State<ViewScreen> {
                                     padding: EdgeInsets.all(12),
                                     width: double.infinity,
                                     child: Text(
-                                      viewContentInfoResult.title,
+                                      viewContentInfoResult!.title,
                                       style: GoogleFonts.nunito(
                                         fontSize: 38,
                                         fontWeight: FontWeight(800),
@@ -254,7 +284,7 @@ class _ViewState extends State<ViewScreen> {
                                       scrollDirection: Axis.horizontal,
                                       child: Row(
                                         children: [
-                                          for (final contextual in viewContentInfoResult.contextual)
+                                          for (final contextual in viewContentInfoResult!.contextual)
                                             Container(
                                               margin: EdgeInsets.only(right: 8),
                                               padding: EdgeInsets.all(8),
@@ -291,7 +321,7 @@ class _ViewState extends State<ViewScreen> {
                                       mouseCursor: SystemMouseCursors.click,
                                       onPressed: onBack,
                                       icon: Icon(
-                                        Icons.arrow_back_ios,
+                                        Icons.arrow_back_rounded,
                                         color: appColors.secondary,
                                       ),
                                     ),
@@ -339,22 +369,71 @@ class _ViewState extends State<ViewScreen> {
                           ),
                           TextButton(
                             onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (_) => SetCategoryDialog(
+                                  itemId: args.id,
+                                  onDone: initViewContentInfo,
+                                ),
+                              );
 
                             },
-                            style: IconButton.styleFrom(
+                            style: TextButton.styleFrom(
+                              enabledMouseCursor: SystemMouseCursors.click,
                               backgroundColor: appColors.secondary,
                               foregroundColor: appColors.primary,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5),
                               )
                             ),
-                            child: Icon(Icons.bookmark_outline),
+                            child: isInFavorite ? Icon(Icons.favorite_rounded) : Icon(Icons.favorite_outline_rounded),
                           ),
                           TextButton(
-                            onPressed: () {
-
+                            onPressed: viewContentInfoResult!.trailerUrl.isEmpty ? null : () {
+                              showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  backgroundColor: appColors.tertiary,
+                                  title: Text(
+                                    'Launch in external application?',
+                                    style: GoogleFonts.nunito(
+                                      color: appColors.textPrimary,
+                                    )
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      child: Text(
+                                        'No',
+                                        style: GoogleFonts.nunito(
+                                          color: appColors.textPrimary,
+                                        )
+                                      ),
+                                      onPressed: () => Navigator.pop(context),
+                                    ),
+                                    TextButton(
+                                      child: Text(
+                                        'Yes',
+                                        style: GoogleFonts.nunito(
+                                          color: appColors.textPrimary,
+                                        )
+                                      ),
+                                      onPressed: () {
+                                        launchUrl(
+                                          Uri.parse(viewContentInfoResult!.trailerUrl),
+                                          mode: LaunchMode.externalApplication,
+                                        )
+                                          .then((value) => debugPrint(value.toString()))
+                                          .catchError((error) => debugPrint(error.toString()));
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                                
                             },
-                            style: IconButton.styleFrom(
+                            style: TextButton.styleFrom(
+                              enabledMouseCursor: SystemMouseCursors.click,
                               backgroundColor: appColors.secondary,
                               foregroundColor: appColors.primary,
                               shape: RoundedRectangleBorder(
@@ -362,6 +441,60 @@ class _ViewState extends State<ViewScreen> {
                               )
                             ),
                             child: Icon(Icons.video_library),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  backgroundColor: appColors.tertiary,
+                                  title: Text(
+                                    'Launch in external application?',
+                                    style: GoogleFonts.nunito(
+                                      color: appColors.textPrimary,
+                                    )
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      child: Text(
+                                        'No',
+                                        style: GoogleFonts.nunito(
+                                          color: appColors.textPrimary,
+                                        )
+                                      ),
+                                      onPressed: () => Navigator.pop(context),
+                                    ),
+                                    TextButton(
+                                      child: Text(
+                                        'Yes',
+                                        style: GoogleFonts.nunito(
+                                          color: appColors.textPrimary,
+                                        )
+                                      ),
+                                      onPressed: () {
+                                        launchUrl(
+                                          Uri.parse(viewContentInfoResult!.url),
+                                          mode: LaunchMode.externalApplication,
+                                        )
+                                          .then((value) => debugPrint(value.toString()))
+                                          .catchError((error) => debugPrint(error.toString()));
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                                
+                            },
+                            style: TextButton.styleFrom(
+                              enabledMouseCursor: SystemMouseCursors.click,
+                              backgroundColor: appColors.secondary,
+                              foregroundColor: appColors.primary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              )
+                            ),
+                            child: Icon(Icons.launch),
                           )
                         ],
                       )
@@ -369,12 +502,12 @@ class _ViewState extends State<ViewScreen> {
                     // <-
                     
                     // -> Description
-                    if (viewContentInfoResult.description.isNotEmpty)
+                    if (viewContentInfoResult!.description.isNotEmpty)
                       Container(
                         padding: EdgeInsets.only(left: 10, right: 10),
                         width: double.infinity,
                         child: Text(
-                          viewContentInfoResult.description,
+                          viewContentInfoResult!.description,
                           style: GoogleFonts.nunito(
                             fontSize: 16,
                             fontWeight: FontWeight.normal,
@@ -387,13 +520,13 @@ class _ViewState extends State<ViewScreen> {
                         ),
                       ),
                     // <-
-                    if (viewContentInfoResult.description.isNotEmpty)
+                    if (viewContentInfoResult!.description.isNotEmpty)
                       SizedBox(
                         height: 20,
                       ),
 
                     // -> Countdown
-                    if (viewContentInfoResult.countdown > 0)
+                    if (viewContentInfoResult!.countdown > 0)
                       Container(
                         padding: EdgeInsets.all(10),
                         color: appColors.tertiary,
@@ -458,7 +591,7 @@ class _ViewState extends State<ViewScreen> {
                     // <-
 
                     // -> SeasonList
-                    if (viewContentInfoResult.episodes.length > 1)
+                    if (viewContentInfoResult!.episodes.length > 1)
                       Container(
                         padding: EdgeInsets.all(10),
                         width: double.infinity,
@@ -474,7 +607,7 @@ class _ViewState extends State<ViewScreen> {
                               controller: _seasonScrollController,
                               physics: const AlwaysScrollableScrollPhysics(),
                               scrollDirection: Axis.horizontal,
-                              itemCount: viewContentInfoResult.episodes.length,
+                              itemCount: viewContentInfoResult!.episodes.length,
                               itemBuilder: (context, index) {
                                 return SizedBox(
                                   width: 130,
@@ -555,29 +688,87 @@ class _ViewState extends State<ViewScreen> {
                       children: [
                       
                         // -> Episodes
-                        Container(
-                          width: double.infinity,
-                          height: MediaQuery.of(context).size.height * 0.6,
-                          padding: EdgeInsets.all(10),
-                          child: Scrollbar(
-                            thickness: 0,
-                            controller: _episodeScrollController,
-                            
-                            child: ListView.separated(
-                              controller: _episodeScrollController,
-                              scrollDirection: Axis.vertical,
-                              itemCount: viewContentInfoResult.episodes.elementAtOrNull(currentSeasonIndex)?.length ?? 0,
-                              itemBuilder: (current, index) {
-                                  return EpisodeTile(
-                                    episodeInfo: viewContentInfoResult.episodes[currentSeasonIndex][index],
-                                  );
-                              }, 
-                              separatorBuilder: (current, index) {
-                                return SizedBox(height: 10,);
-                              },
-                              
-                            )
-                          )
+                        Column(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    width: 1,
+                                    color: appColors.strokePrimary
+                                  )
+                                )
+                              ),
+                              width: double.infinity,
+                              height: 60,
+                              child: GestureDetector(
+                                onTap: (){
+                                  searchFocus.requestFocus();
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.only(left: 10),
+                                  height: double.infinity,
+                                  child: Row(
+                                    spacing: 8,
+                                    children: [
+                                      Icon(
+                                        Icons.search,
+                                        color: appColors.textPrimary,
+                                      ),
+                                      Expanded(
+                                        child: TextField(
+                                          controller: _textEditingController,
+                                          
+                                          onSubmitted: (value){
+                                            setState(() {
+                                              filteredEpisodes = onFilterChange(viewContentInfoResult!.episodes[currentSeasonIndex]);
+                                            });
+                                          },
+                                          cursorColor: appColors.textPrimary,
+                                          focusNode: searchFocus,
+                                          style: GoogleFonts.nunito(
+                                            fontSize: 24,
+                                            color: appColors.textPrimary,
+                                          ),
+                                          decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            hintText: "Search",
+                                            hintStyle: TextStyle(
+                                              color: appColors.textPrimary,
+                                            )
+                                          ),
+                                        )
+                                      )
+                                    ],
+                                  )
+                                )
+                              )
+                            ),
+                            Container(
+                              width: double.infinity,
+                              height: MediaQuery.of(context).size.height * 0.6,
+                              padding: EdgeInsets.all(10),
+                              child: Scrollbar(
+                                thickness: 0,
+                                controller: _episodeScrollController,
+                                
+                                child: ListView.separated(
+                                  controller: _episodeScrollController,
+                                  scrollDirection: Axis.vertical,
+                                  itemCount: filteredEpisodes.length,
+                                  itemBuilder: (current, index) {
+                                      return EpisodeTile(
+                                        episodeInfo: filteredEpisodes[index],
+                                      );
+                                  }, 
+                                  separatorBuilder: (current, index) {
+                                    return SizedBox(height: 10,);
+                                  },
+                                  
+                                )
+                              )
+                            ),
+                          ],
                         ),
 
                         // <- 
@@ -593,7 +784,7 @@ class _ViewState extends State<ViewScreen> {
                             crossAxisSpacing: 10, // horizontal spacing
                             mainAxisSpacing: 10, 
                             children: [
-                              for (var pic in viewContentInfoResult.pictures)
+                              for (var pic in viewContentInfoResult!.pictures)
                                 Ink.image(
                                   width: 50,
                                   image: NetworkImage(pic),
@@ -625,7 +816,7 @@ class _ViewState extends State<ViewScreen> {
                         mouseCursor: SystemMouseCursors.click,
                         onPressed: onBack,
                         icon: Icon(
-                          Icons.arrow_back_ios,
+                          Icons.arrow_back_rounded,
                           color: appColors.secondary,
                         ),
                       ),

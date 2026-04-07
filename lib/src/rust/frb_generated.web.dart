@@ -9,6 +9,17 @@
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
+import 'method/favorite.dart';
+import 'method/favorite/add_category.dart';
+import 'method/favorite/delete_category.dart';
+import 'method/favorite/get_all_category.dart';
+import 'method/favorite/get_all_category_by_item_id.dart';
+import 'method/favorite/get_category_order.dart';
+import 'method/favorite/is_in_category.dart';
+import 'method/favorite/rename_category.dart';
+import 'method/favorite/set_category.dart';
+import 'method/favorite/swap_category_order.dart';
+import 'method/favorite/unset_category.dart';
 import 'method/generate_torrent_handle.dart';
 import 'method/get_torrent_info.dart';
 import 'method/init/init_torrent_session.dart';
@@ -33,6 +44,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AnyhowException dco_decode_AnyhowException(dynamic raw);
 
   @protected
+  Map<BigInt, String> dco_decode_Map_u_64_String_None(dynamic raw);
+
+  @protected
+  Map<BigInt, BigInt> dco_decode_Map_u_64_u_64_None(dynamic raw);
+
+  @protected
   String dco_decode_String(dynamic raw);
 
   @protected
@@ -46,6 +63,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   BigInt dco_decode_box_autoadd_usize(dynamic raw);
+
+  @protected
+  CategoryMap dco_decode_category_map(dynamic raw);
+
+  @protected
+  CategoryOrderMap dco_decode_category_order_map(dynamic raw);
 
   @protected
   EpisodeInfo dco_decode_episode_info(dynamic raw);
@@ -81,6 +104,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
+  List<(BigInt, String)> dco_decode_list_record_u_64_string(dynamic raw);
+
+  @protected
+  List<(BigInt, BigInt)> dco_decode_list_record_u_64_u_64(dynamic raw);
+
+  @protected
   List<SearchContentInfo> dco_decode_list_search_content_info(dynamic raw);
 
   @protected
@@ -100,6 +129,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Paths dco_decode_paths(dynamic raw);
+
+  @protected
+  (BigInt, String) dco_decode_record_u_64_string(dynamic raw);
+
+  @protected
+  (BigInt, BigInt) dco_decode_record_u_64_u_64(dynamic raw);
 
   @protected
   SearchContentInfo dco_decode_search_content_info(dynamic raw);
@@ -129,6 +164,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
 
   @protected
+  Map<BigInt, String> sse_decode_Map_u_64_String_None(
+      SseDeserializer deserializer);
+
+  @protected
+  Map<BigInt, BigInt> sse_decode_Map_u_64_u_64_None(
+      SseDeserializer deserializer);
+
+  @protected
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
@@ -142,6 +185,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   BigInt sse_decode_box_autoadd_usize(SseDeserializer deserializer);
+
+  @protected
+  CategoryMap sse_decode_category_map(SseDeserializer deserializer);
+
+  @protected
+  CategoryOrderMap sse_decode_category_order_map(SseDeserializer deserializer);
 
   @protected
   EpisodeInfo sse_decode_episode_info(SseDeserializer deserializer);
@@ -180,6 +229,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
+  List<(BigInt, String)> sse_decode_list_record_u_64_string(
+      SseDeserializer deserializer);
+
+  @protected
+  List<(BigInt, BigInt)> sse_decode_list_record_u_64_u_64(
+      SseDeserializer deserializer);
+
+  @protected
   List<SearchContentInfo> sse_decode_list_search_content_info(
       SseDeserializer deserializer);
 
@@ -201,6 +258,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Paths sse_decode_paths(SseDeserializer deserializer);
+
+  @protected
+  (BigInt, String) sse_decode_record_u_64_string(SseDeserializer deserializer);
+
+  @protected
+  (BigInt, BigInt) sse_decode_record_u_64_u_64(SseDeserializer deserializer);
 
   @protected
   SearchContentInfo sse_decode_search_content_info(
@@ -236,6 +299,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       AnyhowException self, SseSerializer serializer);
 
   @protected
+  void sse_encode_Map_u_64_String_None(
+      Map<BigInt, String> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_Map_u_64_u_64_None(
+      Map<BigInt, BigInt> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
@@ -249,6 +320,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_box_autoadd_usize(BigInt self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_category_map(CategoryMap self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_category_order_map(
+      CategoryOrderMap self, SseSerializer serializer);
 
   @protected
   void sse_encode_episode_info(EpisodeInfo self, SseSerializer serializer);
@@ -289,6 +367,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       Uint8List self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_record_u_64_string(
+      List<(BigInt, String)> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_record_u_64_u_64(
+      List<(BigInt, BigInt)> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_search_content_info(
       List<SearchContentInfo> self, SseSerializer serializer);
 
@@ -310,6 +396,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_paths(Paths self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_record_u_64_string(
+      (BigInt, String) self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_record_u_64_u_64(
+      (BigInt, BigInt) self, SseSerializer serializer);
 
   @protected
   void sse_encode_search_content_info(
