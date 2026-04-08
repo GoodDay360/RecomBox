@@ -17,14 +17,14 @@ Map<int, String> availableSorts = {
   2: "Release Date",
 };
 
-class EditCategory extends StatefulWidget {
-  const EditCategory({super.key});
+class EditCategoryScreen extends StatefulWidget {
+  const EditCategoryScreen({super.key});
 
   @override
-  State<EditCategory> createState() => _SearchState();
+  State<EditCategoryScreen> createState() => _EditCategoryState();
 }
 
-class _SearchState extends State<EditCategory> {
+class _EditCategoryState extends State<EditCategoryScreen> {
   AppColorsScheme appColors = appColorsNotifier.value;
 
   List<BigInt> allCategoryKeyList = [];
@@ -33,10 +33,10 @@ class _SearchState extends State<EditCategory> {
   @override
   void initState() {
     super.initState();
-    initEditCategory();
+    initEditCategoryScreen();
   }
 
-  Future<void> initEditCategory() async {
+  Future<void> initEditCategoryScreen() async {
     // await addCategory(categoryName: "Anime");
 
     CategoryMap getAllCategoryResult = await getAllCategory();
@@ -157,7 +157,7 @@ class _SearchState extends State<EditCategory> {
                               child: EditCategoryTile(
                                 categoryID: allCategoryKeyList[index],
                                 categoryName: allCategoryValueList[index],
-                                initEditCategory: initEditCategory,
+                                initEditCategory: initEditCategoryScreen,
                               ),
                             ),
                         ],
@@ -179,19 +179,19 @@ class _SearchState extends State<EditCategory> {
                 showDialog(
                   context: context, 
                   builder: (_) => AddCategoryDialog(
-                    onAdd: initEditCategory
+                    onAdd: initEditCategoryScreen
                   )
                 );
               },
-              backgroundColor: appColors.secondary,
+              backgroundColor: appColors.accentSecondary,
               icon: Icon(
                 Icons.add,
-                color: appColors.primary,
+                color: appColors.textPrimary,
               ),
               label: Text(
                 "Add",
                 style: GoogleFonts.nunito(
-                  color: appColors.primary,
+                  color: appColors.textPrimary,
                   fontSize: 18,
                   fontWeight: FontWeight(700),
                 ),

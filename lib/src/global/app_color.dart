@@ -35,7 +35,7 @@ class AppColorsScheme {
     textSecondary: Color(0xFFDEDEDE),
     textError: Colors.red,
     accentPrimary: Color(0xFFFF0000),
-    accentSecondary: Color(0xFF6D6D6D),
+    accentSecondary: Color(0xFF007737),
     strokePrimary: Color(0xFF6D6D6D),
   );
 

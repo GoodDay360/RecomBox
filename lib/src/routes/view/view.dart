@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:recombox/src/global/dialogs/favorite/set_category.dart';
 import 'package:recombox/src/global/app_color.dart';
@@ -30,7 +31,8 @@ class ViewScreen extends StatefulWidget {
 }
 
 class _ViewState extends State<ViewScreen> {
-
+  late ViewScreenArguments args;
+  
   @override
   void initState() {
     super.initState();
@@ -63,7 +65,7 @@ class _ViewState extends State<ViewScreen> {
     super.dispose();
   }
 
-  late ViewScreenArguments args;
+  
 
   final _seasonScrollController = ScrollController();
   final _episodeScrollController = ScrollController();
@@ -247,11 +249,7 @@ class _ViewState extends State<ViewScreen> {
                             fit: BoxFit.cover,
                             alignment: Alignment.center,
                           ),
-                          Container(
-                            width: double.infinity,
-                            height: double.infinity,
-                            color: Colors.black.withAlpha(60),
-                          ),
+                          
                           Container(
                               width: double.infinity,
                               height: double.infinity,
@@ -261,22 +259,6 @@ class _ViewState extends State<ViewScreen> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Container(
-                                    padding: EdgeInsets.all(12),
-                                    width: double.infinity,
-                                    child: Text(
-                                      viewContentInfoResult!.title,
-                                      style: GoogleFonts.nunito(
-                                        fontSize: 38,
-                                        fontWeight: FontWeight(800),
-                                        color: appColors.textPrimary,
-                                        decoration: TextDecoration.none,
-                                      ),
-                                      maxLines: 3,
-                                      overflow: TextOverflow.ellipsis,
-                                      textAlign: TextAlign.start,
-                                    ),
-                                  ),
                                   SingleChildScrollView(
                                       padding: EdgeInsets.only(left: 12),
                                       clipBehavior: Clip.hardEdge,
@@ -338,10 +320,30 @@ class _ViewState extends State<ViewScreen> {
                             ),
 
                           
+                          
+
                         ]
                       ),
                     ),
 
+                    SizedBox(
+                      width: double.infinity,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        padding: EdgeInsets.all(12),
+                        child: Text(
+                          viewContentInfoResult!.title,
+                          style: GoogleFonts.nunito(
+                            fontSize: 38,
+                            fontWeight: FontWeight(800),
+                            color: appColors.textPrimary,
+                            decoration: TextDecoration.none,
+                          ),
+                          maxLines: 1,
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
+                    ),
                     // -> Button Container
                     Container(
                       width: double.infinity,

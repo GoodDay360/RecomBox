@@ -3,6 +3,7 @@ import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:recombox/src/routes/edit_category/edit_category.dart';
 import 'package:recombox/src/routes/search/search.dart';
+import 'package:recombox/src/routes/select_plugin/select_plugin.dart';
 import 'package:recombox/src/routes/view/view.dart';
 import 'package:recombox/src/rust/frb_generated.dart';
 import 'package:recombox/src/rust/method/settings/init_settings.dart';
@@ -107,13 +108,14 @@ class App extends StatelessWidget {
 
 
 					debugShowCheckedModeBanner: false,
-					initialRoute: "/",
+					initialRoute: "/select_plugin",
 					title: 'RecomBox',
 					routes: {
 						"/": (context) => const HomeScreen(),
 						"/search": (context) => const SearchScreen(),
 						"/view": (context) => const ViewScreen(),
-            "/edit_category": (context) => const EditCategory(),
+            "/edit_category": (context) => const EditCategoryScreen(),
+            "/select_plugin": (context) => const SelectedPluginScreen(),
 					},
 				);
 			}

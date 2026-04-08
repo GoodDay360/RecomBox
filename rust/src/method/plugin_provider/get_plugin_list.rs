@@ -1,11 +1,11 @@
 use std::collections::HashMap;
 use std::path::PathBuf;
-use std::sync::Arc;
 
 use recombox_plugin_provider::manage_plugin::{
     get_plugin_list::{self, InputPayload},
     PluginDatabaseManager
 };
+
 use recombox_plugin_provider::global_types::Source;
 use serde::{Serialize, Deserialize};
 use flutter_rust_bridge::frb;
