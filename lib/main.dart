@@ -95,8 +95,17 @@ class App extends StatelessWidget {
 						),
 					),
 					scrollBehavior: const MaterialScrollBehavior().copyWith(
-						dragDevices: {PointerDeviceKind.mouse},
-					),
+            dragDevices: {
+              PointerDeviceKind.touch,
+              PointerDeviceKind.mouse,
+              PointerDeviceKind.trackpad,
+              PointerDeviceKind.stylus,
+              PointerDeviceKind.invertedStylus,
+              PointerDeviceKind.unknown, // covers TV remotes / other inputs
+            },
+          ),
+
+
 					debugShowCheckedModeBanner: false,
 					initialRoute: "/",
 					title: 'RecomBox',

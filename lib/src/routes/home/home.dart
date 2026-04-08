@@ -4,15 +4,15 @@ import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/routes/home/widgets/content_section.dart';
 import 'package:recombox/src/rust/method/metadata_provider/featured_content.dart';
 import 'package:recombox/src/rust/method/metadata_provider/trending_content.dart';
-import 'package:recombox/src/widgets/navigation_bar/navigation_bar_horizontal.dart';
+import 'package:recombox/src/global/widgets/navigation_bar/navigation_bar_horizontal.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:math';
 
 // -> Local Widgets
-import 'package:recombox/src/widgets/navigation_bar/navigation_bar_vertical.dart';
-import 'package:recombox/src/widgets/title_bar.dart';
+import 'package:recombox/src/global/widgets/navigation_bar/navigation_bar_vertical.dart';
+import 'package:recombox/src/global/widgets/title_bar.dart';
 import 'widgets/featured_section.dart';
 // <-
 
@@ -46,52 +46,44 @@ class _HomeState extends State<HomeScreen> {
     setState(() {
       isLoading = true;
     });
+    List<FeaturedContentInfo> featuredContentListResult = [];
+    Map<Source, List<TrendingContentInfo>> trendingContentMapResult = {};
+
     try{
       await Future.wait([
+        // -> Featured Content
         (() async{
-          // -> Featured Content
           final waitResult = await Future.wait([
             for (final source in Source.values)
               featuredContent(source: source.name, fromCache: fromCache),
           ]);
-
-          List<FeaturedContentInfo> featuredContentListResult = [];
-
           for (final result in waitResult) {
             featuredContentListResult.addAll(result);
           }
-          setState(() {
-            featuredContentList = featuredContentListResult..shuffle(Random());
-          });
-              
-          // <-
+          featuredContentListResult = featuredContentListResult..shuffle(Random());
         })(),
+        // <-
         
+        // -> Trending Content
         (() async{
-          // -> Trending Content
           var waitResult = await Future.wait([
             for (final source in Source.values)
               trendingContent(source: source.name, fromCache: fromCache),
           ]);
 
-          Map<Source, List<TrendingContentInfo>> trendingContentMapResult = {};
-
-          // zip Source.values with waitResult
           for (int i = 0; i < Source.values.length; i++) {
             trendingContentMapResult[Source.values[i]] = waitResult[i];
           }
-
-          setState(() {
-            trendingContentMap = trendingContentMapResult;
-          });
-          // <-
         })()
+        // <-
       ]);
     }catch(e){
       debugPrint(e.toString());
     }
 
     setState(() {
+      featuredContentList = featuredContentListResult;
+      trendingContentMap = trendingContentMapResult;
       isLoading = false;
     });
   }
@@ -123,14 +115,14 @@ class _HomeState extends State<HomeScreen> {
                       SizedBox(
                         height: double.infinity,
                         child: SingleChildScrollView(
-                            physics: const AlwaysScrollableScrollPhysics(),
+                            physics: ScrollPhysics(),
                             child: Column(
                               children: [
                                 Stack(
                                   children: [
                                     CarouselSlider(
                                       options: CarouselOptions(
-                                        height: MediaQuery.of(context).size.height * 0.6,
+                                        height: MediaQuery.of(context).size.height * 0.5,
                                         viewportFraction: 1.0,
                                         autoPlay: featuredContentList.isEmpty ? false : true,
                                         autoPlayInterval: Duration(seconds: 8),

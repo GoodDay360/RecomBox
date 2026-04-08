@@ -146,9 +146,10 @@ class _FavoriteDialogState extends State<SetCategoryDialog> {
                     ElevatedButton.icon(
                       
                       onPressed: (){
-
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context, "/edit_category");
                       },
-                      style: TextButton.styleFrom(
+                      style: ElevatedButton.styleFrom(
                         enabledMouseCursor: SystemMouseCursors.click,
                         backgroundColor: appColors.secondary,
                         foregroundColor: appColors.primary,

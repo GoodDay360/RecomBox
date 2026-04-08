@@ -6,28 +6,47 @@
 import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
-part 'view_content.freezed.dart';part 'view_content.g.dart';
+part 'view_content.freezed.dart';
+part 'view_content.g.dart';
 
-            // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `fmt`, `fmt`, `fmt`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `fmt`, `fmt`, `fmt`
 
-
-            Future<ViewContentInfo>  viewContent({required String source , required String id , required bool fromCache }) => RustLib.instance.api.crateMethodMetadataProviderViewContentViewContent(source: source, id: id, fromCache: fromCache);
-
-            @freezed
-sealed class EpisodeInfo with _$EpisodeInfo  {
-                
-                const factory EpisodeInfo({ required  String source, required  String title, required  String thumbnailUrl,}) = _EpisodeInfo;
-                
-                factory EpisodeInfo.fromJson(Map<String, dynamic> json) => _$EpisodeInfoFromJson(json);
-                
-            }
+Future<ViewContentInfo> viewContent(
+        {required String source,
+        required String id,
+        required bool fromCache}) =>
+    RustLib.instance.api.crateMethodMetadataProviderViewContentViewContent(
+        source: source, id: id, fromCache: fromCache);
 
 @freezed
-sealed class ViewContentInfo with _$ViewContentInfo  {
-                
-                const factory ViewContentInfo({ required  String source, required  String externalId, required  String url, required  String title, required  String thumbnailUrl, required  String bannerUrl, required  List<String> contextual, required  String description, required  String trailerUrl, required  PlatformInt64 countdown, required  List<String> pictures, required  List<List<EpisodeInfo>> episodes,}) = _ViewContentInfo;
-                
-                factory ViewContentInfo.fromJson(Map<String, dynamic> json) => _$ViewContentInfoFromJson(json);
-                
-            }
-            
+sealed class EpisodeInfo with _$EpisodeInfo {
+  const factory EpisodeInfo({
+    required String source,
+    required String title,
+    required String thumbnailUrl,
+  }) = _EpisodeInfo;
+
+  factory EpisodeInfo.fromJson(Map<String, dynamic> json) =>
+      _$EpisodeInfoFromJson(json);
+}
+
+@freezed
+sealed class ViewContentInfo with _$ViewContentInfo {
+  const factory ViewContentInfo({
+    required String source,
+    required String externalId,
+    required String url,
+    required String title,
+    required String thumbnailUrl,
+    required String bannerUrl,
+    required List<String> contextual,
+    required String description,
+    required String trailerUrl,
+    required PlatformInt64 countdown,
+    required List<String> pictures,
+    required List<List<EpisodeInfo>> episodes,
+  }) = _ViewContentInfo;
+
+  factory ViewContentInfo.fromJson(Map<String, dynamic> json) =>
+      _$ViewContentInfoFromJson(json);
+}

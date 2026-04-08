@@ -32,330 +32,513 @@ import 'method/spawn_stream_server.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_io.dart';
 import 'utils/settings.dart';
 
+abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
+  RustLibApiImplPlatform({
+    required super.handler,
+    required super.wire,
+    required super.generalizedFrbRustBinding,
+    required super.portManager,
+  });
 
+  @protected
+  AnyhowException dco_decode_AnyhowException(dynamic raw);
 
+  @protected
+  Map<String, InstalledPluginInfo>
+      dco_decode_Map_String_installed_plugin_info_None(dynamic raw);
 
-                abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
-                  RustLibApiImplPlatform({
-                    required super.handler,
-                    required super.wire,
-                    required super.generalizedFrbRustBinding,
-                    required super.portManager,
-                  });
+  @protected
+  Map<String, PluginInfo> dco_decode_Map_String_plugin_info_None(dynamic raw);
 
-                  
+  @protected
+  Map<BigInt, String> dco_decode_Map_u_64_String_None(dynamic raw);
 
-                  @protected AnyhowException dco_decode_AnyhowException(dynamic raw);
+  @protected
+  Map<BigInt, BigInt> dco_decode_Map_u_64_u_64_None(dynamic raw);
 
-@protected Map<String, InstalledPluginInfo> dco_decode_Map_String_installed_plugin_info_None(dynamic raw);
+  @protected
+  String dco_decode_String(dynamic raw);
 
-@protected Map<String, PluginInfo> dco_decode_Map_String_plugin_info_None(dynamic raw);
+  @protected
+  bool dco_decode_bool(dynamic raw);
 
-@protected Map<BigInt, String> dco_decode_Map_u_64_String_None(dynamic raw);
+  @protected
+  Settings dco_decode_box_autoadd_settings(dynamic raw);
 
-@protected Map<BigInt, BigInt> dco_decode_Map_u_64_u_64_None(dynamic raw);
+  @protected
+  BigInt dco_decode_box_autoadd_u_64(dynamic raw);
 
-@protected String dco_decode_String(dynamic raw);
+  @protected
+  BigInt dco_decode_box_autoadd_usize(dynamic raw);
 
-@protected bool dco_decode_bool(dynamic raw);
+  @protected
+  CategoryMap dco_decode_category_map(dynamic raw);
 
-@protected Settings dco_decode_box_autoadd_settings(dynamic raw);
+  @protected
+  CategoryOrderMap dco_decode_category_order_map(dynamic raw);
 
-@protected BigInt dco_decode_box_autoadd_u_64(dynamic raw);
+  @protected
+  EpisodeInfo dco_decode_episode_info(dynamic raw);
 
-@protected BigInt dco_decode_box_autoadd_usize(dynamic raw);
+  @protected
+  double dco_decode_f_32(dynamic raw);
 
-@protected CategoryMap dco_decode_category_map(dynamic raw);
+  @protected
+  FeaturedContentInfo dco_decode_featured_content_info(dynamic raw);
 
-@protected CategoryOrderMap dco_decode_category_order_map(dynamic raw);
+  @protected
+  Files dco_decode_files(dynamic raw);
 
-@protected EpisodeInfo dco_decode_episode_info(dynamic raw);
+  @protected
+  PlatformInt64 dco_decode_i_64(dynamic raw);
 
-@protected double dco_decode_f_32(dynamic raw);
+  @protected
+  InstalledPluginInfo dco_decode_installed_plugin_info(dynamic raw);
 
-@protected FeaturedContentInfo dco_decode_featured_content_info(dynamic raw);
+  @protected
+  List<String> dco_decode_list_String(dynamic raw);
 
-@protected Files dco_decode_files(dynamic raw);
+  @protected
+  List<EpisodeInfo> dco_decode_list_episode_info(dynamic raw);
 
-@protected PlatformInt64 dco_decode_i_64(dynamic raw);
+  @protected
+  List<FeaturedContentInfo> dco_decode_list_featured_content_info(dynamic raw);
 
-@protected InstalledPluginInfo dco_decode_installed_plugin_info(dynamic raw);
+  @protected
+  List<Files> dco_decode_list_files(dynamic raw);
 
-@protected List<String> dco_decode_list_String(dynamic raw);
+  @protected
+  List<List<EpisodeInfo>> dco_decode_list_list_episode_info(dynamic raw);
 
-@protected List<EpisodeInfo> dco_decode_list_episode_info(dynamic raw);
+  @protected
+  Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
-@protected List<FeaturedContentInfo> dco_decode_list_featured_content_info(dynamic raw);
+  @protected
+  List<(String, InstalledPluginInfo)>
+      dco_decode_list_record_string_installed_plugin_info(dynamic raw);
 
-@protected List<Files> dco_decode_list_files(dynamic raw);
+  @protected
+  List<(String, PluginInfo)> dco_decode_list_record_string_plugin_info(
+      dynamic raw);
 
-@protected List<List<EpisodeInfo>> dco_decode_list_list_episode_info(dynamic raw);
+  @protected
+  List<(BigInt, String)> dco_decode_list_record_u_64_string(dynamic raw);
 
-@protected Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
+  @protected
+  List<(BigInt, BigInt)> dco_decode_list_record_u_64_u_64(dynamic raw);
 
-@protected List<(String,InstalledPluginInfo)> dco_decode_list_record_string_installed_plugin_info(dynamic raw);
+  @protected
+  List<SearchContentInfo> dco_decode_list_search_content_info(dynamic raw);
 
-@protected List<(String,PluginInfo)> dco_decode_list_record_string_plugin_info(dynamic raw);
+  @protected
+  List<TrendingContentInfo> dco_decode_list_trending_content_info(dynamic raw);
 
-@protected List<(BigInt,String)> dco_decode_list_record_u_64_string(dynamic raw);
+  @protected
+  String? dco_decode_opt_String(dynamic raw);
 
-@protected List<(BigInt,BigInt)> dco_decode_list_record_u_64_u_64(dynamic raw);
+  @protected
+  BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw);
 
-@protected List<SearchContentInfo> dco_decode_list_search_content_info(dynamic raw);
+  @protected
+  BigInt? dco_decode_opt_box_autoadd_usize(dynamic raw);
 
-@protected List<TrendingContentInfo> dco_decode_list_trending_content_info(dynamic raw);
+  @protected
+  OutputPayload dco_decode_output_payload(dynamic raw);
 
-@protected String? dco_decode_opt_String(dynamic raw);
+  @protected
+  Paths dco_decode_paths(dynamic raw);
 
-@protected BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw);
+  @protected
+  PluginInfo dco_decode_plugin_info(dynamic raw);
 
-@protected BigInt? dco_decode_opt_box_autoadd_usize(dynamic raw);
+  @protected
+  (String, InstalledPluginInfo) dco_decode_record_string_installed_plugin_info(
+      dynamic raw);
 
-@protected OutputPayload dco_decode_output_payload(dynamic raw);
+  @protected
+  (String, PluginInfo) dco_decode_record_string_plugin_info(dynamic raw);
 
-@protected Paths dco_decode_paths(dynamic raw);
+  @protected
+  (BigInt, String) dco_decode_record_u_64_string(dynamic raw);
 
-@protected PluginInfo dco_decode_plugin_info(dynamic raw);
+  @protected
+  (BigInt, BigInt) dco_decode_record_u_64_u_64(dynamic raw);
 
-@protected (String,InstalledPluginInfo) dco_decode_record_string_installed_plugin_info(dynamic raw);
+  @protected
+  SearchContentInfo dco_decode_search_content_info(dynamic raw);
 
-@protected (String,PluginInfo) dco_decode_record_string_plugin_info(dynamic raw);
+  @protected
+  Settings dco_decode_settings(dynamic raw);
 
-@protected (BigInt,String) dco_decode_record_u_64_string(dynamic raw);
+  @protected
+  TrendingContentInfo dco_decode_trending_content_info(dynamic raw);
 
-@protected (BigInt,BigInt) dco_decode_record_u_64_u_64(dynamic raw);
+  @protected
+  BigInt dco_decode_u_64(dynamic raw);
 
-@protected SearchContentInfo dco_decode_search_content_info(dynamic raw);
+  @protected
+  int dco_decode_u_8(dynamic raw);
 
-@protected Settings dco_decode_settings(dynamic raw);
+  @protected
+  void dco_decode_unit(dynamic raw);
 
-@protected TrendingContentInfo dco_decode_trending_content_info(dynamic raw);
+  @protected
+  BigInt dco_decode_usize(dynamic raw);
 
-@protected BigInt dco_decode_u_64(dynamic raw);
+  @protected
+  ViewContentInfo dco_decode_view_content_info(dynamic raw);
 
-@protected int dco_decode_u_8(dynamic raw);
+  @protected
+  AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
 
-@protected void dco_decode_unit(dynamic raw);
+  @protected
+  Map<String, InstalledPluginInfo>
+      sse_decode_Map_String_installed_plugin_info_None(
+          SseDeserializer deserializer);
 
-@protected BigInt dco_decode_usize(dynamic raw);
+  @protected
+  Map<String, PluginInfo> sse_decode_Map_String_plugin_info_None(
+      SseDeserializer deserializer);
 
-@protected ViewContentInfo dco_decode_view_content_info(dynamic raw);
+  @protected
+  Map<BigInt, String> sse_decode_Map_u_64_String_None(
+      SseDeserializer deserializer);
 
-@protected AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
+  @protected
+  Map<BigInt, BigInt> sse_decode_Map_u_64_u_64_None(
+      SseDeserializer deserializer);
 
-@protected Map<String, InstalledPluginInfo> sse_decode_Map_String_installed_plugin_info_None(SseDeserializer deserializer);
+  @protected
+  String sse_decode_String(SseDeserializer deserializer);
 
-@protected Map<String, PluginInfo> sse_decode_Map_String_plugin_info_None(SseDeserializer deserializer);
+  @protected
+  bool sse_decode_bool(SseDeserializer deserializer);
 
-@protected Map<BigInt, String> sse_decode_Map_u_64_String_None(SseDeserializer deserializer);
+  @protected
+  Settings sse_decode_box_autoadd_settings(SseDeserializer deserializer);
 
-@protected Map<BigInt, BigInt> sse_decode_Map_u_64_u_64_None(SseDeserializer deserializer);
+  @protected
+  BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer);
 
-@protected String sse_decode_String(SseDeserializer deserializer);
+  @protected
+  BigInt sse_decode_box_autoadd_usize(SseDeserializer deserializer);
 
-@protected bool sse_decode_bool(SseDeserializer deserializer);
+  @protected
+  CategoryMap sse_decode_category_map(SseDeserializer deserializer);
 
-@protected Settings sse_decode_box_autoadd_settings(SseDeserializer deserializer);
+  @protected
+  CategoryOrderMap sse_decode_category_order_map(SseDeserializer deserializer);
 
-@protected BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer);
+  @protected
+  EpisodeInfo sse_decode_episode_info(SseDeserializer deserializer);
 
-@protected BigInt sse_decode_box_autoadd_usize(SseDeserializer deserializer);
+  @protected
+  double sse_decode_f_32(SseDeserializer deserializer);
 
-@protected CategoryMap sse_decode_category_map(SseDeserializer deserializer);
+  @protected
+  FeaturedContentInfo sse_decode_featured_content_info(
+      SseDeserializer deserializer);
 
-@protected CategoryOrderMap sse_decode_category_order_map(SseDeserializer deserializer);
+  @protected
+  Files sse_decode_files(SseDeserializer deserializer);
 
-@protected EpisodeInfo sse_decode_episode_info(SseDeserializer deserializer);
+  @protected
+  PlatformInt64 sse_decode_i_64(SseDeserializer deserializer);
 
-@protected double sse_decode_f_32(SseDeserializer deserializer);
+  @protected
+  InstalledPluginInfo sse_decode_installed_plugin_info(
+      SseDeserializer deserializer);
 
-@protected FeaturedContentInfo sse_decode_featured_content_info(SseDeserializer deserializer);
+  @protected
+  List<String> sse_decode_list_String(SseDeserializer deserializer);
 
-@protected Files sse_decode_files(SseDeserializer deserializer);
+  @protected
+  List<EpisodeInfo> sse_decode_list_episode_info(SseDeserializer deserializer);
 
-@protected PlatformInt64 sse_decode_i_64(SseDeserializer deserializer);
+  @protected
+  List<FeaturedContentInfo> sse_decode_list_featured_content_info(
+      SseDeserializer deserializer);
 
-@protected InstalledPluginInfo sse_decode_installed_plugin_info(SseDeserializer deserializer);
+  @protected
+  List<Files> sse_decode_list_files(SseDeserializer deserializer);
 
-@protected List<String> sse_decode_list_String(SseDeserializer deserializer);
+  @protected
+  List<List<EpisodeInfo>> sse_decode_list_list_episode_info(
+      SseDeserializer deserializer);
 
-@protected List<EpisodeInfo> sse_decode_list_episode_info(SseDeserializer deserializer);
+  @protected
+  Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
-@protected List<FeaturedContentInfo> sse_decode_list_featured_content_info(SseDeserializer deserializer);
+  @protected
+  List<(String, InstalledPluginInfo)>
+      sse_decode_list_record_string_installed_plugin_info(
+          SseDeserializer deserializer);
 
-@protected List<Files> sse_decode_list_files(SseDeserializer deserializer);
+  @protected
+  List<(String, PluginInfo)> sse_decode_list_record_string_plugin_info(
+      SseDeserializer deserializer);
 
-@protected List<List<EpisodeInfo>> sse_decode_list_list_episode_info(SseDeserializer deserializer);
+  @protected
+  List<(BigInt, String)> sse_decode_list_record_u_64_string(
+      SseDeserializer deserializer);
 
-@protected Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
+  @protected
+  List<(BigInt, BigInt)> sse_decode_list_record_u_64_u_64(
+      SseDeserializer deserializer);
 
-@protected List<(String,InstalledPluginInfo)> sse_decode_list_record_string_installed_plugin_info(SseDeserializer deserializer);
+  @protected
+  List<SearchContentInfo> sse_decode_list_search_content_info(
+      SseDeserializer deserializer);
 
-@protected List<(String,PluginInfo)> sse_decode_list_record_string_plugin_info(SseDeserializer deserializer);
+  @protected
+  List<TrendingContentInfo> sse_decode_list_trending_content_info(
+      SseDeserializer deserializer);
 
-@protected List<(BigInt,String)> sse_decode_list_record_u_64_string(SseDeserializer deserializer);
+  @protected
+  String? sse_decode_opt_String(SseDeserializer deserializer);
 
-@protected List<(BigInt,BigInt)> sse_decode_list_record_u_64_u_64(SseDeserializer deserializer);
+  @protected
+  BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer);
 
-@protected List<SearchContentInfo> sse_decode_list_search_content_info(SseDeserializer deserializer);
+  @protected
+  BigInt? sse_decode_opt_box_autoadd_usize(SseDeserializer deserializer);
 
-@protected List<TrendingContentInfo> sse_decode_list_trending_content_info(SseDeserializer deserializer);
+  @protected
+  OutputPayload sse_decode_output_payload(SseDeserializer deserializer);
 
-@protected String? sse_decode_opt_String(SseDeserializer deserializer);
+  @protected
+  Paths sse_decode_paths(SseDeserializer deserializer);
 
-@protected BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer);
+  @protected
+  PluginInfo sse_decode_plugin_info(SseDeserializer deserializer);
 
-@protected BigInt? sse_decode_opt_box_autoadd_usize(SseDeserializer deserializer);
+  @protected
+  (String, InstalledPluginInfo) sse_decode_record_string_installed_plugin_info(
+      SseDeserializer deserializer);
 
-@protected OutputPayload sse_decode_output_payload(SseDeserializer deserializer);
+  @protected
+  (String, PluginInfo) sse_decode_record_string_plugin_info(
+      SseDeserializer deserializer);
 
-@protected Paths sse_decode_paths(SseDeserializer deserializer);
+  @protected
+  (BigInt, String) sse_decode_record_u_64_string(SseDeserializer deserializer);
 
-@protected PluginInfo sse_decode_plugin_info(SseDeserializer deserializer);
+  @protected
+  (BigInt, BigInt) sse_decode_record_u_64_u_64(SseDeserializer deserializer);
 
-@protected (String,InstalledPluginInfo) sse_decode_record_string_installed_plugin_info(SseDeserializer deserializer);
+  @protected
+  SearchContentInfo sse_decode_search_content_info(
+      SseDeserializer deserializer);
 
-@protected (String,PluginInfo) sse_decode_record_string_plugin_info(SseDeserializer deserializer);
+  @protected
+  Settings sse_decode_settings(SseDeserializer deserializer);
 
-@protected (BigInt,String) sse_decode_record_u_64_string(SseDeserializer deserializer);
+  @protected
+  TrendingContentInfo sse_decode_trending_content_info(
+      SseDeserializer deserializer);
 
-@protected (BigInt,BigInt) sse_decode_record_u_64_u_64(SseDeserializer deserializer);
+  @protected
+  BigInt sse_decode_u_64(SseDeserializer deserializer);
 
-@protected SearchContentInfo sse_decode_search_content_info(SseDeserializer deserializer);
+  @protected
+  int sse_decode_u_8(SseDeserializer deserializer);
 
-@protected Settings sse_decode_settings(SseDeserializer deserializer);
+  @protected
+  void sse_decode_unit(SseDeserializer deserializer);
 
-@protected TrendingContentInfo sse_decode_trending_content_info(SseDeserializer deserializer);
+  @protected
+  BigInt sse_decode_usize(SseDeserializer deserializer);
 
-@protected BigInt sse_decode_u_64(SseDeserializer deserializer);
+  @protected
+  ViewContentInfo sse_decode_view_content_info(SseDeserializer deserializer);
 
-@protected int sse_decode_u_8(SseDeserializer deserializer);
+  @protected
+  int sse_decode_i_32(SseDeserializer deserializer);
 
-@protected void sse_decode_unit(SseDeserializer deserializer);
+  @protected
+  void sse_encode_AnyhowException(
+      AnyhowException self, SseSerializer serializer);
 
-@protected BigInt sse_decode_usize(SseDeserializer deserializer);
+  @protected
+  void sse_encode_Map_String_installed_plugin_info_None(
+      Map<String, InstalledPluginInfo> self, SseSerializer serializer);
 
-@protected ViewContentInfo sse_decode_view_content_info(SseDeserializer deserializer);
+  @protected
+  void sse_encode_Map_String_plugin_info_None(
+      Map<String, PluginInfo> self, SseSerializer serializer);
 
-@protected int sse_decode_i_32(SseDeserializer deserializer);
+  @protected
+  void sse_encode_Map_u_64_String_None(
+      Map<BigInt, String> self, SseSerializer serializer);
 
-@protected void sse_encode_AnyhowException(AnyhowException self, SseSerializer serializer);
+  @protected
+  void sse_encode_Map_u_64_u_64_None(
+      Map<BigInt, BigInt> self, SseSerializer serializer);
 
-@protected void sse_encode_Map_String_installed_plugin_info_None(Map<String, InstalledPluginInfo> self, SseSerializer serializer);
+  @protected
+  void sse_encode_String(String self, SseSerializer serializer);
 
-@protected void sse_encode_Map_String_plugin_info_None(Map<String, PluginInfo> self, SseSerializer serializer);
+  @protected
+  void sse_encode_bool(bool self, SseSerializer serializer);
 
-@protected void sse_encode_Map_u_64_String_None(Map<BigInt, String> self, SseSerializer serializer);
+  @protected
+  void sse_encode_box_autoadd_settings(Settings self, SseSerializer serializer);
 
-@protected void sse_encode_Map_u_64_u_64_None(Map<BigInt, BigInt> self, SseSerializer serializer);
+  @protected
+  void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer);
 
-@protected void sse_encode_String(String self, SseSerializer serializer);
+  @protected
+  void sse_encode_box_autoadd_usize(BigInt self, SseSerializer serializer);
 
-@protected void sse_encode_bool(bool self, SseSerializer serializer);
+  @protected
+  void sse_encode_category_map(CategoryMap self, SseSerializer serializer);
 
-@protected void sse_encode_box_autoadd_settings(Settings self, SseSerializer serializer);
+  @protected
+  void sse_encode_category_order_map(
+      CategoryOrderMap self, SseSerializer serializer);
 
-@protected void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer);
+  @protected
+  void sse_encode_episode_info(EpisodeInfo self, SseSerializer serializer);
 
-@protected void sse_encode_box_autoadd_usize(BigInt self, SseSerializer serializer);
+  @protected
+  void sse_encode_f_32(double self, SseSerializer serializer);
 
-@protected void sse_encode_category_map(CategoryMap self, SseSerializer serializer);
+  @protected
+  void sse_encode_featured_content_info(
+      FeaturedContentInfo self, SseSerializer serializer);
 
-@protected void sse_encode_category_order_map(CategoryOrderMap self, SseSerializer serializer);
+  @protected
+  void sse_encode_files(Files self, SseSerializer serializer);
 
-@protected void sse_encode_episode_info(EpisodeInfo self, SseSerializer serializer);
+  @protected
+  void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer);
 
-@protected void sse_encode_f_32(double self, SseSerializer serializer);
+  @protected
+  void sse_encode_installed_plugin_info(
+      InstalledPluginInfo self, SseSerializer serializer);
 
-@protected void sse_encode_featured_content_info(FeaturedContentInfo self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_String(List<String> self, SseSerializer serializer);
 
-@protected void sse_encode_files(Files self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_episode_info(
+      List<EpisodeInfo> self, SseSerializer serializer);
 
-@protected void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_featured_content_info(
+      List<FeaturedContentInfo> self, SseSerializer serializer);
 
-@protected void sse_encode_installed_plugin_info(InstalledPluginInfo self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_files(List<Files> self, SseSerializer serializer);
 
-@protected void sse_encode_list_String(List<String> self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_list_episode_info(
+      List<List<EpisodeInfo>> self, SseSerializer serializer);
 
-@protected void sse_encode_list_episode_info(List<EpisodeInfo> self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_prim_u_8_strict(
+      Uint8List self, SseSerializer serializer);
 
-@protected void sse_encode_list_featured_content_info(List<FeaturedContentInfo> self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_record_string_installed_plugin_info(
+      List<(String, InstalledPluginInfo)> self, SseSerializer serializer);
 
-@protected void sse_encode_list_files(List<Files> self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_record_string_plugin_info(
+      List<(String, PluginInfo)> self, SseSerializer serializer);
 
-@protected void sse_encode_list_list_episode_info(List<List<EpisodeInfo>> self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_record_u_64_string(
+      List<(BigInt, String)> self, SseSerializer serializer);
 
-@protected void sse_encode_list_prim_u_8_strict(Uint8List self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_record_u_64_u_64(
+      List<(BigInt, BigInt)> self, SseSerializer serializer);
 
-@protected void sse_encode_list_record_string_installed_plugin_info(List<(String,InstalledPluginInfo)> self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_search_content_info(
+      List<SearchContentInfo> self, SseSerializer serializer);
 
-@protected void sse_encode_list_record_string_plugin_info(List<(String,PluginInfo)> self, SseSerializer serializer);
+  @protected
+  void sse_encode_list_trending_content_info(
+      List<TrendingContentInfo> self, SseSerializer serializer);
 
-@protected void sse_encode_list_record_u_64_string(List<(BigInt,String)> self, SseSerializer serializer);
+  @protected
+  void sse_encode_opt_String(String? self, SseSerializer serializer);
 
-@protected void sse_encode_list_record_u_64_u_64(List<(BigInt,BigInt)> self, SseSerializer serializer);
+  @protected
+  void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer);
 
-@protected void sse_encode_list_search_content_info(List<SearchContentInfo> self, SseSerializer serializer);
+  @protected
+  void sse_encode_opt_box_autoadd_usize(BigInt? self, SseSerializer serializer);
 
-@protected void sse_encode_list_trending_content_info(List<TrendingContentInfo> self, SseSerializer serializer);
+  @protected
+  void sse_encode_output_payload(OutputPayload self, SseSerializer serializer);
 
-@protected void sse_encode_opt_String(String? self, SseSerializer serializer);
+  @protected
+  void sse_encode_paths(Paths self, SseSerializer serializer);
 
-@protected void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer);
+  @protected
+  void sse_encode_plugin_info(PluginInfo self, SseSerializer serializer);
 
-@protected void sse_encode_opt_box_autoadd_usize(BigInt? self, SseSerializer serializer);
+  @protected
+  void sse_encode_record_string_installed_plugin_info(
+      (String, InstalledPluginInfo) self, SseSerializer serializer);
 
-@protected void sse_encode_output_payload(OutputPayload self, SseSerializer serializer);
+  @protected
+  void sse_encode_record_string_plugin_info(
+      (String, PluginInfo) self, SseSerializer serializer);
 
-@protected void sse_encode_paths(Paths self, SseSerializer serializer);
+  @protected
+  void sse_encode_record_u_64_string(
+      (BigInt, String) self, SseSerializer serializer);
 
-@protected void sse_encode_plugin_info(PluginInfo self, SseSerializer serializer);
+  @protected
+  void sse_encode_record_u_64_u_64(
+      (BigInt, BigInt) self, SseSerializer serializer);
 
-@protected void sse_encode_record_string_installed_plugin_info((String,InstalledPluginInfo) self, SseSerializer serializer);
+  @protected
+  void sse_encode_search_content_info(
+      SearchContentInfo self, SseSerializer serializer);
 
-@protected void sse_encode_record_string_plugin_info((String,PluginInfo) self, SseSerializer serializer);
+  @protected
+  void sse_encode_settings(Settings self, SseSerializer serializer);
 
-@protected void sse_encode_record_u_64_string((BigInt,String) self, SseSerializer serializer);
+  @protected
+  void sse_encode_trending_content_info(
+      TrendingContentInfo self, SseSerializer serializer);
 
-@protected void sse_encode_record_u_64_u_64((BigInt,BigInt) self, SseSerializer serializer);
+  @protected
+  void sse_encode_u_64(BigInt self, SseSerializer serializer);
 
-@protected void sse_encode_search_content_info(SearchContentInfo self, SseSerializer serializer);
+  @protected
+  void sse_encode_u_8(int self, SseSerializer serializer);
 
-@protected void sse_encode_settings(Settings self, SseSerializer serializer);
+  @protected
+  void sse_encode_unit(void self, SseSerializer serializer);
 
-@protected void sse_encode_trending_content_info(TrendingContentInfo self, SseSerializer serializer);
+  @protected
+  void sse_encode_usize(BigInt self, SseSerializer serializer);
 
-@protected void sse_encode_u_64(BigInt self, SseSerializer serializer);
+  @protected
+  void sse_encode_view_content_info(
+      ViewContentInfo self, SseSerializer serializer);
 
-@protected void sse_encode_u_8(int self, SseSerializer serializer);
-
-@protected void sse_encode_unit(void self, SseSerializer serializer);
-
-@protected void sse_encode_usize(BigInt self, SseSerializer serializer);
-
-@protected void sse_encode_view_content_info(ViewContentInfo self, SseSerializer serializer);
-
-@protected void sse_encode_i_32(int self, SseSerializer serializer);
-                }
-                
-
+  @protected
+  void sse_encode_i_32(int self, SseSerializer serializer);
+}
 
 // Section: wire_class
 
+class RustLibWire implements BaseWire {
+  factory RustLibWire.fromExternalLibrary(ExternalLibrary lib) =>
+      RustLibWire(lib.ffiDynamicLibrary);
 
-        class RustLibWire implements BaseWire {
+  /// Holds the symbol lookup function.
+  final ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName)
+      _lookup;
 
-            factory RustLibWire.fromExternalLibrary(ExternalLibrary lib) =>
-              RustLibWire(lib.ffiDynamicLibrary);
-        
-            /// Holds the symbol lookup function.
-            final ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName)
-                _lookup;
-  
-            /// The symbols are looked up in [dynamicLibrary].
-            RustLibWire(ffi.DynamicLibrary dynamicLibrary)
-                : _lookup = dynamicLibrary.lookup;
-
-            
-        }
-        
+  /// The symbols are looked up in [dynamicLibrary].
+  RustLibWire(ffi.DynamicLibrary dynamicLibrary)
+      : _lookup = dynamicLibrary.lookup;
+}

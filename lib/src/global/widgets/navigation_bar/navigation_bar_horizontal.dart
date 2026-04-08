@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:recombox/src/global/app_color.dart';
-import 'package:recombox/src/widgets/navigation_bar/navigate_handler.dart';
+import 'package:recombox/src/global/widgets/navigation_bar/navigate_handler.dart';
 
 class NavigationBarHorizontal extends StatefulWidget {
   const NavigationBarHorizontal({super.key, required this.currentIndex});

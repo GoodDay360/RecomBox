@@ -9,7 +9,7 @@ import 'package:recombox/src/rust/method/favorite/get_category_order.dart';
 import 'package:recombox/src/rust/method/favorite/swap_category_order.dart';
 import 'dart:io';
 
-import 'package:recombox/src/widgets/title_bar.dart';
+import 'package:recombox/src/global/widgets/title_bar.dart';
 
 Map<int, String> availableSorts = {
   0: "Relevance",
@@ -103,7 +103,7 @@ class _SearchState extends State<EditCategory> {
                             ),
                           ),
                           Text(
-                            'Set categories',
+                            'Edit categories',
                             style: GoogleFonts.nunito(
                               color: appColors.textPrimary,
                               fontSize: 28,

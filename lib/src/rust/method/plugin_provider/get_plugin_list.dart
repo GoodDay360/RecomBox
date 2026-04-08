@@ -6,19 +6,23 @@
 import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
-part 'get_plugin_list.freezed.dart';part 'get_plugin_list.g.dart';
+part 'get_plugin_list.freezed.dart';
+part 'get_plugin_list.g.dart';
 
-            // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`
 
+Future<Map<String, PluginInfo>> getPluginList({required String source}) =>
+    RustLib.instance.api
+        .crateMethodPluginProviderGetPluginListGetPluginList(source: source);
 
-            Future<Map<String, PluginInfo>>  getPluginList({required String source }) => RustLib.instance.api.crateMethodPluginProviderGetPluginListGetPluginList(source: source);
+@freezed
+sealed class PluginInfo with _$PluginInfo {
+  const factory PluginInfo({
+    required String name,
+    required String repoUrl,
+    required String iconUrl,
+  }) = _PluginInfo;
 
-            @freezed
-sealed class PluginInfo with _$PluginInfo  {
-                
-                const factory PluginInfo({ required  String name, required  String repoUrl, required  String iconUrl,}) = _PluginInfo;
-                
-                factory PluginInfo.fromJson(Map<String, dynamic> json) => _$PluginInfoFromJson(json);
-                
-            }
-            
+  factory PluginInfo.fromJson(Map<String, dynamic> json) =>
+      _$PluginInfoFromJson(json);
+}

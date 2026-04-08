@@ -102,6 +102,7 @@ class _SetFavoriteTileState extends State<EditCategoryTile> {
                           'No',
                           style: GoogleFonts.nunito(
                             color: appColors.textPrimary,
+                            fontWeight: FontWeight(800)
                           )
                         ),
                         onPressed: () => Navigator.pop(context),
@@ -111,6 +112,8 @@ class _SetFavoriteTileState extends State<EditCategoryTile> {
                           'Yes',
                           style: GoogleFonts.nunito(
                             color: appColors.textPrimary,
+                            fontWeight: FontWeight(800),
+
                           )
                         ),
                         onPressed: () async {

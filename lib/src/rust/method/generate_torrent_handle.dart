@@ -6,11 +6,9 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`, `fmt`
 
-            // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`, `fmt`
-
-
-            Future<void>  generateTorrentHandle({required String torrentSource , required BigInt fileId }) => RustLib.instance.api.crateMethodGenerateTorrentHandleGenerateTorrentHandle(torrentSource: torrentSource, fileId: fileId);
-
-            
-            
+Future<void> generateTorrentHandle(
+        {required String torrentSource, required BigInt fileId}) =>
+    RustLib.instance.api.crateMethodGenerateTorrentHandleGenerateTorrentHandle(
+        torrentSource: torrentSource, fileId: fileId);

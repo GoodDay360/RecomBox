@@ -8,7 +8,7 @@ import 'package:recombox/src/rust/method/favorite/is_in_category.dart';
 import 'package:recombox/src/rust/method/metadata_provider/view_content.dart';
 import 'dart:io';
 import 'dart:async';
-import 'package:recombox/src/widgets/title_bar.dart';
+import 'package:recombox/src/global/widgets/title_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ViewScreenArguments {
@@ -235,7 +235,7 @@ class _ViewState extends State<ViewScreen> {
                   children: [
                     SizedBox(
                       width: double.infinity,
-                      height: MediaQuery.of(context).size.height * 0.55,
+                      height: MediaQuery.of(context).size.height * 0.5,
                       child: Stack(
                         children: [
                           Ink.image(
@@ -405,6 +405,8 @@ class _ViewState extends State<ViewScreen> {
                                         'No',
                                         style: GoogleFonts.nunito(
                                           color: appColors.textPrimary,
+                                          fontWeight: FontWeight(800),
+
                                         )
                                       ),
                                       onPressed: () => Navigator.pop(context),
@@ -414,6 +416,8 @@ class _ViewState extends State<ViewScreen> {
                                         'Yes',
                                         style: GoogleFonts.nunito(
                                           color: appColors.textPrimary,
+                                          fontWeight: FontWeight(800),
+
                                         )
                                       ),
                                       onPressed: () {
@@ -459,6 +463,8 @@ class _ViewState extends State<ViewScreen> {
                                         'No',
                                         style: GoogleFonts.nunito(
                                           color: appColors.textPrimary,
+                                          fontWeight: FontWeight(800),
+
                                         )
                                       ),
                                       onPressed: () => Navigator.pop(context),
@@ -468,6 +474,8 @@ class _ViewState extends State<ViewScreen> {
                                         'Yes',
                                         style: GoogleFonts.nunito(
                                           color: appColors.textPrimary,
+                                          fontWeight: FontWeight(800),
+
                                         )
                                       ),
                                       onPressed: () {

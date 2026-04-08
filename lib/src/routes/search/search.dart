@@ -4,11 +4,11 @@ import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/routes/search/widgets/search_tile.dart';
 import 'package:recombox/src/rust/method/metadata_provider/search_content.dart';
-import 'package:recombox/src/widgets/navigation_bar/navigation_bar_horizontal.dart';
-import 'package:recombox/src/widgets/navigation_bar/navigation_bar_vertical.dart';
+import 'package:recombox/src/global/widgets/navigation_bar/navigation_bar_horizontal.dart';
+import 'package:recombox/src/global/widgets/navigation_bar/navigation_bar_vertical.dart';
 import 'dart:io';
 
-import 'package:recombox/src/widgets/title_bar.dart';
+import 'package:recombox/src/global/widgets/title_bar.dart';
 
 Map<int, String> availableSorts = {
   0: "Relevance",

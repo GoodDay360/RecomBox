@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:recombox/src/global/app_color.dart';
-import 'package:recombox/src/widgets/navigation_bar/navigate_handler.dart';
+import 'package:recombox/src/global/widgets/navigation_bar/navigate_handler.dart';
 import 'package:window_manager/window_manager.dart';
+
+import 'dart:io';
 
 class NavigationBarVertical extends StatefulWidget {
   const NavigationBarVertical(
@@ -42,7 +44,9 @@ class _NavigationBarVerticalState extends State<NavigationBarVertical> {
       children: [
         GestureDetector(
           onPanStart: (_) async {
-            await windowManager.startDragging();
+            if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+              await windowManager.startDragging();
+            }
           },
           child: Container(
             padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
