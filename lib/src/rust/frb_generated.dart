@@ -966,14 +966,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   InstalledPluginInfo dco_decode_installed_plugin_info(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 5)
-      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
     return InstalledPluginInfo(
-      pluginName: dco_decode_String(arr[0]),
-      pluginRepoUrl: dco_decode_String(arr[1]),
-      pluginIconUrl: dco_decode_String(arr[2]),
-      pluginPath: dco_decode_String(arr[3]),
-      pluginVersion: dco_decode_String(arr[4]),
+      manifestRepoName: dco_decode_String(arr[0]),
+      pluginName: dco_decode_String(arr[1]),
+      pluginRepoUrl: dco_decode_String(arr[2]),
+      pluginIconUrl: dco_decode_String(arr[3]),
+      pluginPath: dco_decode_String(arr[4]),
+      pluginVersion: dco_decode_String(arr[5]),
     );
   }
 
@@ -1383,12 +1384,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   InstalledPluginInfo sse_decode_installed_plugin_info(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_manifestRepoName = sse_decode_String(deserializer);
     var var_pluginName = sse_decode_String(deserializer);
     var var_pluginRepoUrl = sse_decode_String(deserializer);
     var var_pluginIconUrl = sse_decode_String(deserializer);
     var var_pluginPath = sse_decode_String(deserializer);
     var var_pluginVersion = sse_decode_String(deserializer);
     return InstalledPluginInfo(
+        manifestRepoName: var_manifestRepoName,
         pluginName: var_pluginName,
         pluginRepoUrl: var_pluginRepoUrl,
         pluginIconUrl: var_pluginIconUrl,
@@ -1870,6 +1873,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_installed_plugin_info(
       InstalledPluginInfo self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.manifestRepoName, serializer);
     sse_encode_String(self.pluginName, serializer);
     sse_encode_String(self.pluginRepoUrl, serializer);
     sse_encode_String(self.pluginIconUrl, serializer);

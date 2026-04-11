@@ -4,6 +4,7 @@ import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/dialogs/install_plugin/install_plugin_dialog.dart';
 import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/rust/method/plugin_provider.dart';
+import 'package:recombox/src/rust/method/plugin_provider/install_plugin.dart';
 import 'package:recombox/src/rust/method/plugin_provider/remove_plugin.dart';
 
 class InstallPluginTile extends StatefulWidget {
@@ -12,7 +13,8 @@ class InstallPluginTile extends StatefulWidget {
     required this.source,
     required this.isInstalled,
     required this.pluginInfo,
-    required this.onInstallPlugin,
+    this.isAllowInstall,
+    this.onStartInstall,
     this.onChange
 
   });
@@ -20,7 +22,8 @@ class InstallPluginTile extends StatefulWidget {
   final Source source;
   final bool isInstalled;
   final PluginInfo pluginInfo;
-  final Future<void> Function(OnInstallPluginArgs) onInstallPlugin;
+  final bool Function()? isAllowInstall;
+  final VoidCallback? onStartInstall;
   final VoidCallback? onChange;
 
 
@@ -39,6 +42,28 @@ class _SetFavoriteTileState extends State<InstallPluginTile> {
     super.initState();
     
     isInstalled = widget.isInstalled;
+  }
+
+  Future<void> onInstallPlugin() async {
+    if (!(widget.isAllowInstall?.call() ?? false)) return;
+
+    setState(() {
+      isInstalling = true;
+    });
+
+    widget.onStartInstall?.call();
+    
+    await installPlugins(
+      source: widget.source.name, 
+      pluginInfo: widget.pluginInfo
+    );
+
+    setState(() {
+      isInstalled = true;
+      isInstalling = false;
+    });
+
+    widget.onChange?.call();
   }
 
   Future<void> onRemovePlugin() async {
@@ -116,29 +141,7 @@ class _SetFavoriteTileState extends State<InstallPluginTile> {
               if (!isInstalling)
                 IconButton(
                   mouseCursor: SystemMouseCursors.click,
-                  onPressed: (){
-                    widget.onInstallPlugin(
-                      OnInstallPluginArgs(
-                        pluginInfo: widget.pluginInfo,
-                        onStart: () {
-                          setState(() {
-                            isInstalling = true;
-                          });
-                        },
-                        onFail: (){
-                          setState(() {
-                            isInstalling = false;
-                          });
-                        },
-                        onComplete: (){
-                          setState(() {
-                            isInstalling = false;
-                            isInstalled = true;
-                          });
-                        }
-                      )
-                    );
-                  },
+                  onPressed: onInstallPlugin,
                   icon: Icon(
                     Icons.download_rounded,
                     color: appColors.secondary,

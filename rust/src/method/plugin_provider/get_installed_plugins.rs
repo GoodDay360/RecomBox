@@ -13,6 +13,7 @@ use crate::utils::settings::Settings;
 #[frb(json_serializable)]
 #[derive(Debug, Deserialize, Serialize)]
 pub struct InstalledPluginInfo{
+    pub manifest_repo_name: String,
     pub plugin_name: String,
     pub plugin_repo_url: String,
     pub plugin_icon_url: String,
@@ -35,15 +36,23 @@ pub async fn get_installed_plugins(source: &str) -> Result<HashMap<String, Insta
         plugin_directory: plugin_dir
     };
 
+    let installed_manifest_repo = plugin_db_manager.get_installed_manifest_repo().await
+        .map_err(|e| e.to_string())?;
+
     let installed_plugins = plugin_db_manager.get_installed_plugins(source).await
         .map_err(|e| e.to_string())?;
 
 
     let result: HashMap<String, InstalledPluginInfo> = installed_plugins.0.iter()
         .map(|(k, v)| {
+            let manifest_repo_name = match installed_manifest_repo.0.get(&v.hashed_manifest_repo_id) {
+                Some(info ) => &info.manifest_repo_name,
+                None => "Unkown"
+            };
             (
                 k.clone(),
                 InstalledPluginInfo {
+                    manifest_repo_name: manifest_repo_name.to_string(),
                     plugin_name: v.plugin_name.clone(),
                     plugin_repo_url: v.plugin_repo_url.clone(),
                     plugin_icon_url: v.plugin_icon_url.clone(),

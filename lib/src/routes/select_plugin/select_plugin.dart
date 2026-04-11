@@ -5,6 +5,7 @@ import 'package:recombox/src/global/dialogs/install_plugin/install_plugin_dialog
 import 'package:recombox/src/global/types.dart';
 
 import 'package:recombox/src/global/widgets/title_bar.dart';
+import 'package:recombox/src/routes/select_plugin/widgets/select_plugin_tile.dart';
 import 'package:recombox/src/rust/method/plugin_provider/get_installed_plugins.dart';
 
 import 'dart:io';
@@ -29,6 +30,9 @@ class SelectedPluginScreen extends StatefulWidget {
 
 class _SelectedPluginState extends State<SelectedPluginScreen> {
   AppColorsScheme appColors = appColorsNotifier.value;
+
+  Map<String, InstalledPluginInfo> installedPluginMap = {};
+
 
   final TextEditingController _textEditingController = TextEditingController(text: '');
   FocusNode searchFocus = FocusNode();
@@ -68,16 +72,40 @@ class _SelectedPluginState extends State<SelectedPluginScreen> {
 
   Future<void> initSelectPlugin() async {
     
-    Map<String, InstalledPluginInfo> installedPluginList = await getInstalledPlugins(source: args.source.name);
+    Map<String, InstalledPluginInfo> getInstalledPluginMap = await getInstalledPlugins(source: args.source.name);
 
-    debugPrint(installedPluginList.toString());
+    setState(() {
+      installedPluginMap = getInstalledPluginMap;
+    });
+
+    debugPrint(getInstalledPluginMap.toString());
 
   }
+
+  Map<String, InstalledPluginInfo> onFilterSearch() {
+    final query = _textEditingController.text.toLowerCase();
+
+    return Map.fromEntries(
+      installedPluginMap.entries.where((entry) {
+        final element = entry.value;
+        return element.pluginName.toLowerCase().contains(query) ||
+              element.pluginVersion.toLowerCase().contains(query) ||
+              element.manifestRepoName.toLowerCase().contains(query) ||
+              element.pluginRepoUrl.toLowerCase().contains(query);
+      }),
+    );
+  }
+
+
 
 
 
   @override
   Widget build(BuildContext context) {
+
+        Map<String, InstalledPluginInfo> filteredInstalledPluginMap = onFilterSearch();
+
+
     return SafeArea(
       child: Material(
         color: Colors.transparent,
@@ -176,9 +204,22 @@ class _SelectedPluginState extends State<SelectedPluginScreen> {
                           )
                         ),
 
-                      )
+                      ),
                     
                       // <-
+
+                      Expanded(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: filteredInstalledPluginMap.length,
+                          itemBuilder: (context, index) {
+                            return SelectPluginTile(
+                              pluginId: filteredInstalledPluginMap.keys.toList()[index],
+                              pluginInfo: filteredInstalledPluginMap.values.toList()[index],
+                            );
+                          },
+                        ),
+                      ),
                     ],
                   ),
                   
@@ -193,6 +234,7 @@ class _SelectedPluginState extends State<SelectedPluginScreen> {
                             context: context, 
                             builder: (_) => InstallPluginDialog(
                               source: args.source,
+                              onChange: initSelectPlugin,
                             )
                           );
                         },

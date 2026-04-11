@@ -1057,12 +1057,14 @@ impl SseDecode for i64 {
 impl SseDecode for crate::method::plugin_provider::get_installed_plugins::InstalledPluginInfo {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_manifestRepoName = <String>::sse_decode(deserializer);
         let mut var_pluginName = <String>::sse_decode(deserializer);
         let mut var_pluginRepoUrl = <String>::sse_decode(deserializer);
         let mut var_pluginIconUrl = <String>::sse_decode(deserializer);
         let mut var_pluginPath = <String>::sse_decode(deserializer);
         let mut var_pluginVersion = <String>::sse_decode(deserializer);
         return crate::method::plugin_provider::get_installed_plugins::InstalledPluginInfo {
+            manifest_repo_name: var_manifestRepoName,
             plugin_name: var_pluginName,
             plugin_repo_url: var_pluginRepoUrl,
             plugin_icon_url: var_pluginIconUrl,
@@ -1631,6 +1633,7 @@ impl flutter_rust_bridge::IntoDart
 {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
+            self.manifest_repo_name.into_into_dart().into_dart(),
             self.plugin_name.into_into_dart().into_dart(),
             self.plugin_repo_url.into_into_dart().into_dart(),
             self.plugin_icon_url.into_into_dart().into_dart(),
@@ -1945,6 +1948,7 @@ impl SseEncode for i64 {
 impl SseEncode for crate::method::plugin_provider::get_installed_plugins::InstalledPluginInfo {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.manifest_repo_name, serializer);
         <String>::sse_encode(self.plugin_name, serializer);
         <String>::sse_encode(self.plugin_repo_url, serializer);
         <String>::sse_encode(self.plugin_icon_url, serializer);

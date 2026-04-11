@@ -20,6 +20,7 @@ Future<Map<String, InstalledPluginInfo>> getInstalledPlugins(
 @freezed
 sealed class InstalledPluginInfo with _$InstalledPluginInfo {
   const factory InstalledPluginInfo({
+    required String manifestRepoName,
     required String pluginName,
     required String pluginRepoUrl,
     required String pluginIconUrl,

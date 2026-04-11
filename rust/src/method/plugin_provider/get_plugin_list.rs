@@ -37,7 +37,7 @@ pub async fn get_plugin_list(source: &str) -> Result<Vec<PluginInfo>, String> {
 
     let mut result: Vec<PluginInfo> = Vec::new();
 
-    for (k, installed_manifest_info) in all_manifest_repo.0.iter().enumerate() {
+    for (hashed_manifest_repo_id, installed_manifest_info) in all_manifest_repo.0{
         let plugin_info = get_plugin_list::new(InputPayload { 
             manifest_repo_url: installed_manifest_info.manifest_repo_url.clone(), 
             source: source.clone()
@@ -46,7 +46,7 @@ pub async fn get_plugin_list(source: &str) -> Result<Vec<PluginInfo>, String> {
 
         for (plugin_id, plugin_info) in plugin_info.0.iter() {
             result.push(PluginInfo{
-                hashed_manifest_repo_id: installed_manifest_info.hashed_manifest_repo_id.clone(),
+                hashed_manifest_repo_id: hashed_manifest_repo_id.clone(),
                 manifest_repo_name: installed_manifest_info.manifest_repo_name.clone(),
                 plugin_id: plugin_id.clone(),
                 plugin_name: plugin_info.name.clone(),

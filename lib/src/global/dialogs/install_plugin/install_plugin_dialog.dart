@@ -10,19 +10,7 @@ import 'dart:math';
 import 'package:recombox/src/rust/method/plugin_provider/get_plugin_list.dart';
 import 'package:recombox/src/rust/method/plugin_provider/install_plugin.dart';
 
-class OnInstallPluginArgs{
-  PluginInfo pluginInfo;
-  VoidCallback? onStart;
-  VoidCallback? onComplete;
-  VoidCallback? onFail;
 
-  OnInstallPluginArgs({
-    required this.pluginInfo,
-    this.onStart,
-    this.onComplete,
-    this.onFail
-  });
-}
 
 class InstallPluginDialog extends StatefulWidget {
   const InstallPluginDialog({
@@ -86,36 +74,21 @@ class _InstallPluginDialogState extends State<InstallPluginDialog> {
     });
   }
 
-  Future<void> onInstallPlugin(OnInstallPluginArgs onInstallArgs) async {
-    if (isInstalling) return;
-
-    setState(() {
-      isInstalling = true;
-    });
-    onInstallArgs.onStart?.call();
-    try{
-      await installPlugins(
-        source: widget.source.name, 
-        pluginInfo: onInstallArgs.pluginInfo
-      );
-    }catch(e){
-      debugPrint(e.toString());
-      onInstallArgs.onFail?.call();
-      return;
-    }
-    
-    onInstallArgs.onComplete?.call();
-    setState(() {
-      isInstalling = false;
-    });
-    await initDialog(forceReload: false);
-    widget.onChange?.call();
-
-    debugPrint("Success install plugin");
+  bool isAllowInstall() {
+    return isInstalling 
+      ? false
+      : true;
 
   }
 
+  void onStartInstall() {
+    setState(() {
+      isInstalling = true;
+    });
+  }
+
   Future<void> onChange() async {
+    
     await initDialog(forceReload: false);
     widget.onChange?.call();
     debugPrint("Success change");
@@ -261,7 +234,8 @@ class _InstallPluginDialogState extends State<InstallPluginDialog> {
                           source: widget.source,
                           isInstalled: installedPluginMap[filteredPluginList[index].pluginId] != null,
                           onChange: onChange,
-                          onInstallPlugin: onInstallPlugin,
+                          onStartInstall: onStartInstall,
+                          isAllowInstall: isAllowInstall,
                           pluginInfo: filteredPluginList[index],
                         );
                       },
