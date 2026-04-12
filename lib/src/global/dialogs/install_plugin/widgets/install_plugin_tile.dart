@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pub_semver/pub_semver.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/dialogs/install_plugin/install_plugin_dialog.dart';
 import 'package:recombox/src/global/types.dart';
@@ -12,6 +13,7 @@ class InstallPluginTile extends StatefulWidget {
     super.key,
     required this.source,
     required this.isInstalled,
+    this.installedVersion,
     required this.pluginInfo,
     this.isAllowInstall,
     this.onStartInstall,
@@ -21,6 +23,7 @@ class InstallPluginTile extends StatefulWidget {
 
   final Source source;
   final bool isInstalled;
+  final String? installedVersion;
   final PluginInfo pluginInfo;
   final bool Function()? isAllowInstall;
   final VoidCallback? onStartInstall;
@@ -36,12 +39,17 @@ class _SetFavoriteTileState extends State<InstallPluginTile> {
   AppColorsScheme appColors = appColorsNotifier.value;
   bool isInstalled = false;
   bool isInstalling = false;
+  bool isUpdateAvailable = false;
 
   @override
   void initState() {
     super.initState();
     
     isInstalled = widget.isInstalled;
+    if (isInstalled){
+      // TODO: Implement plugin update
+      var installedVersion = Version.parse(widget.installedVersion ?? "0.0.0");
+    }
   }
 
   Future<void> onInstallPlugin() async {
@@ -52,11 +60,19 @@ class _SetFavoriteTileState extends State<InstallPluginTile> {
     });
 
     widget.onStartInstall?.call();
-    
-    await installPlugins(
-      source: widget.source.name, 
-      pluginInfo: widget.pluginInfo
-    );
+    try{
+      await installPlugins(
+        source: widget.source.name, 
+        pluginInfo: widget.pluginInfo
+      );
+    }catch(e){
+      debugPrint(e.toString());
+      setState(() {
+        isInstalling = false;
+      });
+      widget.onChange?.call();
+      return;
+    }
 
     setState(() {
       isInstalled = true;

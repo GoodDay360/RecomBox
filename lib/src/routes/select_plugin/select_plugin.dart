@@ -6,6 +6,7 @@ import 'package:recombox/src/global/types.dart';
 
 import 'package:recombox/src/global/widgets/title_bar.dart';
 import 'package:recombox/src/routes/select_plugin/widgets/select_plugin_tile.dart';
+import 'package:recombox/src/rust/method/metadata_provider/view_content.dart';
 import 'package:recombox/src/rust/method/plugin_provider/get_installed_plugins.dart';
 
 import 'dart:io';
@@ -14,21 +15,28 @@ import 'dart:io';
 class SelectPluginScreenArguments {
   Source source;
   String id;
+  String title;
+  BigInt season;
+  BigInt episode;
+
 
   SelectPluginScreenArguments({
     required this.source,
-    required this.id
+    required this.id,
+    required this.title,
+    required this.season,
+    required this.episode
   });
 }
 
-class SelectedPluginScreen extends StatefulWidget {
-  const SelectedPluginScreen({super.key});
+class SelectPluginScreen extends StatefulWidget {
+  const SelectPluginScreen({super.key});
 
   @override
-  State<SelectedPluginScreen> createState() => _SelectedPluginState();
+  State<SelectPluginScreen> createState() => _SelectPluginState();
 }
 
-class _SelectedPluginState extends State<SelectedPluginScreen> {
+class _SelectPluginState extends State<SelectPluginScreen> {
   AppColorsScheme appColors = appColorsNotifier.value;
 
   Map<String, InstalledPluginInfo> installedPluginMap = {};
@@ -52,6 +60,10 @@ class _SelectedPluginState extends State<SelectedPluginScreen> {
           : SelectPluginScreenArguments(
               source: Source.movies,
               id: "%2F53906%2Fspider-man",
+              title: "Spiderman",
+              season: BigInt.from(1),
+              episode: BigInt.from(1)
+              
           );
 
       debugPrint(args.toString());
@@ -214,8 +226,8 @@ class _SelectedPluginState extends State<SelectedPluginScreen> {
                           itemCount: filteredInstalledPluginMap.length,
                           itemBuilder: (context, index) {
                             return SelectPluginTile(
-                              pluginId: filteredInstalledPluginMap.keys.toList()[index],
                               pluginInfo: filteredInstalledPluginMap.values.toList()[index],
+                              selectPluginScreenArguments: args,
                             );
                           },
                         ),

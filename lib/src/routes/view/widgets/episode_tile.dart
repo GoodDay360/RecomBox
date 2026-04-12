@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:recombox/src/global/app_color.dart';
+import 'package:recombox/src/global/types.dart';
+import 'package:recombox/src/routes/select_plugin/select_plugin.dart';
 import 'package:recombox/src/rust/method/metadata_provider/view_content.dart';
 
 class EpisodeTile extends StatefulWidget {
   const EpisodeTile({
     super.key,
+    required this.id,
+    required this.title,
+    required this.season,
+    required this.episode,
     required this.episodeInfo,
   });
 
+  final String id;
+  final String title;
+  final BigInt season;
+  final BigInt episode;
   final EpisodeInfo episodeInfo;
 
   @override
@@ -19,14 +29,29 @@ class _EpisodeTileState extends State<EpisodeTile> {
   AppColorsScheme appColors = appColorsNotifier.value;
   bool failLoadThumbnail = false;
 
+  void onNavigate() {
+    SelectPluginScreenArguments args = SelectPluginScreenArguments(
+      source: SourceExtension.fromString(widget.episodeInfo.source),
+      id: widget.id,
+      title: widget.title,
+      season: widget.season,
+      episode: widget.episode
+
+    );
+
+    Navigator.pushNamed(
+      context,
+      '/select_plugin',
+      arguments: args,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: (){
-
-        },
+        onTap: onNavigate,
         mouseCursor: SystemMouseCursors.click,
         child: SizedBox(
             width: double.infinity,

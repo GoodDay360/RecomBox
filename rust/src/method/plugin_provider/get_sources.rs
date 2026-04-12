@@ -1,0 +1,69 @@
+use std::path::PathBuf;
+use serde::{Deserialize, Serialize};
+use flutter_rust_bridge::frb;
+use tokio;
+
+use recombox_plugin_provider::get_sources::{self, InputPayload};
+use recombox_plugin_provider::global_types::Source;
+
+use crate::utils::settings::Settings;
+
+
+#[frb(json_serializable)]
+#[derive(Debug, Deserialize, Serialize)]
+pub struct SourceInfo{
+    pub id: String,
+    pub title: String
+}
+
+
+pub async fn get_sources(
+    plugin_path: String,
+    source: String, 
+    id: String,
+    title: String,
+    season: u64,
+    episode: u64,
+    search: String,
+    page: u64,
+
+) -> Result<Vec<SourceInfo>, String> {
+    let source = Source::from_str(&source)
+        .ok_or("Invalid Source")
+        .map_err(|e| e.to_string())?;
+    
+    let settings = Settings::get()
+        .map_err(|e| e.to_string())?;
+
+    let real_plugin_path = PathBuf::from(&settings.paths.app_support_dir)
+        .join("plugins")
+        .join(&plugin_path);
+
+    let data = tokio::task::spawn_blocking(move || {
+        tokio::runtime::Handle::current().block_on(async {
+            get_sources::new(
+        &PathBuf::from(real_plugin_path),
+                InputPayload {
+                    source: source.clone(),
+                    id: id.to_string(),
+                    title: title.to_string(),
+                    season: Some(season),
+                    episode: Some(episode),
+                    search: Some(search.to_string()),
+                    page,
+                },
+            ).await.unwrap()
+        })
+    })
+    .await
+    .map_err(|e| e.to_string())?;
+
+    let result: Vec<SourceInfo> = data.0.iter()
+        .map(|info| SourceInfo {
+            id: info.id.to_owned(),
+            title: info.title.to_owned(),
+        })
+        .collect();
+
+    return Ok(result);
+}

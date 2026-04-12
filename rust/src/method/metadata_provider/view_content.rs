@@ -124,7 +124,6 @@ pub async fn view_content(source: &str, id: &str, from_cache: bool) -> Result<Vi
         tokio::runtime::Handle::current().block_on(async {
             view_content::new(&source_clone, &id_clone)
                 .await
-                .map_err(|e| e.to_string())
                 .unwrap()
         })
     })

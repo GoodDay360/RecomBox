@@ -2,6 +2,7 @@ pub mod get_installed_plugins;
 pub mod get_plugin_list;
 pub mod install_plugin;
 pub mod remove_plugin;
+pub mod get_sources;
 
 use serde::{Deserialize, Serialize};
 use flutter_rust_bridge::frb;

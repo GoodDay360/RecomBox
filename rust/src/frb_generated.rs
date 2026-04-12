@@ -38,7 +38,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.12.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 312102692;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 112400808;
 
 // Section: executor
 
@@ -342,6 +342,59 @@ fn wire__crate__method__plugin_provider__get_plugin_list__get_plugin_list_impl(
                                 &api_source,
                             )
                             .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
+fn wire__crate__method__plugin_provider__get_sources__get_sources_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "get_sources",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_plugin_path = <String>::sse_decode(&mut deserializer);
+            let api_source = <String>::sse_decode(&mut deserializer);
+            let api_id = <String>::sse_decode(&mut deserializer);
+            let api_title = <String>::sse_decode(&mut deserializer);
+            let api_season = <u64>::sse_decode(&mut deserializer);
+            let api_episode = <u64>::sse_decode(&mut deserializer);
+            let api_search = <String>::sse_decode(&mut deserializer);
+            let api_page = <u64>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, String>(
+                    (move || async move {
+                        let output_ok = crate::method::plugin_provider::get_sources::get_sources(
+                            api_plugin_path,
+                            api_source,
+                            api_id,
+                            api_title,
+                            api_season,
+                            api_episode,
+                            api_search,
+                            api_page,
+                        )
+                        .await?;
                         Ok(output_ok)
                     })()
                     .await,
@@ -1228,6 +1281,20 @@ impl SseDecode for Vec<crate::method::metadata_provider::search_content::SearchC
     }
 }
 
+impl SseDecode for Vec<crate::method::plugin_provider::get_sources::SourceInfo> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(
+                <crate::method::plugin_provider::get_sources::SourceInfo>::sse_decode(deserializer),
+            );
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for Vec<crate::method::metadata_provider::trending_content::TrendingContentInfo> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1381,6 +1448,18 @@ impl SseDecode for crate::utils::settings::Settings {
     }
 }
 
+impl SseDecode for crate::method::plugin_provider::get_sources::SourceInfo {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_id = <String>::sse_decode(deserializer);
+        let mut var_title = <String>::sse_decode(deserializer);
+        return crate::method::plugin_provider::get_sources::SourceInfo {
+            id: var_id,
+            title: var_title,
+        };
+    }
+}
+
 impl SseDecode for crate::method::metadata_provider::trending_content::TrendingContentInfo {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1486,20 +1565,21 @@ fn pde_ffi_dispatcher_primary_impl(
 7 => wire__crate__method__favorite__get_category_order__get_category_order_impl(port, ptr, rust_vec_len, data_len),
 8 => wire__crate__method__plugin_provider__get_installed_plugins__get_installed_plugins_impl(port, ptr, rust_vec_len, data_len),
 9 => wire__crate__method__plugin_provider__get_plugin_list__get_plugin_list_impl(port, ptr, rust_vec_len, data_len),
-10 => wire__crate__method__get_torrent_info__get_torrent_info_impl(port, ptr, rust_vec_len, data_len),
-11 => wire__crate__method__settings__init_settings__init_settings_impl(port, ptr, rust_vec_len, data_len),
-12 => wire__crate__method__init__init_torrent_session__init_torrent_session_impl(port, ptr, rust_vec_len, data_len),
-13 => wire__crate__method__plugin_provider__install_plugin__install_plugins_impl(port, ptr, rust_vec_len, data_len),
-14 => wire__crate__method__favorite__is_in_category__is_in_category_impl(port, ptr, rust_vec_len, data_len),
-15 => wire__crate__method__plugin_provider__remove_plugin__remove_plugins_impl(port, ptr, rust_vec_len, data_len),
-16 => wire__crate__method__favorite__rename_category__rename_category_impl(port, ptr, rust_vec_len, data_len),
-17 => wire__crate__method__metadata_provider__search_content__search_content_impl(port, ptr, rust_vec_len, data_len),
-18 => wire__crate__method__favorite__set_category__set_category_impl(port, ptr, rust_vec_len, data_len),
-19 => wire__crate__method__spawn_stream_server__spawn_stream_server_impl(port, ptr, rust_vec_len, data_len),
-20 => wire__crate__method__favorite__swap_category_order__swap_category_order_impl(port, ptr, rust_vec_len, data_len),
-21 => wire__crate__method__metadata_provider__trending_content__trending_content_impl(port, ptr, rust_vec_len, data_len),
-22 => wire__crate__method__favorite__unset_category__unset_category_impl(port, ptr, rust_vec_len, data_len),
-23 => wire__crate__method__metadata_provider__view_content__view_content_impl(port, ptr, rust_vec_len, data_len),
+10 => wire__crate__method__plugin_provider__get_sources__get_sources_impl(port, ptr, rust_vec_len, data_len),
+11 => wire__crate__method__get_torrent_info__get_torrent_info_impl(port, ptr, rust_vec_len, data_len),
+12 => wire__crate__method__settings__init_settings__init_settings_impl(port, ptr, rust_vec_len, data_len),
+13 => wire__crate__method__init__init_torrent_session__init_torrent_session_impl(port, ptr, rust_vec_len, data_len),
+14 => wire__crate__method__plugin_provider__install_plugin__install_plugins_impl(port, ptr, rust_vec_len, data_len),
+15 => wire__crate__method__favorite__is_in_category__is_in_category_impl(port, ptr, rust_vec_len, data_len),
+16 => wire__crate__method__plugin_provider__remove_plugin__remove_plugins_impl(port, ptr, rust_vec_len, data_len),
+17 => wire__crate__method__favorite__rename_category__rename_category_impl(port, ptr, rust_vec_len, data_len),
+18 => wire__crate__method__metadata_provider__search_content__search_content_impl(port, ptr, rust_vec_len, data_len),
+19 => wire__crate__method__favorite__set_category__set_category_impl(port, ptr, rust_vec_len, data_len),
+20 => wire__crate__method__spawn_stream_server__spawn_stream_server_impl(port, ptr, rust_vec_len, data_len),
+21 => wire__crate__method__favorite__swap_category_order__swap_category_order_impl(port, ptr, rust_vec_len, data_len),
+22 => wire__crate__method__metadata_provider__trending_content__trending_content_impl(port, ptr, rust_vec_len, data_len),
+23 => wire__crate__method__favorite__unset_category__unset_category_impl(port, ptr, rust_vec_len, data_len),
+24 => wire__crate__method__metadata_provider__view_content__view_content_impl(port, ptr, rust_vec_len, data_len),
                         _ => unreachable!(),
                     }
 }
@@ -1767,6 +1847,27 @@ impl flutter_rust_bridge::IntoIntoDart<crate::utils::settings::Settings>
     for crate::utils::settings::Settings
 {
     fn into_into_dart(self) -> crate::utils::settings::Settings {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::method::plugin_provider::get_sources::SourceInfo {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.id.into_into_dart().into_dart(),
+            self.title.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::method::plugin_provider::get_sources::SourceInfo
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::method::plugin_provider::get_sources::SourceInfo>
+    for crate::method::plugin_provider::get_sources::SourceInfo
+{
+    fn into_into_dart(self) -> crate::method::plugin_provider::get_sources::SourceInfo {
         self
     }
 }
@@ -2083,6 +2184,16 @@ impl SseEncode for Vec<crate::method::metadata_provider::search_content::SearchC
     }
 }
 
+impl SseEncode for Vec<crate::method::plugin_provider::get_sources::SourceInfo> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::method::plugin_provider::get_sources::SourceInfo>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for Vec<crate::method::metadata_provider::trending_content::TrendingContentInfo> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2202,6 +2313,14 @@ impl SseEncode for crate::utils::settings::Settings {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <crate::utils::settings::Paths>::sse_encode(self.paths, serializer);
+    }
+}
+
+impl SseEncode for crate::method::plugin_provider::get_sources::SourceInfo {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.id, serializer);
+        <String>::sse_encode(self.title, serializer);
     }
 }
 

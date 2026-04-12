@@ -3,48 +3,34 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/dialogs/install_plugin/install_plugin_dialog.dart';
 import 'package:recombox/src/global/types.dart';
-import 'package:recombox/src/routes/select_plugin/select_plugin.dart';
-import 'package:recombox/src/routes/select_source/select_source.dart';
 import 'package:recombox/src/rust/method/plugin_provider.dart';
 import 'package:recombox/src/rust/method/plugin_provider/get_installed_plugins.dart';
+import 'package:recombox/src/rust/method/plugin_provider/get_sources.dart';
 import 'package:recombox/src/rust/method/plugin_provider/install_plugin.dart';
 import 'package:recombox/src/rust/method/plugin_provider/remove_plugin.dart';
 
-class SelectPluginTile extends StatefulWidget {
-  const SelectPluginTile({
+class SelectSourceTile extends StatefulWidget {
+  const SelectSourceTile({
     super.key,
-    required this.pluginInfo,
-    required this.selectPluginScreenArguments,
+    required this.getSourceInfo,
   }); 
 
-  final InstalledPluginInfo pluginInfo;
-  final SelectPluginScreenArguments selectPluginScreenArguments;
+  final SourceInfo getSourceInfo;
 
 
 
   @override
-  State<SelectPluginTile> createState() => _SelectPluginTileState();
+  State<SelectSourceTile> createState() => _SelectSourceTileState();
 }
 
-class _SelectPluginTileState extends State<SelectPluginTile> {
+class _SelectSourceTileState extends State<SelectSourceTile> {
 
   AppColorsScheme appColors = appColorsNotifier.value;
 
   @override
   void initState() {
     super.initState();
-    debugPrint(widget.pluginInfo.pluginPath);
-  }
-
-  void onNavigate() {
-    Navigator.pushNamed(
-      context,
-      "/select_source",
-      arguments: SelectSourceScreenArguments(
-        pluginPath: widget.pluginInfo.pluginPath,
-        selectPluginScreenArguments: widget.selectPluginScreenArguments
-      )
-    );
+    
   }
 
   @override
@@ -53,15 +39,13 @@ class _SelectPluginTileState extends State<SelectPluginTile> {
       color: Colors.transparent,
       child: InkWell(
         mouseCursor: SystemMouseCursors.click,
-        onTap: onNavigate,
+        onTap: (){
+
+        },
         child: Container(
           padding: EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 10),
           child: Row(
             children: [
-              Image.network(
-                widget.pluginInfo.pluginIconUrl,
-                width: 50,
-              ),
               Expanded(
                 child: Container(
                   padding: EdgeInsets.only(left: 10),
@@ -69,19 +53,10 @@ class _SelectPluginTileState extends State<SelectPluginTile> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.pluginInfo.pluginName,
+                        widget.getSourceInfo.title,
                         style: GoogleFonts.nunito(
                           color: appColors.textPrimary,
                           fontSize: 24
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        "From: ${widget.pluginInfo.manifestRepoName}",
-                        style: GoogleFonts.nunito(
-                          color: appColors.textSecondary,
-                          fontSize: 16,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,

@@ -770,7 +770,12 @@ class _ViewState extends State<ViewScreen> {
                                   itemCount: filteredEpisodes.length,
                                   itemBuilder: (current, index) {
                                       return EpisodeTile(
+                                        id: args.id,
+                                        title: viewContentInfoResult!.title,
+                                        season: BigInt.from(currentSeasonIndex+1),
+                                        episode: BigInt.from(index+1),
                                         episodeInfo: filteredEpisodes[index],
+                                        
                                       );
                                   }, 
                                   separatorBuilder: (current, index) {

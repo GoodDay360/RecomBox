@@ -88,9 +88,11 @@ class _InstallPluginDialogState extends State<InstallPluginDialog> {
   }
 
   Future<void> onChange() async {
-    
     await initDialog(forceReload: false);
     widget.onChange?.call();
+    setState(() {
+      isInstalling = false;
+    });
     debugPrint("Success change");
   }
 
@@ -138,13 +140,17 @@ class _InstallPluginDialogState extends State<InstallPluginDialog> {
               ),
               
               if (isLoading) 
-                SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(
-                    color: appColors.secondary,
-                  
-                  ),
+                Container(
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        color: appColors.secondary,
+                      
+                      ),
+                    ),
                 ),
 
               if (!isLoading) ...[

@@ -4,6 +4,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:recombox/src/routes/edit_category/edit_category.dart';
 import 'package:recombox/src/routes/search/search.dart';
 import 'package:recombox/src/routes/select_plugin/select_plugin.dart';
+import 'package:recombox/src/routes/select_source/select_source.dart';
 import 'package:recombox/src/routes/view/view.dart';
 import 'package:recombox/src/rust/frb_generated.dart';
 import 'package:recombox/src/rust/method/settings/init_settings.dart';
@@ -27,13 +28,13 @@ Future<void> main() async {
 	// -> Flutter Rust Bridge and Initialization
 	await RustLib.init();
 	WidgetsFlutterBinding.ensureInitialized();
-  initSettings(settings: Settings(
-    paths: Paths(
-      appSupportDir: (await getApplicationSupportDirectory()).path,
-      appCacheDir: (await getApplicationCacheDirectory()).path, 
-      tempDir: (await getTemporaryDirectory()).path
-    )
-  ));
+	initSettings(settings: Settings(
+		paths: Paths(
+		appSupportDir: (await getApplicationSupportDirectory()).path,
+		appCacheDir: (await getApplicationCacheDirectory()).path, 
+		tempDir: (await getTemporaryDirectory()).path
+		)
+	));
 	// <-
 
 	// -> Hive DB
@@ -55,19 +56,19 @@ Future<void> main() async {
 	
 	// -> Window Manager
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-    await windowManager.ensureInitialized();
-    WindowOptions windowOptions = WindowOptions(
-      size: Size(800, 600),
-      center: true,
-      backgroundColor: appColors.primary,
-      skipTaskbar: false,
-      titleBarStyle: TitleBarStyle.hidden,
-    );
+		await windowManager.ensureInitialized();
+		WindowOptions windowOptions = WindowOptions(
+				size: Size(800, 600),
+				center: true,
+				backgroundColor: appColors.primary,
+				skipTaskbar: false,
+				titleBarStyle: TitleBarStyle.hidden,
+		);
 
-    windowManager.waitUntilReadyToShow(windowOptions, () async {
-      await windowManager.show();
-      await windowManager.focus();
-    });
+		windowManager.waitUntilReadyToShow(windowOptions, () async {
+			await windowManager.show();
+			await windowManager.focus();
+		});
   }
 	
 	// <-
@@ -96,26 +97,25 @@ class App extends StatelessWidget {
 						),
 					),
 					scrollBehavior: const MaterialScrollBehavior().copyWith(
-            dragDevices: {
-								PointerDeviceKind.touch,
-								PointerDeviceKind.mouse,
-								PointerDeviceKind.trackpad,
-								PointerDeviceKind.stylus,
-								PointerDeviceKind.invertedStylus,
-								PointerDeviceKind.unknown, // covers TV remotes / other inputs
-            },
-          ),
-
-
-					debugShowCheckedModeBanner: false,
-					initialRoute: "/select_plugin",
-					title: 'RecomBox',
-					routes: {
-						"/": (context) => const HomeScreen(),
-						"/search": (context) => const SearchScreen(),
-						"/view": (context) => const ViewScreen(),
-            "/edit_category": (context) => const EditCategoryScreen(),
-            "/select_plugin": (context) => const SelectedPluginScreen(),
+					dragDevices: {
+						PointerDeviceKind.touch,
+						PointerDeviceKind.mouse,
+						PointerDeviceKind.trackpad,
+						PointerDeviceKind.stylus,
+						PointerDeviceKind.invertedStylus,
+						PointerDeviceKind.unknown, // covers TV remotes / other inputs
+					},
+				),
+				debugShowCheckedModeBanner: false,
+				initialRoute: "/",
+				title: 'RecomBox',
+				routes: {
+					"/": (context) => const HomeScreen(),
+					"/search": (context) => const SearchScreen(),
+					"/view": (context) => const ViewScreen(),
+					"/edit_category": (context) => const EditCategoryScreen(),
+					"/select_plugin": (context) => const SelectPluginScreen(),
+					"/select_source": (context) => const SelectSourceScreen(),
 					},
 				);
 			}
