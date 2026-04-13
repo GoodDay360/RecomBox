@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use flutter_rust_bridge::frb;
 use tokio;
 
-use recombox_plugin_provider::get_sources::{self, InputPayload};
+use recombox_plugin_provider::get_torrents::{self, InputPayload};
 use recombox_plugin_provider::global_types::Source;
 
 use crate::utils::settings::Settings;
@@ -11,24 +11,19 @@ use crate::utils::settings::Settings;
 
 #[frb(json_serializable)]
 #[derive(Debug, Deserialize, Serialize)]
-pub struct SourceInfo{
-    pub id: String,
-    pub title: String
+pub struct TorrentInfo{
+    pub title: String,
+    pub torrent_url: String,
 }
 
 
-pub async fn get_sources(
+pub async fn get_torrents(
     plugin_path: String,
     source: String, 
     id: String,
-    title: String,
-    title_secondary: String,
-    season: u64,
-    episode: u64,
-    search: String,
     page: u64,
 
-) -> Result<Vec<SourceInfo>, String> {
+) -> Result<Vec<TorrentInfo>, String> {
     let source = Source::from_str(&source)
         .ok_or("Invalid Source")
         .map_err(|e| e.to_string())?;
@@ -42,16 +37,11 @@ pub async fn get_sources(
 
     let data = tokio::task::spawn_blocking(move || {
         tokio::runtime::Handle::current().block_on(async {
-            get_sources::new(
+            get_torrents::new(
                 InputPayload {
                     plugin_path: PathBuf::from(real_plugin_path),
                     source: source,
                     id: id,
-                    title: title,
-                    title_secondary: title_secondary,
-                    season: Some(season),
-                    episode: Some(episode),
-                    search: Some(search),
                     page,
                 },
             ).await.unwrap()
@@ -60,10 +50,10 @@ pub async fn get_sources(
     .await
     .map_err(|e| e.to_string())?;
 
-    let result: Vec<SourceInfo> = data.0.iter()
-        .map(|info| SourceInfo {
-            id: info.id.to_owned(),
+    let result: Vec<TorrentInfo> = data.0.iter()
+        .map(|info| TorrentInfo {
             title: info.title.to_owned(),
+            torrent_url: info.torrent_url.to_owned(),
         })
         .collect();
 

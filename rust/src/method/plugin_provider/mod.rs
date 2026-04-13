@@ -3,6 +3,7 @@ pub mod get_plugin_list;
 pub mod install_plugin;
 pub mod remove_plugin;
 pub mod get_sources;
+pub mod get_torrents;
 
 use serde::{Deserialize, Serialize};
 use flutter_rust_bridge::frb;

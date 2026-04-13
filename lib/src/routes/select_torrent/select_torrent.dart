@@ -8,42 +8,45 @@ import 'package:recombox/src/global/widgets/title_bar.dart';
 import 'package:recombox/src/routes/select_plugin/select_plugin.dart';
 import 'package:recombox/src/routes/select_plugin/widgets/select_plugin_tile.dart';
 import 'package:recombox/src/routes/select_source/widgets/select_source_tile.dart';
+import 'package:recombox/src/routes/select_torrent/widgets/select_torrent_tile.dart';
 import 'package:recombox/src/rust/method/plugin_provider/get_installed_plugins.dart';
 
 import 'dart:io';
 
 import 'package:recombox/src/rust/method/plugin_provider/get_sources.dart';
+import 'package:recombox/src/rust/method/plugin_provider/get_torrents.dart';
 
-class SelectSourceScreenArguments {
+class SelectTorrentScreenArguments {
   String pluginPath;
-  SelectPluginScreenArguments selectPluginScreenArguments;
+  String id;
+  Source source;
 
-
-  SelectSourceScreenArguments({
+  SelectTorrentScreenArguments({
     required this.pluginPath,
-    required this.selectPluginScreenArguments
+    required this.id,
+    required this.source,
   });
 }
 
-class SelectSourceScreen extends StatefulWidget {
-  const SelectSourceScreen({super.key});
+class SelectTorrentScreen extends StatefulWidget {
+  const SelectTorrentScreen({super.key});
 
   @override
-  State<SelectSourceScreen> createState() => _SelectSourceState();
+  State<SelectTorrentScreen> createState() => _SelectTorrentState();
 }
 
-class _SelectSourceState extends State<SelectSourceScreen> {
+class _SelectTorrentState extends State<SelectTorrentScreen> {
   AppColorsScheme appColors = appColorsNotifier.value;
 
   bool isLoading = false;
 
-  List<SourceInfo> sourceInfoList = [];
+  List<TorrentInfo> torrentList = [];
 
 
   final TextEditingController _textEditingController = TextEditingController(text: '');
   FocusNode searchFocus = FocusNode();
 
-  SelectSourceScreenArguments? args;
+  SelectTorrentScreenArguments? args;
   
   @override
 
@@ -55,23 +58,16 @@ class _SelectSourceState extends State<SelectSourceScreen> {
       final rawArgs = ModalRoute.of(context)?.settings.arguments;
       setState(() {
         
-        args = rawArgs is SelectSourceScreenArguments
+        args = rawArgs is SelectTorrentScreenArguments
             ? rawArgs
-            : SelectSourceScreenArguments(
+            : SelectTorrentScreenArguments(
               pluginPath: "movies/8c8fb2b288439bcd9a71ff75051af9922162ba23b8a8ebd3db1dbe905cca00ee/2036011253247552227.js", 
-              selectPluginScreenArguments: SelectPluginScreenArguments(
-                  source: Source.movies,
-                  id: "%2F53906%2Fspider-man",
-                  title: "Spiderman",
-                  titleSecondary: "Spiderman",
-                  season: BigInt.from(1),
-                  episode: BigInt.from(1)
-                  
-              )
+              id: "72673844",
+              source: Source.anime,
             );
       });
       debugPrint(args.toString());
-      initSelectSource();
+      initSelectTorrent();
     });
   }
 
@@ -83,28 +79,26 @@ class _SelectSourceState extends State<SelectSourceScreen> {
     
   }
 
-  Future<void> initSelectSource() async {
+  Future<void> initSelectTorrent() async {
     setState(() {
       isLoading = true;
     });
     try{
 
-      
-      List<SourceInfo> getSourceInfoResult = await getSources(
-        pluginPath: args!.pluginPath, 
-        source: args!.selectPluginScreenArguments.source.name, 
-        id: args!.selectPluginScreenArguments.id, 
-        title: args!.selectPluginScreenArguments.title, 
-        titleSecondary: args!.selectPluginScreenArguments.titleSecondary,
-        season: args!.selectPluginScreenArguments.season, 
-        episode: args!.selectPluginScreenArguments.episode, 
-        search: _textEditingController.text, 
+      List<TorrentInfo> getTorrentListResult = await getTorrents(
+        pluginPath: args!.pluginPath,
+        source: args!.source.name,
+        id: args!.id,
         page: BigInt.from(1)
       );
 
       setState(() {
-        sourceInfoList = getSourceInfoResult;
+        torrentList = getTorrentListResult;
       });
+
+      debugPrint(getTorrentListResult.toString());
+
+
 
     }catch(e){
       debugPrint(e.toString());
@@ -116,12 +110,13 @@ class _SelectSourceState extends State<SelectSourceScreen> {
 
   }
 
-  List<SourceInfo> onFilterSearch() {
+  List<TorrentInfo> onFilterSearch() {
     final query = _textEditingController.text.toLowerCase();
 
-    return sourceInfoList
+    return torrentList
         .where((element) {
-          return element.title.toLowerCase().contains(query);
+          return element.title.toLowerCase().contains(query)
+            || element.torrentUrl.toLowerCase().contains(query);
         })
         .toList();
   }
@@ -132,6 +127,8 @@ class _SelectSourceState extends State<SelectSourceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List<TorrentInfo> filteredTorrentList = onFilterSearch();
+
     if (args == null) return Container();
     
     return SafeArea(
@@ -164,7 +161,7 @@ class _SelectSourceState extends State<SelectSourceScreen> {
                               ),
                             ),
                             Text(
-                              'Select Source',
+                              'Select Torrent',
                               style: GoogleFonts.nunito(
                                 color: appColors.textPrimary,
                                 fontSize: 28,
@@ -175,55 +172,7 @@ class _SelectSourceState extends State<SelectSourceScreen> {
                           ],
                         ),
                       ),
-                      // -> Default filter info
-                      Container(
-                        alignment: Alignment.topLeft,
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: Text(
-                          "Title: ${args!.selectPluginScreenArguments.title}",
-                          style: GoogleFonts.nunito(
-                            color: appColors.textPrimary,
-                            fontSize: 18,
-                            fontWeight: FontWeight.normal,
-                          ),
-                          textAlign: TextAlign.start,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                      ),
-                      Container(
-                        alignment: Alignment.topLeft,
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: Text(
-                          "Secondary Title: ${args!.selectPluginScreenArguments.titleSecondary}",
-                          style: GoogleFonts.nunito(
-                            color: appColors.textPrimary,
-                            fontSize: 18,
-                            fontWeight: FontWeight.normal,
-                          ),
-                          textAlign: TextAlign.start,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                      ),
-                      
-                      if (args!.selectPluginScreenArguments.source != Source.movies)
-                        Container(
-                          alignment: Alignment.topLeft,
-                          padding: const EdgeInsets.only(left: 10, right: 10),
-                          child: Text(
-                            "Season: ${args!.selectPluginScreenArguments.season}, Episode: ${args!.selectPluginScreenArguments.episode}",
-                            style: GoogleFonts.nunito(
-                              color: appColors.textPrimary,
-                              fontSize: 18,
-                              fontWeight: FontWeight.normal,
-                            ),
-                            textAlign: TextAlign.start,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        
-                      // <-
+
                       if (isLoading) 
                         Expanded(
                           flex: 1,
@@ -270,9 +219,15 @@ class _SelectSourceState extends State<SelectSourceScreen> {
                                     Expanded(
                                       child: TextField(
                                         controller: _textEditingController,
-                                        
+                                        onChanged: (_){
+                                          setState(() {
+                                            filteredTorrentList = onFilterSearch();
+                                          });
+                                        },
                                         onSubmitted: (_){
-                                          initSelectSource();
+                                          setState(() {
+                                            filteredTorrentList = onFilterSearch();
+                                          });
                                         },
                                         cursorColor: appColors.textPrimary,
                                         focusNode: searchFocus,
@@ -297,16 +252,14 @@ class _SelectSourceState extends State<SelectSourceScreen> {
 
                         ),
                         // <-
-                        if (sourceInfoList.isNotEmpty)
+                        if (filteredTorrentList.isNotEmpty)
                           Expanded(
                             child: ListView.separated(
                               shrinkWrap: true,
-                              itemCount: sourceInfoList.length,
+                              itemCount: filteredTorrentList.length,
                               itemBuilder: (context, index) {
-                                return SelectSourceTile(
-                                  pluginPath: args!.pluginPath,
-                                  source: args!.selectPluginScreenArguments.source,
-                                  sourceInfo: sourceInfoList[index],
+                                return SelectTorrentTile(
+                                  torrentInfo: filteredTorrentList[index],
                                 );
                               },
                               separatorBuilder: (context, index) {
@@ -317,14 +270,14 @@ class _SelectSourceState extends State<SelectSourceScreen> {
                               },
                             ),
                           ),
-                        if (sourceInfoList.isEmpty)
+                        if (filteredTorrentList.isEmpty)
                           Expanded(
                             child: Container(
                               alignment: Alignment.center,
                               height: double.infinity,
                               padding: const EdgeInsets.all(10),
                               child: Text(
-                                "No source found from default filter.\nYou can try search yourself.",
+                                "No torrent found.",
                                 style: GoogleFonts.nunito(
                                   color: appColors.textPrimary,
                                   fontSize: 18,
