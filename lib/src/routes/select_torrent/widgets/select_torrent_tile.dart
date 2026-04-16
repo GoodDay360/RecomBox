@@ -17,11 +17,16 @@ class SelectTorrentTile extends StatefulWidget {
     required this.viewID,
     required this.source,
     required this.torrentInfo,
+    required this.season,
+    required this.episode
+
   }); 
 
   final String viewID;
   final Source source;
   final TorrentInfo torrentInfo;
+  final BigInt season;
+  final BigInt episode;
 
 
 
@@ -46,7 +51,10 @@ class _SelectTorrentTileState extends State<SelectTorrentTile> {
       arguments: SelectFileScreenArguments(
         viewID: widget.viewID, 
         source: widget.source,
-        torrentSource: widget.torrentInfo.torrentUrl
+        torrentSource: widget.torrentInfo.torrentUrl,
+        season: BigInt.from(1),
+        episode: BigInt.from(1)
+
       )
     );
   }

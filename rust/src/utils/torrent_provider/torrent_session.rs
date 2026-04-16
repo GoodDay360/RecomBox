@@ -11,22 +11,23 @@ pub struct TorrentSession;
 
 impl TorrentSession {
 
-    pub async fn init() -> anyhow::Result<()>{
+    pub async fn init() -> anyhow::Result<Arc<Session>>{
         let read_guard = TORRENT_SESSION.read()
-            .map_err(|e| anyhow::Error::msg(e.to_string()))?;
+            .map_err(|e| anyhow::Error::msg(e.to_string()))?
+            .clone();
 
-        if let Some(session) = read_guard.as_ref() {
+        if let Some(session) = read_guard {
             session.stop().await;
         }
 
         let settings = Settings::get()?;
 
-        let temp_session_dir = PathBuf::from(&settings.paths.temp_dir)
+        let cache_session_dir = PathBuf::from(&settings.paths.app_cache_dir)
             .join("torrent_session_cache");
 
 
-        let segments_dir = temp_session_dir.join("segments");
-        let dht_file = temp_session_dir.join("dht.json");
+        let segments_dir = cache_session_dir.join("default");
+        let dht_file = cache_session_dir.join("dht.json");
 
         let dht_config = PersistentDhtConfig {
             dump_interval: Some(std::time::Duration::from_secs(60)),
@@ -48,19 +49,37 @@ impl TorrentSession {
         let mut write_guard = TORRENT_SESSION.write()
             .map_err(|e| anyhow::Error::msg(e.to_string()))?;
         
-        *write_guard = Some(session);
+        *write_guard = Some(session.clone());
 
-        return Ok(());
+        return Ok(session);
     }
 
-    pub fn get() -> anyhow::Result<Arc<Session>> {
+    pub async fn get() -> anyhow::Result<Arc<Session>> {
         let guard = TORRENT_SESSION.read()
-            .map_err(|e| anyhow::Error::msg(e.to_string()))?;
+            .map_err(|e| anyhow::Error::msg(e.to_string()))?
+            .clone();
 
-        match guard.as_ref() {
-            Some(session) => return Ok(session.clone()),
-            None => return Err(anyhow::Error::msg("Torrent session not initialized yet."))
+        println!("TAKING SESSION");
+        match guard {
+            Some(session) => {
+                let is_cancelled = session.cancellation_token().is_cancelled();
+
+                if is_cancelled {
+                    let new_session = TorrentSession::init().await
+                        .map_err(|e| anyhow::Error::msg(e.to_string()))?;
+                    return Ok(new_session);
+                }
+                println!("FREE SESSION");
+                return Ok(session.clone())
+            },
+            None => {
+                eprintln!("Error: TORRENT SESSION NOT INITIALIZED YET");
+                return Err(anyhow::Error::msg("Torrent session not initialized yet."));
+            }
         };
+        
+
+
     }
     
 }

@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/rust/frb_generated.dart';
+import 'package:recombox/src/rust/method/init/init_rest_server.dart';
 import 'package:recombox/src/rust/method/init/init_settings.dart';
 import 'package:recombox/src/rust/method/init/init_torrent_session.dart';
 import 'package:recombox/src/rust/utils/settings.dart';
@@ -39,9 +41,11 @@ Future<void> initApp() async {
 	));
 	// <-
 
-  // -> Torrent Session
+  // -> Torrent Session and Rest Server
   await initTorrentSession();
+  initRestServer();
   // <-
+
 
 	// -> Hive DB
 	WidgetsFlutterBinding.ensureInitialized();
@@ -59,6 +63,7 @@ Future<void> initApp() async {
 	appColorsNotifier.value = loadAppColors;
 	var appColors = appColorsNotifier.value;
 	// <-
+  
 	
 	// -> Window Manager
 	if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
@@ -76,6 +81,11 @@ Future<void> initApp() async {
 			await windowManager.focus();
 		});
 	}
+  
 	
 	// <-
+
+  // -> Media Kit
+  MediaKit.ensureInitialized();
+  // <-
 }

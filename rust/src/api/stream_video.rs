@@ -12,36 +12,71 @@ use tokio_util::io::ReaderStream;
 use std::path::PathBuf;
 use tokio;
 use serde::{Deserialize, Serialize};
+use urlencoding::{encode, decode};
+use once_cell::sync::Lazy;
+use tokio::runtime::Runtime;
+use num_cpus;
 
 use crate::utils::torrent_provider::torrent_handle::TorrentHandle;
+use crate::utils::settings::Settings;
 
 #[derive(Deserialize, Serialize)]
 struct InputPayload {
-    handle_id: String,
+    handle_id: u64,
     torrent_source: String,
-    file_id: usize
+    mime_type: String,
+    file_id: usize,
+    view_id: String,
+    season: u64,
+    episode: u64
 }
+
+static RUNTIME: Lazy<Runtime> = Lazy::new(|| {
+    tokio::runtime::Builder::new_multi_thread()
+        .worker_threads(num_cpus::get())
+        .enable_all()
+        .build()
+        .expect("Failed to build multi-threaded runtime")
+});
 
 #[get("/stream_video")]
 pub async fn new(req: HttpRequest, query: web::Query<InputPayload>) -> Result<HttpResponse, actix_web::Error>{
     let headers = req.headers();
 
-    let handle_id = &query.handle_id;
-    let torrent_source = &query.torrent_source;
-    let file_id = query.file_id;
+    let settings = Settings::get()
+        .map_err(|e| actix_web::error::ErrorInternalServerError(e.to_string()))?
+        .clone();
 
-    let torrent_handle = TorrentHandle{
-        handle_id: handle_id.clone(),
-        torrent_source: torrent_source.clone(),
-        file_id: file_id,
-        output_dir: PathBuf::new()
+    let cache_dir = &settings.paths.app_cache_dir;
+
+    let output_dir = PathBuf::from(cache_dir)
+        .join("torrent_session_cache")
+        .join("stream")
+        .join(encode(&query.view_id.to_string()).to_string())
+        .join(query.season.to_string())
+        .join(query.episode.to_string());
+
+    let decoded_torrent_source = decode(&query.torrent_source)
+        .map_err(|e| actix_web::error::ErrorInternalServerError(e.to_string()))?
+        .to_string();
+
+    let torrent_handle_builder = TorrentHandle{
+        handle_id: query.handle_id.clone(),
+        torrent_source:  decoded_torrent_source,
+        file_id:  query.file_id,
+        output_dir: output_dir
     };
 
-    let mut stream = torrent_handle.load().await
-        .map_err(|e| actix_web::error::ErrorInternalServerError(e.to_string()))?
-        .stream(file_id)
+    let torrent_handle = RUNTIME.spawn(async move {
+        torrent_handle_builder.load().await.unwrap()
+    })
+        .await
         .map_err(|e| actix_web::error::ErrorInternalServerError(e.to_string()))?;
+
     
+    let mut stream = torrent_handle
+        .stream(query.file_id)
+        .map_err(|e| actix_web::error::ErrorInternalServerError(e.to_string()))?;
 
     // -> Identify byte range
     
@@ -77,14 +112,13 @@ pub async fn new(req: HttpRequest, query: web::Query<InputPayload>) -> Result<Ht
     let reader_stream = ReaderStream::new(stream);
     let body = actix_web::body::BodyStream::new(reader_stream);
 
-    println!("Proccessed");
 
     if headers.get("range").is_some() {
         // Range request → 206
         Ok(
             HttpResponse::PartialContent()
                 .append_header(("Accept-Ranges", "bytes"))
-                .append_header(("Content-Type", "video/x-matroska"))
+                .append_header(("Content-Type", query.mime_type.clone()))
                 .append_header(("Content-Length", content_length.to_string()))
                 .append_header((
                     "Content-Range",
@@ -96,7 +130,7 @@ pub async fn new(req: HttpRequest, query: web::Query<InputPayload>) -> Result<Ht
         // No range → 200
         Ok(
             HttpResponse::Ok()
-                .append_header(("Content-Type", "video/x-matroska"))
+                .append_header(("Content-Type", query.mime_type.clone()))
                 .append_header(("Content-Length", total_len.to_string()))
                 .body(body)
         )

@@ -17,12 +17,17 @@ class SelectSourceTile extends StatefulWidget {
     required this.pluginPath,
     required this.source,
     required this.sourceInfo,
+    required this.season,
+    required this.episode
+
   }); 
 
   final String viewID;
   final String pluginPath;
   final Source source;
   final SourceInfo sourceInfo;
+  final BigInt season;
+  final BigInt episode;
 
 
 
@@ -49,6 +54,8 @@ class _SelectSourceTileState extends State<SelectSourceTile> {
         pluginPath: widget.pluginPath,
         source: widget.source,
         id: widget.sourceInfo.id,
+        season: widget.season,
+        episode: widget.episode
         
       )
     );

@@ -3192,6 +3192,7 @@ dependencies = [
  "flutter_rust_bridge",
  "futures",
  "librqbit",
+ "num_cpus",
  "once_cell",
  "recombox_metadata_provider",
  "recombox_plugin_provider",
@@ -3202,6 +3203,7 @@ dependencies = [
  "snowid",
  "tokio",
  "tokio-util",
+ "urlencoding",
 ]
 
 [[package]]

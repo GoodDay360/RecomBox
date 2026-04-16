@@ -55,7 +55,7 @@ class App extends StatelessWidget {
 					},
 				),
 				debugShowCheckedModeBanner: false,
-				initialRoute: "/select_file",
+				initialRoute: "/",
 				title: 'RecomBox',
 				routes: {
 						"/": (context) => const HomeScreen(),

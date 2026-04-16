@@ -58,6 +58,8 @@ dependencies:
   pub_semver: ^2.2.0
   path: ^1.9.1
   file_type_plus: ^1.0.1
+  mime: ^2.0.0
+  snowflaker: ^1.1.0
 
 dev_dependencies:
   flutter_test:

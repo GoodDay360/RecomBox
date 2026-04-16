@@ -21,12 +21,16 @@ class SelectTorrentScreenArguments {
   String pluginPath;
   String id;
   Source source;
+  BigInt season;
+  BigInt episode;
 
   SelectTorrentScreenArguments({
     required this.viewID,
     required this.pluginPath,
     required this.id,
     required this.source,
+    required this.season,
+    required this.episode
   });
 }
 
@@ -67,6 +71,8 @@ class _SelectTorrentState extends State<SelectTorrentScreen> {
               pluginPath: "movies/8c8fb2b288439bcd9a71ff75051af9922162ba23b8a8ebd3db1dbe905cca00ee/2036011253247552227.js", 
               id: "72673844",
               source: Source.anime,
+              season: BigInt.from(1),
+              episode: BigInt.from(1)
             );
       });
       debugPrint(args.toString());
@@ -265,6 +271,8 @@ class _SelectTorrentState extends State<SelectTorrentScreen> {
                                   source: args!.source,
                                   viewID: args!.viewID,
                                   torrentInfo: filteredTorrentList[index],
+                                  season: args!.season,
+                                  episode: args!.episode
                                 );
                               },
                               separatorBuilder: (context, index) {

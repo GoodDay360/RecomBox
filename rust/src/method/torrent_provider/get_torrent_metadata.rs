@@ -26,10 +26,14 @@ pub struct TorrentMetadata {
 
 pub async fn get_torrent_metadata(torrent_source: String) -> Result<TorrentMetadata, String> {
     
-
-    let torrent_info = utils::get_torrent_info::new(&PathBuf::from(torrent_source))
-        .await
-        .map_err(|e| e.to_string())?;
+    let torrent_info = tokio::task::spawn_blocking(move || {
+        tokio::runtime::Handle::current().block_on(async {
+            utils::get_torrent_info::new(&torrent_source)
+            .await.unwrap()
+        })
+    })
+    .await
+    .map_err(|e| e.to_string())?;
 
     let name = match &torrent_info.name {
         Some(name) => Some(String::from_utf8_lossy(name).to_string()),

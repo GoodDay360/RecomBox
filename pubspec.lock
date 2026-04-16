@@ -592,7 +592,7 @@ packages:
     source: hosted
     version: "1.17.0"
   mime:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: mime
       sha256: "41a20518f0cb1256669420fdba0cd90d21561e560ac240f26ef8322e45bb7ed6"
@@ -843,6 +843,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  snowflaker:
+    dependency: "direct main"
+    description:
+      name: snowflaker
+      sha256: "521c696255a6271b73a4e0bfcae6bdcb023253c45050f0f089d67b012b298d1c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   source_gen:
     dependency: transitive
     description:

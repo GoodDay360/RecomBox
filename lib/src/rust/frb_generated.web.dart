@@ -20,7 +20,7 @@ import 'method/favorite/rename_category.dart';
 import 'method/favorite/set_category.dart';
 import 'method/favorite/swap_category_order.dart';
 import 'method/favorite/unset_category.dart';
-import 'method/get_torrent_metadata.dart';
+import 'method/get_settings.dart';
 import 'method/init/init_rest_server.dart';
 import 'method/init/init_settings.dart';
 import 'method/init/init_torrent_session.dart';
@@ -35,6 +35,8 @@ import 'method/plugin_provider/get_sources.dart';
 import 'method/plugin_provider/get_torrents.dart';
 import 'method/plugin_provider/install_plugin.dart';
 import 'method/plugin_provider/remove_plugin.dart';
+import 'method/torrent_provider/free_torrent_handle.dart';
+import 'method/torrent_provider/get_torrent_metadata.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_web.dart';
 import 'utils/settings.dart';
 

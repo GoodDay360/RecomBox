@@ -6,5 +6,7 @@
 import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-Future<void> initRestServer() =>
-    RustLib.instance.api.crateMethodInitInitRestServerInitRestServer();
+Future<void> freeTorrentHandle({required BigInt handleId}) =>
+    RustLib.instance.api
+        .crateMethodTorrentProviderFreeTorrentHandleFreeTorrentHandle(
+            handleId: handleId);

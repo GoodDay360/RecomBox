@@ -11,7 +11,6 @@ import 'package:recombox/src/routes/select_plugin/select_plugin.dart';
 import 'package:recombox/src/routes/select_plugin/widgets/select_plugin_tile.dart';
 import 'package:recombox/src/routes/select_source/widgets/select_source_tile.dart';
 import 'package:recombox/src/routes/select_torrent/widgets/select_torrent_tile.dart';
-import 'package:recombox/src/rust/method/get_torrent_metadata.dart';
 import 'package:recombox/src/rust/method/plugin_provider/get_installed_plugins.dart';
 import 'package:path/path.dart' as path;
 
@@ -20,16 +19,22 @@ import 'package:recombox/src/rust/method/plugin_provider/get_torrents.dart';
 
 import 'dart:io';
 
+import 'package:recombox/src/rust/method/torrent_provider/get_torrent_metadata.dart';
+
 
 class SelectFileScreenArguments {
   String viewID;
   Source source;
   String torrentSource;
+  BigInt season;
+  BigInt episode;
 
   SelectFileScreenArguments({
     required this.viewID,
     required this.source,
-    required this.torrentSource
+    required this.torrentSource,
+    required this.season,
+    required this.episode
   });
 }
 
@@ -70,8 +75,10 @@ class _SelectFileState extends State<SelectFileScreen> {
             ? rawArgs
             : SelectFileScreenArguments(
               viewID: "72673844%20spider",
-              source: Source.anime,
+              source: Source.tv,
               torrentSource: "magnet:?xt=urn:btih:62EDE09B4E617C4C688D86B349F07290C3101238&dn=Loki.S02E01.WEB.x264-TORRENTGALAXY&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce&tr=udp%3A%2F%2Ftracker.bittor.pw%3A1337%2Fannounce&tr=udp%3A%2F%2Fpublic.popcorn-tracker.org%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.dler.org%3A6969%2Fannounce&tr=udp%3A%2F%2Fexodus.desync.com%3A6969&tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftorrent.gresille.org%3A80%2Fannounce&tr=udp%3A%2F%2Fp4p.arenabg.com%3A1337&tr=udp%3A%2F%2Ftracker.internetwarriors.net%3A1337",
+              season: BigInt.from(1),
+              episode: BigInt.from(1)
             );
       });
       debugPrint(args.toString());
@@ -201,21 +208,7 @@ class _SelectFileState extends State<SelectFileScreen> {
                         ),
                       ),
                       
-                      Container(
-                          alignment: Alignment.topLeft,
-                          padding: const EdgeInsets.only(left: 10, right: 10),
-                          child: Text(
-                            "Torrent Name: $torrentName",
-                            style: GoogleFonts.nunito(
-                              color: appColors.textPrimary,
-                              fontSize: 18,
-                              fontWeight: FontWeight.normal,
-                            ),
-                            maxLines: 1,
-                            textAlign: TextAlign.start,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
+                      
 
                       if (isLoading) 
                         Expanded(
@@ -233,6 +226,22 @@ class _SelectFileState extends State<SelectFileScreen> {
                           )
                         ),
                       if (!isLoading) ...[
+                        Container(
+                          alignment: Alignment.topLeft,
+                          padding: const EdgeInsets.only(left: 10, right: 10),
+                          child: Text(
+                            "Torrent Name: $torrentName",
+                            style: GoogleFonts.nunito(
+                              color: appColors.textPrimary,
+                              fontSize: 18,
+                              fontWeight: FontWeight.normal,
+                            ),
+                            maxLines: 1,
+                            textAlign: TextAlign.start,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        
                         // -> Search Widget
                         Container(
                           padding: EdgeInsets.only(left: 10, right: 10),
@@ -320,6 +329,8 @@ class _SelectFileState extends State<SelectFileScreen> {
                                   viewID: args!.viewID, 
                                   torrentSource: args!.torrentSource,
                                   fileInfo: filteredFileList[index],
+                                  season: args!.season,
+                                  episode: args!.episode
                                 );
                               },
                               separatorBuilder: (context, index) {

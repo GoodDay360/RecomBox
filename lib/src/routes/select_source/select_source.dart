@@ -309,6 +309,8 @@ class _SelectSourceState extends State<SelectSourceScreen> {
                                   pluginPath: args!.pluginPath,
                                   source: args!.selectPluginScreenArguments.source,
                                   sourceInfo: sourceInfoList[index],
+                                  season: args!.selectPluginScreenArguments.season,
+                                  episode: args!.selectPluginScreenArguments.episode
                                 );
                               },
                               separatorBuilder: (context, index) {
