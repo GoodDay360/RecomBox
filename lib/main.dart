@@ -1,78 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:recombox/src/global/init_app.dart';
 import 'package:recombox/src/routes/edit_category/edit_category.dart';
 import 'package:recombox/src/routes/search/search.dart';
+import 'package:recombox/src/routes/select_file/select_file.dart';
 import 'package:recombox/src/routes/select_plugin/select_plugin.dart';
 import 'package:recombox/src/routes/select_source/select_source.dart';
 import 'package:recombox/src/routes/select_torrent/select_torrent.dart';
 import 'package:recombox/src/routes/view/view.dart';
-import 'package:recombox/src/rust/frb_generated.dart';
-import 'package:recombox/src/rust/method/settings/init_settings.dart';
-import 'package:recombox/src/rust/utils/settings.dart';
-import 'package:window_manager/window_manager.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:recombox/src/routes/watch/watch.dart';
 import 'dart:async';
-
 import 'package:recombox/src/global/app_color.dart';
-
 import 'src/routes/home/home.dart';
-
 import 'dart:ui';
-import 'dart:io';
 
 // Routes Imports
 
 var logger = Logger();
 
 Future<void> main() async {
-	// -> Flutter Rust Bridge and Initialization
-	await RustLib.init();
-	WidgetsFlutterBinding.ensureInitialized();
-	initSettings(settings: Settings(
-		paths: Paths(
-		appSupportDir: (await getApplicationSupportDirectory()).path,
-		appCacheDir: (await getApplicationCacheDirectory()).path, 
-		tempDir: (await getTemporaryDirectory()).path
-		)
-	));
-	// <-
-
-	// -> Hive DB
-	WidgetsFlutterBinding.ensureInitialized();
-	await Hive.initFlutter();
-
-	// <- 
-
-	// -> Flutter Widgets
-	WidgetsFlutterBinding.ensureInitialized();
-	// <-
-
-	// -> App Colors
-	
-	var loadAppColors = await AppColorsScheme.load();
-	appColorsNotifier.value = loadAppColors;
-	var appColors = appColorsNotifier.value;
-	// <-
-	
-	// -> Window Manager
-  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-		await windowManager.ensureInitialized();
-		WindowOptions windowOptions = WindowOptions(
-				size: Size(800, 600),
-				center: true,
-				backgroundColor: appColors.primary,
-				skipTaskbar: false,
-				titleBarStyle: TitleBarStyle.hidden,
-		);
-
-		windowManager.waitUntilReadyToShow(windowOptions, () async {
-			await windowManager.show();
-			await windowManager.focus();
-		});
-  }
-	
-	// <-
+	await initApp();
 
 	runApp(const App());
 }
@@ -108,16 +55,18 @@ class App extends StatelessWidget {
 					},
 				),
 				debugShowCheckedModeBanner: false,
-				initialRoute: "/",
+				initialRoute: "/select_file",
 				title: 'RecomBox',
 				routes: {
-					"/": (context) => const HomeScreen(),
-					"/search": (context) => const SearchScreen(),
-					"/view": (context) => const ViewScreen(),
-					"/edit_category": (context) => const EditCategoryScreen(),
-					"/select_plugin": (context) => const SelectPluginScreen(),
-					"/select_source": (context) => const SelectSourceScreen(),
-          "/select_torrent": (context) => const SelectTorrentScreen(),
+						"/": (context) => const HomeScreen(),
+						"/search": (context) => const SearchScreen(),
+						"/view": (context) => const ViewScreen(),
+						"/edit_category": (context) => const EditCategoryScreen(),
+						"/select_plugin": (context) => const SelectPluginScreen(),
+						"/select_source": (context) => const SelectSourceScreen(),
+						"/select_torrent": (context) => const SelectTorrentScreen(),
+						"/select_file": (context) => const SelectFileScreen(),
+						"/watch": (context) => const WatchScreen(),
 					},
 				);
 			}

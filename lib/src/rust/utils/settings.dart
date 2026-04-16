@@ -23,6 +23,7 @@ sealed class Paths with _$Paths {
 @freezed
 sealed class Settings with _$Settings {
   const factory Settings({
+    required int port,
     required Paths paths,
   }) = _Settings;
 

@@ -218,6 +218,7 @@ class _SelectSourceState extends State<SelectSourceScreen> {
                               fontSize: 18,
                               fontWeight: FontWeight.normal,
                             ),
+                            maxLines: 1,
                             textAlign: TextAlign.start,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -304,6 +305,7 @@ class _SelectSourceState extends State<SelectSourceScreen> {
                               itemCount: sourceInfoList.length,
                               itemBuilder: (context, index) {
                                 return SelectSourceTile(
+                                  viewID: args!.selectPluginScreenArguments.id,
                                   pluginPath: args!.pluginPath,
                                   source: args!.selectPluginScreenArguments.source,
                                   sourceInfo: sourceInfoList[index],

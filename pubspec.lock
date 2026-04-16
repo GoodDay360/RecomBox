@@ -217,6 +217,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.12"
+  equatable:
+    dependency: transitive
+    description:
+      name: equatable
+      sha256: "3e0141505477fd8ad55d6eb4e7776d3fe8430be8e497ccb1521370c3f21a3e2b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.8"
   fading_edge_scrollview:
     dependency: transitive
     description:
@@ -249,6 +257,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.1"
+  file_type_plus:
+    dependency: "direct main"
+    description:
+      name: file_type_plus
+      sha256: "70bd9ef5d03d133f93d646180b4cae50a458ddfb05a216181a8e8cc7f9b214e0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   fixnum:
     dependency: transitive
     description:
@@ -624,7 +640,7 @@ packages:
     source: hosted
     version: "3.2.1"
   path:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path
       sha256: "75cca69d1490965be98c73ceaea117e8a04dd21217b37b292c9ddbec0d955bc5"

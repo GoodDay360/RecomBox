@@ -9,6 +9,7 @@ static SETTIGNS: Lazy<Mutex<Option<Arc<Settings>>>> = Lazy::new(|| Mutex::new(No
 #[frb(json_serializable)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Settings {
+    pub port: u32,
     pub paths: Paths,
 }
 
@@ -30,6 +31,7 @@ impl Settings {
         std::fs::create_dir_all(&temp_dir).unwrap();
 
         let temp_settings = Settings {
+            port: 0,
             paths: Paths {
                 app_support_dir: temp_dir.to_string_lossy().to_string(),
                 app_cache_dir: temp_dir.to_string_lossy().to_string(),

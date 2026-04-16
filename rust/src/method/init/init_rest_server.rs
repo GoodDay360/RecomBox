@@ -13,24 +13,32 @@ use std::path::PathBuf;
 use tokio;
 
 
-use crate::api::{stream_video};
+use crate::{ utils::settings::Settings};
+use crate::api::routes;
 
-pub async fn spawn_stream_server() -> Result<(), String> {
+pub async fn init_stream_server() -> Result<(), String> {
+
+    let settings = Settings::get()
+        .map_err(|e| e.to_string())?;
+
+    let free_port = settings.port;
+
     tokio::spawn(async move {
-        let addr = "127.0.0.1:8080";
+        let addr = format!("127.0.0.1:{}", free_port);
+
         println!("Server listening on: http://{}/", addr);
 
         HttpServer::new(|| {
             App::new()
-                .service(stream_video::new)
                 .route("/ping", actix_web::web::get().to(|| async { HttpResponse::Ok().body("pong") }))
+                .configure(routes)
+                
         })
             .bind(addr).unwrap()
             .run()
             .await.unwrap();
 
-    }).await
-    .map_err(|e| e.to_string())?;
+    });
 
     return Ok(());
 }

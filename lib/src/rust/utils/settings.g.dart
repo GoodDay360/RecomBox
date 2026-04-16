@@ -19,9 +19,11 @@ Map<String, dynamic> _$PathsToJson(_Paths instance) => <String, dynamic>{
     };
 
 _Settings _$SettingsFromJson(Map<String, dynamic> json) => _Settings(
+      port: (json['port'] as num).toInt(),
       paths: Paths.fromJson(json['paths'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$SettingsToJson(_Settings instance) => <String, dynamic>{
+      'port': instance.port,
       'paths': instance.paths,
     };

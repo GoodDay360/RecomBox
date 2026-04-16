@@ -346,6 +346,7 @@ class __$PathsCopyWithImpl<$Res> implements _$PathsCopyWith<$Res> {
 
 /// @nodoc
 mixin _$Settings {
+  int get port;
   Paths get paths;
 
   /// Create a copy of Settings
@@ -363,16 +364,17 @@ mixin _$Settings {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is Settings &&
+            (identical(other.port, port) || other.port == port) &&
             (identical(other.paths, paths) || other.paths == paths));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, paths);
+  int get hashCode => Object.hash(runtimeType, port, paths);
 
   @override
   String toString() {
-    return 'Settings(paths: $paths)';
+    return 'Settings(port: $port, paths: $paths)';
   }
 }
 
@@ -381,7 +383,7 @@ abstract mixin class $SettingsCopyWith<$Res> {
   factory $SettingsCopyWith(Settings value, $Res Function(Settings) _then) =
       _$SettingsCopyWithImpl;
   @useResult
-  $Res call({Paths paths});
+  $Res call({int port, Paths paths});
 
   $PathsCopyWith<$Res> get paths;
 }
@@ -398,9 +400,14 @@ class _$SettingsCopyWithImpl<$Res> implements $SettingsCopyWith<$Res> {
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? port = null,
     Object? paths = null,
   }) {
     return _then(_self.copyWith(
+      port: null == port
+          ? _self.port
+          : port // ignore: cast_nullable_to_non_nullable
+              as int,
       paths: null == paths
           ? _self.paths
           : paths // ignore: cast_nullable_to_non_nullable
@@ -510,13 +517,13 @@ extension SettingsPatterns on Settings {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(Paths paths)? $default, {
+    TResult Function(int port, Paths paths)? $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _Settings() when $default != null:
-        return $default(_that.paths);
+        return $default(_that.port, _that.paths);
       case _:
         return orElse();
     }
@@ -537,12 +544,12 @@ extension SettingsPatterns on Settings {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(Paths paths) $default,
+    TResult Function(int port, Paths paths) $default,
   ) {
     final _that = this;
     switch (_that) {
       case _Settings():
-        return $default(_that.paths);
+        return $default(_that.port, _that.paths);
     }
   }
 
@@ -560,12 +567,12 @@ extension SettingsPatterns on Settings {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(Paths paths)? $default,
+    TResult? Function(int port, Paths paths)? $default,
   ) {
     final _that = this;
     switch (_that) {
       case _Settings() when $default != null:
-        return $default(_that.paths);
+        return $default(_that.port, _that.paths);
       case _:
         return null;
     }
@@ -575,10 +582,12 @@ extension SettingsPatterns on Settings {
 /// @nodoc
 @JsonSerializable()
 class _Settings implements Settings {
-  const _Settings({required this.paths});
+  const _Settings({required this.port, required this.paths});
   factory _Settings.fromJson(Map<String, dynamic> json) =>
       _$SettingsFromJson(json);
 
+  @override
+  final int port;
   @override
   final Paths paths;
 
@@ -602,16 +611,17 @@ class _Settings implements Settings {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _Settings &&
+            (identical(other.port, port) || other.port == port) &&
             (identical(other.paths, paths) || other.paths == paths));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, paths);
+  int get hashCode => Object.hash(runtimeType, port, paths);
 
   @override
   String toString() {
-    return 'Settings(paths: $paths)';
+    return 'Settings(port: $port, paths: $paths)';
   }
 }
 
@@ -622,7 +632,7 @@ abstract mixin class _$SettingsCopyWith<$Res>
       __$SettingsCopyWithImpl;
   @override
   @useResult
-  $Res call({Paths paths});
+  $Res call({int port, Paths paths});
 
   @override
   $PathsCopyWith<$Res> get paths;
@@ -640,9 +650,14 @@ class __$SettingsCopyWithImpl<$Res> implements _$SettingsCopyWith<$Res> {
   @override
   @pragma('vm:prefer-inline')
   $Res call({
+    Object? port = null,
     Object? paths = null,
   }) {
     return _then(_Settings(
+      port: null == port
+          ? _self.port
+          : port // ignore: cast_nullable_to_non_nullable
+              as int,
       paths: null == paths
           ? _self.paths
           : paths // ignore: cast_nullable_to_non_nullable

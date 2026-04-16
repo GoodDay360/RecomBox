@@ -2,25 +2,29 @@
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
+use flutter_rust_bridge::frb;
+
 use crate::utils;
 
-#[derive(Debug)]
-pub struct Files {
+#[frb(json_serializable)]
+#[derive(Debug, Deserialize, Serialize)]
+pub struct FileInfo {
+    pub id: usize,
     pub path: Option<String>,
     pub length: Option<usize>,
     pub sha1: Option<String>
 }
 
-
-#[derive(Debug)]
-pub struct OutputPayload {
+#[frb(json_serializable)]
+#[derive(Debug, Deserialize, Serialize)]
+pub struct TorrentMetadata {
     pub name: Option<String>,
     pub length: Option<u64>,
-    pub files: Vec<Files>,
+    pub files: Vec<FileInfo>,
 }
 
 
-pub async fn get_torrent_info(torrent_source: String) -> Result<OutputPayload, String> {
+pub async fn get_torrent_metadata(torrent_source: String) -> Result<TorrentMetadata, String> {
     
 
     let torrent_info = utils::get_torrent_info::new(&PathBuf::from(torrent_source))
@@ -34,9 +38,10 @@ pub async fn get_torrent_info(torrent_source: String) -> Result<OutputPayload, S
 
     let length = torrent_info.length;
 
-    let files: Vec<Files> = match &torrent_info.files {
-        Some(files) => files.into_iter()
-            .map(|f| Files{
+    let files: Vec<FileInfo> = match &torrent_info.files {
+        Some(files) => files.into_iter().enumerate()
+            .map(|(k, f)| FileInfo{
+                id: k,
                 path: Some(f.path.iter().map(|i| 
                     String::from_utf8_lossy(i).to_string()).collect()
                 ),
@@ -51,7 +56,7 @@ pub async fn get_torrent_info(torrent_source: String) -> Result<OutputPayload, S
         None => return Err("Unable to extract files".to_string())
     };
 
-    return Ok(OutputPayload {
+    return Ok(TorrentMetadata {
         name: name,
         length: length,
         files: files

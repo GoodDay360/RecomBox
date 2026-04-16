@@ -11,27 +11,39 @@ use tokio::io::AsyncSeekExt;
 use tokio_util::io::ReaderStream;
 use std::path::PathBuf;
 use tokio;
+use serde::{Deserialize, Serialize};
 
-use crate::utils::torrent_handle::TORRENT_HANDLE;
+use crate::utils::torrent_provider::torrent_handle::TorrentHandle;
+
+#[derive(Deserialize, Serialize)]
+struct InputPayload {
+    handle_id: String,
+    torrent_source: String,
+    file_id: usize
+}
 
 #[get("/stream_video")]
-pub async fn new(req: HttpRequest) -> HttpResponse {
+pub async fn new(req: HttpRequest, query: web::Query<InputPayload>) -> Result<HttpResponse, actix_web::Error>{
     let headers = req.headers();
 
-    let torrent_source = "https://yts.bz/torrent/download/CE202BCAE070A04BFBFB2C96355B058612B05493";
-    let file_id = 0;
-    
-    for entry in TORRENT_HANDLE.iter() {
-        println!("key: {}", entry.key());
-        for entry2 in entry.value().iter() {
-            println!("value: {}", entry2.key());
-        }
-    }
+    let handle_id = &query.handle_id;
+    let torrent_source = &query.torrent_source;
+    let file_id = query.file_id;
 
-    let mut stream = TORRENT_HANDLE.get(torrent_source).unwrap().clone()
-        .get(&file_id).unwrap().clone()
-        .stream(file_id).unwrap();
+    let torrent_handle = TorrentHandle{
+        handle_id: handle_id.clone(),
+        torrent_source: torrent_source.clone(),
+        file_id: file_id,
+        output_dir: PathBuf::new()
+    };
+
+    let mut stream = torrent_handle.load().await
+        .map_err(|e| actix_web::error::ErrorInternalServerError(e.to_string()))?
+        .stream(file_id)
+        .map_err(|e| actix_web::error::ErrorInternalServerError(e.to_string()))?;
     
+
+    // -> Identify byte range
     
     let total_len = stream.len();
 
@@ -59,6 +71,8 @@ pub async fn new(req: HttpRequest) -> HttpResponse {
 
     println!("START: {}, END: {}, TOTAL: {}", start, actual_end, total_len);
 
+    // <-
+
     stream.seek(SeekFrom::Start(start)).await.unwrap();
     let reader_stream = ReaderStream::new(stream);
     let body = actix_web::body::BodyStream::new(reader_stream);
@@ -67,21 +81,25 @@ pub async fn new(req: HttpRequest) -> HttpResponse {
 
     if headers.get("range").is_some() {
         // Range request → 206
-        HttpResponse::PartialContent()
-            .append_header(("Accept-Ranges", "bytes"))
-            .append_header(("Content-Type", "video/x-matroska"))
-            .append_header(("Content-Length", content_length.to_string()))
-            .append_header((
-                "Content-Range",
-                format!("bytes {}-{}/{}", start, actual_end, total_len),
-            ))
-            .body(body)
+        Ok(
+            HttpResponse::PartialContent()
+                .append_header(("Accept-Ranges", "bytes"))
+                .append_header(("Content-Type", "video/x-matroska"))
+                .append_header(("Content-Length", content_length.to_string()))
+                .append_header((
+                    "Content-Range",
+                    format!("bytes {}-{}/{}", start, actual_end, total_len),
+                ))
+                .body(body)
+        )
     } else {
         // No range → 200
-        HttpResponse::Ok()
-            .append_header(("Content-Type", "video/x-matroska"))
-            .append_header(("Content-Length", total_len.to_string()))
-            .body(body)
+        Ok(
+            HttpResponse::Ok()
+                .append_header(("Content-Type", "video/x-matroska"))
+                .append_header(("Content-Length", total_len.to_string()))
+                .body(body)
+        )
     }
     
 }

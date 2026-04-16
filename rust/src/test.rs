@@ -14,11 +14,11 @@ mod tests {
         method::generate_torrent_handle::generate_torrent_handle(url.to_string(), 0).await.unwrap();
 
 
-        let result = method::get_torrent_info::get_torrent_info(url.to_string())
+        let result = method::get_torrent_metadata::get_torrent_info(url.to_string())
             .await.unwrap();
 
         println!("{:?}", result);
-        method::spawn_stream_server::spawn_stream_server().await.unwrap();
+        method::init_stream_server::spawn_stream_server().await.unwrap();
     }
 
 

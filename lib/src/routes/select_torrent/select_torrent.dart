@@ -17,11 +17,13 @@ import 'package:recombox/src/rust/method/plugin_provider/get_sources.dart';
 import 'package:recombox/src/rust/method/plugin_provider/get_torrents.dart';
 
 class SelectTorrentScreenArguments {
+  String viewID;
   String pluginPath;
   String id;
   Source source;
 
   SelectTorrentScreenArguments({
+    required this.viewID,
     required this.pluginPath,
     required this.id,
     required this.source,
@@ -61,6 +63,7 @@ class _SelectTorrentState extends State<SelectTorrentScreen> {
         args = rawArgs is SelectTorrentScreenArguments
             ? rawArgs
             : SelectTorrentScreenArguments(
+              viewID: "72673844%20spider",
               pluginPath: "movies/8c8fb2b288439bcd9a71ff75051af9922162ba23b8a8ebd3db1dbe905cca00ee/2036011253247552227.js", 
               id: "72673844",
               source: Source.anime,
@@ -259,6 +262,8 @@ class _SelectTorrentState extends State<SelectTorrentScreen> {
                               itemCount: filteredTorrentList.length,
                               itemBuilder: (context, index) {
                                 return SelectTorrentTile(
+                                  source: args!.source,
+                                  viewID: args!.viewID,
                                   torrentInfo: filteredTorrentList[index],
                                 );
                               },
@@ -295,6 +300,7 @@ class _SelectTorrentState extends State<SelectTorrentScreen> {
               
               
             )
+          
           ],
         )
       )

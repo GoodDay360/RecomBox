@@ -56,6 +56,8 @@ dependencies:
   url_launcher: ^6.3.2
   marquee: ^2.3.0
   pub_semver: ^2.2.0
+  path: ^1.9.1
+  file_type_plus: ^1.0.1
 
 dev_dependencies:
   flutter_test:

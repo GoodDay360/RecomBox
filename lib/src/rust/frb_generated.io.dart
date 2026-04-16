@@ -18,8 +18,9 @@ import 'method/favorite/rename_category.dart';
 import 'method/favorite/set_category.dart';
 import 'method/favorite/swap_category_order.dart';
 import 'method/favorite/unset_category.dart';
-import 'method/generate_torrent_handle.dart';
-import 'method/get_torrent_info.dart';
+import 'method/get_torrent_metadata.dart';
+import 'method/init/init_rest_server.dart';
+import 'method/init/init_settings.dart';
 import 'method/init/init_torrent_session.dart';
 import 'method/metadata_provider/featured_content.dart';
 import 'method/metadata_provider/search_content.dart';
@@ -32,8 +33,6 @@ import 'method/plugin_provider/get_sources.dart';
 import 'method/plugin_provider/get_torrents.dart';
 import 'method/plugin_provider/install_plugin.dart';
 import 'method/plugin_provider/remove_plugin.dart';
-import 'method/settings/init_settings.dart';
-import 'method/spawn_stream_server.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_io.dart';
 import 'utils/settings.dart';
 
@@ -92,7 +91,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   FeaturedContentInfo dco_decode_featured_content_info(dynamic raw);
 
   @protected
-  Files dco_decode_files(dynamic raw);
+  FileInfo dco_decode_file_info(dynamic raw);
 
   @protected
   PlatformInt64 dco_decode_i_64(dynamic raw);
@@ -110,7 +109,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<FeaturedContentInfo> dco_decode_list_featured_content_info(dynamic raw);
 
   @protected
-  List<Files> dco_decode_list_files(dynamic raw);
+  List<FileInfo> dco_decode_list_file_info(dynamic raw);
 
   @protected
   List<List<EpisodeInfo>> dco_decode_list_list_episode_info(dynamic raw);
@@ -153,9 +152,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BigInt? dco_decode_opt_box_autoadd_usize(dynamic raw);
 
   @protected
-  OutputPayload dco_decode_output_payload(dynamic raw);
-
-  @protected
   Paths dco_decode_paths(dynamic raw);
 
   @protected
@@ -184,7 +180,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   TorrentInfo dco_decode_torrent_info(dynamic raw);
 
   @protected
+  TorrentMetadata dco_decode_torrent_metadata(dynamic raw);
+
+  @protected
   TrendingContentInfo dco_decode_trending_content_info(dynamic raw);
+
+  @protected
+  int dco_decode_u_32(dynamic raw);
 
   @protected
   BigInt dco_decode_u_64(dynamic raw);
@@ -252,7 +254,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  Files sse_decode_files(SseDeserializer deserializer);
+  FileInfo sse_decode_file_info(SseDeserializer deserializer);
 
   @protected
   PlatformInt64 sse_decode_i_64(SseDeserializer deserializer);
@@ -272,7 +274,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  List<Files> sse_decode_list_files(SseDeserializer deserializer);
+  List<FileInfo> sse_decode_list_file_info(SseDeserializer deserializer);
 
   @protected
   List<List<EpisodeInfo>> sse_decode_list_list_episode_info(
@@ -321,9 +323,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BigInt? sse_decode_opt_box_autoadd_usize(SseDeserializer deserializer);
 
   @protected
-  OutputPayload sse_decode_output_payload(SseDeserializer deserializer);
-
-  @protected
   Paths sse_decode_paths(SseDeserializer deserializer);
 
   @protected
@@ -353,8 +352,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   TorrentInfo sse_decode_torrent_info(SseDeserializer deserializer);
 
   @protected
+  TorrentMetadata sse_decode_torrent_metadata(SseDeserializer deserializer);
+
+  @protected
   TrendingContentInfo sse_decode_trending_content_info(
       SseDeserializer deserializer);
+
+  @protected
+  int sse_decode_u_32(SseDeserializer deserializer);
 
   @protected
   BigInt sse_decode_u_64(SseDeserializer deserializer);
@@ -427,7 +432,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       FeaturedContentInfo self, SseSerializer serializer);
 
   @protected
-  void sse_encode_files(Files self, SseSerializer serializer);
+  void sse_encode_file_info(FileInfo self, SseSerializer serializer);
 
   @protected
   void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer);
@@ -448,7 +453,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<FeaturedContentInfo> self, SseSerializer serializer);
 
   @protected
-  void sse_encode_list_files(List<Files> self, SseSerializer serializer);
+  void sse_encode_list_file_info(List<FileInfo> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_list_episode_info(
@@ -500,9 +505,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_opt_box_autoadd_usize(BigInt? self, SseSerializer serializer);
 
   @protected
-  void sse_encode_output_payload(OutputPayload self, SseSerializer serializer);
-
-  @protected
   void sse_encode_paths(Paths self, SseSerializer serializer);
 
   @protected
@@ -534,8 +536,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_torrent_info(TorrentInfo self, SseSerializer serializer);
 
   @protected
+  void sse_encode_torrent_metadata(
+      TorrentMetadata self, SseSerializer serializer);
+
+  @protected
   void sse_encode_trending_content_info(
       TrendingContentInfo self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_u_32(int self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_64(BigInt self, SseSerializer serializer);
