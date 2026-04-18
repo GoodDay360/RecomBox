@@ -15,6 +15,7 @@ import 'dart:io';
 class SelectPluginScreenArguments {
   Source source;
   String id;
+  String externalID;
   String title;
   String titleSecondary;
   BigInt season;
@@ -24,6 +25,7 @@ class SelectPluginScreenArguments {
   SelectPluginScreenArguments({
     required this.source,
     required this.id,
+    required this.externalID,
     required this.title,
     required this.season,
     required this.titleSecondary,
@@ -62,6 +64,7 @@ class _SelectPluginState extends State<SelectPluginScreen> {
           : SelectPluginScreenArguments(
               source: Source.movies,
               id: "%2F53906%2Fspider-man",
+              externalID: "tt999",
               title: "Spiderman",
               titleSecondary: "Spiderman",
               season: BigInt.from(1),

@@ -57,7 +57,20 @@ pub async fn get_torrent_metadata(torrent_source: String) -> Result<TorrentMetad
                     None => None
                 }
             }).collect(),
-        None => return Err("Unable to extract files".to_string())
+        None => {
+            // Single-file torrent
+            if let (Some(name), Some(length)) = (&torrent_info.name, torrent_info.length) {
+                vec![FileInfo {
+                    id: 0,
+                    path: Some(String::from_utf8_lossy(name).to_string()),
+                    length: Some(length as usize),
+                    sha1: None,
+                }]
+            } else {
+                // Neither files nor length → invalid torrent
+                return Err("Torrent metadata contains no files or length".to_string());
+            }
+        }
     };
 
     return Ok(TorrentMetadata {

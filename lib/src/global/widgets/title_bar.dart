@@ -23,6 +23,7 @@ class _TitleBarState extends State<TitleBar> {
   }
 
   Future<void> fullscreen() async {
+    await windowManager.setFullScreen(false);
     await windowManager.isMaximized()
         ? await windowManager.unmaximize()
         : await windowManager.maximize();

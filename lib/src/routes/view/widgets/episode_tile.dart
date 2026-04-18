@@ -8,6 +8,7 @@ class EpisodeTile extends StatefulWidget {
   const EpisodeTile({
     super.key,
     required this.id,
+    required this.externalID,
     required this.title,
     required this.titleSecondary,
     required this.season,
@@ -16,6 +17,7 @@ class EpisodeTile extends StatefulWidget {
   });
 
   final String id;
+  final String externalID;
   final String titleSecondary;
   final String title;
   final BigInt season;
@@ -35,6 +37,7 @@ class _EpisodeTileState extends State<EpisodeTile> {
     SelectPluginScreenArguments args = SelectPluginScreenArguments(
       source: SourceExtension.fromString(widget.episodeInfo.source),
       id: widget.id,
+      externalID: widget.externalID,
       title: widget.title,
       titleSecondary: widget.titleSecondary,
       season: widget.season,

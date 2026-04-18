@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_single_instance/flutter_single_instance.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/rust/frb_generated.dart';
@@ -27,37 +28,29 @@ Future<int> getFreePort() async {
 
 
 Future<void> initApp() async {
-
-  // -> Flutter Rust Bridge Initialization
-	await RustLib.init();
 	WidgetsFlutterBinding.ensureInitialized();
-	await initSettings(settings: Settings(
-    port: await getFreePort(),
-		paths: Paths(
-      appSupportDir: (await getApplicationSupportDirectory()).path,
-      appCacheDir: (await getApplicationCacheDirectory()).path, 
-      tempDir: (await getTemporaryDirectory()).path
-		)
-	));
-	// <-
 
-  // -> Torrent Session and Rest Server
-  await initTorrentSession();
-  initRestServer();
+  // -> Single Instance
+  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    if (!(await FlutterSingleInstance().isFirstInstance())) {
+      final err = await FlutterSingleInstance().focus();
+
+      if (err != null) {
+        debugPrint("Error focusing running instance: $err");
+      }
+      exit(0);
+    }
+  }
   // <-
 
-
-	// -> Hive DB
+  // -> Hive DB
 	WidgetsFlutterBinding.ensureInitialized();
 	await Hive.initFlutter();
-
+  
 	// <- 
 
-	// -> Flutter Widgets
-	WidgetsFlutterBinding.ensureInitialized();
-	// <-
 
-	// -> App Colors
+  // -> App Colors
 	
 	var loadAppColors = await AppColorsScheme.load();
 	appColorsNotifier.value = loadAppColors;
@@ -84,6 +77,32 @@ Future<void> initApp() async {
   
 	
 	// <-
+
+  // -> Flutter Rust Bridge Initialization
+	await RustLib.init();
+	await initSettings(settings: Settings(
+    port: await getFreePort(),
+		paths: Paths(
+      appSupportDir: (await getApplicationSupportDirectory()).path,
+      appCacheDir: (await getApplicationCacheDirectory()).path, 
+      tempDir: (await getTemporaryDirectory()).path
+		)
+	));
+	// <-
+
+  // -> Torrent Session and Rest Server
+  await initTorrentSession();
+  initRestServer();
+  // <-
+
+
+	
+
+	// -> Flutter Widgets
+	WidgetsFlutterBinding.ensureInitialized();
+	// <-
+
+	
 
   // -> Media Kit
   MediaKit.ensureInitialized();

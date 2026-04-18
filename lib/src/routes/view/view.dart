@@ -71,6 +71,7 @@ class _ViewState extends State<ViewScreen> {
   final TextEditingController _textEditingController = TextEditingController(text: '');
   FocusNode searchFocus = FocusNode();
   bool isInFavorite = false;
+  bool isError = false;
 
 
 
@@ -102,11 +103,20 @@ class _ViewState extends State<ViewScreen> {
     setState(() {
       isLoading = true;
     });
-    var data = await viewContent(source: args.source.name, id: args.id, fromCache: fromCache);
-    debugPrint(data.titleSecondary);
-    setState(() {
-      viewContentInfoResult = data;
-    });
+    try{
+      var data = await viewContent(source: args.source.name, id: args.id, fromCache: fromCache);
+      debugPrint(data.titleSecondary);
+      setState(() {
+        viewContentInfoResult = data;
+      });
+    }catch(e){
+      debugPrint(e.toString());
+      setState(() {
+        isError = true;
+      });
+      return;
+    }
+    
     if (viewContentInfoResult!.countdown > 0){
       countdownTimer = Timer.periodic(
         const Duration(seconds: 1),
@@ -225,13 +235,29 @@ class _ViewState extends State<ViewScreen> {
                     )
                   )
                 ),
+              if (!isError)
               
-              Container(
-                alignment: Alignment.center,
-                child: CircularProgressIndicator(
-                  color: appColors.secondary,
-                )
-              ),
+                Container(
+                  alignment: Alignment.center,
+                  child: CircularProgressIndicator(
+                    color: appColors.secondary,
+                  )
+                ),
+
+              if (isError)
+                Container(
+                  padding: EdgeInsets.all(15),
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Something went wrong while fetching content",
+                    style: GoogleFonts.nunito(
+                      fontSize: 24,
+                      color: appColors.textPrimary,
+                      fontWeight: FontWeight(700)
+                    ),
+                    textAlign: TextAlign.center,
+                  )
+                ),
             ],
             if (!isLoading)
               SingleChildScrollView(
@@ -774,6 +800,7 @@ class _ViewState extends State<ViewScreen> {
                                   itemBuilder: (current, index) {
                                       return EpisodeTile(
                                         id: args.id,
+                                        externalID: viewContentInfoResult!.externalId,
                                         title: viewContentInfoResult!.title,
                                         titleSecondary: viewContentInfoResult!.titleSecondary,
                                         season: BigInt.from(currentSeasonIndex+1),

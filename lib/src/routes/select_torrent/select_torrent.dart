@@ -89,6 +89,8 @@ class _SelectTorrentState extends State<SelectTorrentScreen> {
   }
 
   Future<void> initSelectTorrent() async {
+    if (!context.mounted) return;
+
     setState(() {
       isLoading = true;
     });
@@ -100,10 +102,11 @@ class _SelectTorrentState extends State<SelectTorrentScreen> {
         id: args!.id,
         page: BigInt.from(1)
       );
-
-      setState(() {
-        torrentList = getTorrentListResult;
-      });
+      if (context.mounted){
+        setState(() {
+          torrentList = getTorrentListResult;
+        });
+      }
 
       debugPrint(getTorrentListResult.toString());
 
@@ -112,9 +115,12 @@ class _SelectTorrentState extends State<SelectTorrentScreen> {
     }catch(e){
       debugPrint(e.toString());
     }finally{
-      setState(() {
-        isLoading = false;
-      });
+      if (context.mounted){
+        setState(() {
+          isLoading = false;
+        });
+      }
+      
     }
 
   }

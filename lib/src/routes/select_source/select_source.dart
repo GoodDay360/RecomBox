@@ -62,6 +62,7 @@ class _SelectSourceState extends State<SelectSourceScreen> {
               selectPluginScreenArguments: SelectPluginScreenArguments(
                   source: Source.movies,
                   id: "%2F53906%2Fspider-man",
+                  externalID: "tt999",
                   title: "Spiderman",
                   titleSecondary: "Spiderman",
                   season: BigInt.from(1),
@@ -93,7 +94,7 @@ class _SelectSourceState extends State<SelectSourceScreen> {
       List<SourceInfo> getSourceInfoResult = await getSources(
         pluginPath: args!.pluginPath, 
         source: args!.selectPluginScreenArguments.source.name, 
-        id: args!.selectPluginScreenArguments.id, 
+        id: args!.selectPluginScreenArguments.externalID, 
         title: args!.selectPluginScreenArguments.title, 
         titleSecondary: args!.selectPluginScreenArguments.titleSecondary,
         season: args!.selectPluginScreenArguments.season, 
