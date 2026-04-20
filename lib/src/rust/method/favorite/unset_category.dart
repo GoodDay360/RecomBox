@@ -7,7 +7,10 @@ import '../../frb_generated.dart';
 import '../favorite.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-Future<void> unsetCategory(
-        {required BigInt categoryId, required ItemInfo itemInfo}) =>
-    RustLib.instance.api.crateMethodFavoriteUnsetCategoryUnsetCategory(
-        categoryId: categoryId, itemInfo: itemInfo);
+
+            
+
+            Future<void>  unsetCategory({required BigInt categoryId , required ItemInfo itemInfo }) => RustLib.instance.api.crateMethodFavoriteUnsetCategoryUnsetCategory(categoryId: categoryId, itemInfo: itemInfo);
+
+            
+            

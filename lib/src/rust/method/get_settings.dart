@@ -7,5 +7,10 @@ import '../frb_generated.dart';
 import '../utils/settings.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-Future<Settings> getSettings() =>
-    RustLib.instance.api.crateMethodGetSettingsGetSettings();
+
+            
+
+            Future<Settings>  getSettings() => RustLib.instance.api.crateMethodGetSettingsGetSettings();
+
+            
+            

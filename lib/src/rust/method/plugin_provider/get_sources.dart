@@ -6,39 +6,19 @@
 import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
-part 'get_sources.freezed.dart';
-part 'get_sources.g.dart';
+part 'get_sources.freezed.dart';part 'get_sources.g.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`
+            // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`
 
-Future<List<SourceInfo>> getSources(
-        {required String pluginPath,
-        required String source,
-        required String id,
-        required String title,
-        required String titleSecondary,
-        required BigInt season,
-        required BigInt episode,
-        required String search,
-        required BigInt page}) =>
-    RustLib.instance.api.crateMethodPluginProviderGetSourcesGetSources(
-        pluginPath: pluginPath,
-        source: source,
-        id: id,
-        title: title,
-        titleSecondary: titleSecondary,
-        season: season,
-        episode: episode,
-        search: search,
-        page: page);
 
-@freezed
-sealed class SourceInfo with _$SourceInfo {
-  const factory SourceInfo({
-    required String id,
-    required String title,
-  }) = _SourceInfo;
+            Future<List<SourceInfo>>  getSources({required String pluginPath , required String source , required String id , required String title , required String titleSecondary , required BigInt season , required BigInt episode , required String search , required BigInt page }) => RustLib.instance.api.crateMethodPluginProviderGetSourcesGetSources(pluginPath: pluginPath, source: source, id: id, title: title, titleSecondary: titleSecondary, season: season, episode: episode, search: search, page: page);
 
-  factory SourceInfo.fromJson(Map<String, dynamic> json) =>
-      _$SourceInfoFromJson(json);
-}
+            @freezed
+sealed class SourceInfo with _$SourceInfo  {
+                
+                const factory SourceInfo({ required  String id, required  String title,}) = _SourceInfo;
+                
+                factory SourceInfo.fromJson(Map<String, dynamic> json) => _$SourceInfoFromJson(json);
+                
+            }
+            

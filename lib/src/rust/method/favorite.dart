@@ -6,36 +6,36 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
-part 'favorite.freezed.dart';
-part 'favorite.g.dart';
+part 'favorite.freezed.dart';part 'favorite.g.dart';
+
+            
+
+            
+
+            @freezed
+sealed class CategoryMap with _$CategoryMap  {
+                
+                const factory CategoryMap({ required  Map<BigInt, String> field0,}) = _CategoryMap;
+                
+                factory CategoryMap.fromJson(Map<String, dynamic> json) => _$CategoryMapFromJson(json);
+                
+            }
 
 @freezed
-sealed class CategoryMap with _$CategoryMap {
-  const factory CategoryMap({
-    required Map<BigInt, String> field0,
-  }) = _CategoryMap;
-
-  factory CategoryMap.fromJson(Map<String, dynamic> json) =>
-      _$CategoryMapFromJson(json);
-}
-
-@freezed
-sealed class CategoryOrderMap with _$CategoryOrderMap {
-  const factory CategoryOrderMap({
-    required Map<BigInt, BigInt> field0,
-  }) = _CategoryOrderMap;
-
-  factory CategoryOrderMap.fromJson(Map<String, dynamic> json) =>
-      _$CategoryOrderMapFromJson(json);
-}
+sealed class CategoryOrderMap with _$CategoryOrderMap  {
+                
+                const factory CategoryOrderMap({ required  Map<BigInt, BigInt> field0,}) = _CategoryOrderMap;
+                
+                factory CategoryOrderMap.fromJson(Map<String, dynamic> json) => _$CategoryOrderMapFromJson(json);
+                
+            }
 
 @freezed
-sealed class ItemInfo with _$ItemInfo {
-  const factory ItemInfo({
-    required String source,
-    required String id,
-  }) = _ItemInfo;
-
-  factory ItemInfo.fromJson(Map<String, dynamic> json) =>
-      _$ItemInfoFromJson(json);
-}
+sealed class ItemInfo with _$ItemInfo  {
+                
+                const factory ItemInfo({ required  String source, required  String id,}) = _ItemInfo;
+                
+                factory ItemInfo.fromJson(Map<String, dynamic> json) => _$ItemInfoFromJson(json);
+                
+            }
+            

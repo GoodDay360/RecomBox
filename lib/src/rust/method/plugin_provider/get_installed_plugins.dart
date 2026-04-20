@@ -6,28 +6,19 @@
 import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
-part 'get_installed_plugins.freezed.dart';
-part 'get_installed_plugins.g.dart';
+part 'get_installed_plugins.freezed.dart';part 'get_installed_plugins.g.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`
+            // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`
 
-Future<Map<String, InstalledPluginInfo>> getInstalledPlugins(
-        {required String source}) =>
-    RustLib.instance.api
-        .crateMethodPluginProviderGetInstalledPluginsGetInstalledPlugins(
-            source: source);
 
-@freezed
-sealed class InstalledPluginInfo with _$InstalledPluginInfo {
-  const factory InstalledPluginInfo({
-    required String manifestRepoName,
-    required String pluginName,
-    required String pluginRepoUrl,
-    required String pluginIconUrl,
-    required String pluginPath,
-    required String pluginVersion,
-  }) = _InstalledPluginInfo;
+            Future<Map<String, InstalledPluginInfo>>  getInstalledPlugins({required String source }) => RustLib.instance.api.crateMethodPluginProviderGetInstalledPluginsGetInstalledPlugins(source: source);
 
-  factory InstalledPluginInfo.fromJson(Map<String, dynamic> json) =>
-      _$InstalledPluginInfoFromJson(json);
-}
+            @freezed
+sealed class InstalledPluginInfo with _$InstalledPluginInfo  {
+                
+                const factory InstalledPluginInfo({ required  String manifestRepoName, required  String pluginName, required  String pluginRepoUrl, required  String pluginIconUrl, required  String pluginPath, required  String pluginVersion,}) = _InstalledPluginInfo;
+                
+                factory InstalledPluginInfo.fromJson(Map<String, dynamic> json) => _$InstalledPluginInfoFromJson(json);
+                
+            }
+            

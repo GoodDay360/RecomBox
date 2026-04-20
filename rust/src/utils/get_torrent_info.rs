@@ -15,13 +15,9 @@ pub async fn new(torrent_source: &str) -> Result<TorrentMetaV1Info<ByteBufOwned>
     options.overwrite = true;
     options.list_only = true;
 
-    let decoded_torrent_source = decode(torrent_source)
-        .map_err(|e| actix_web::error::ErrorInternalServerError(e.to_string()))?
-        .to_string();
-
     let add_torrent_res = session
         .add_torrent(
-            AddTorrent::from_url(decoded_torrent_source),
+            AddTorrent::from_url(torrent_source),
             Some(options),
         )
         .await?;

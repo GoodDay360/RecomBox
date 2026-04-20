@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/routes/view/view.dart';
-import 'package:recombox/src/rust/method/metadata_provider/trending_content.dart';
 import 'package:recombox/src/rust/method/metadata_provider/view_content.dart';
 
 class FavoriteContentCard extends StatefulWidget {

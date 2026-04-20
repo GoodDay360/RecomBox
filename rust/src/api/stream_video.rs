@@ -56,13 +56,9 @@ pub async fn new(req: HttpRequest, query: web::Query<InputPayload>) -> Result<Ht
         .join(query.season.to_string())
         .join(query.episode.to_string());
 
-    let decoded_torrent_source = decode(&query.torrent_source)
-        .map_err(|e| actix_web::error::ErrorInternalServerError(e.to_string()))?
-        .to_string();
-
     let torrent_handle_builder = TorrentHandle{
         handle_id: query.handle_id.clone(),
-        torrent_source:  decoded_torrent_source,
+        torrent_source:  query.torrent_source.clone(),
         file_id:  query.file_id,
         output_dir: output_dir
     };

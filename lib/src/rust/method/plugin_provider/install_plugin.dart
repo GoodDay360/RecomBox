@@ -7,7 +7,10 @@ import '../../frb_generated.dart';
 import '../plugin_provider.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-Future<void> installPlugins(
-        {required String source, required PluginInfo pluginInfo}) =>
-    RustLib.instance.api.crateMethodPluginProviderInstallPluginInstallPlugins(
-        source: source, pluginInfo: pluginInfo);
+
+            
+
+            Future<void>  installPlugins({required String source , required PluginInfo pluginInfo }) => RustLib.instance.api.crateMethodPluginProviderInstallPluginInstallPlugins(source: source, pluginInfo: pluginInfo);
+
+            
+            
