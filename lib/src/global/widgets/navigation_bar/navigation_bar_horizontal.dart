@@ -47,46 +47,57 @@ class _NavigationBarHorizontalState extends State<NavigationBarHorizontal> {
         child: Row(
           children: [
             Expanded(
-                child: NavigationBar(
-              // -> Styles
-              backgroundColor: appColors.primary,
-              indicatorColor: appColors.secondary, // background highlight
-              labelTextStyle: WidgetStateProperty.all(
-                TextStyle(color: appColors.textPrimary),
-              ),
+              child: NavigationBar(
+                // -> Styles
+                
+                backgroundColor: appColors.primary,
+                indicatorColor: appColors.secondary, 
+                labelTextStyle: WidgetStateProperty.all(
+                  TextStyle(color: appColors.textPrimary),
+                ),
 
-              // <-
+                // <-
 
-              selectedIndex: currentIndex,
-              onDestinationSelected: navigate,
-              destinations: [
-                NavigationDestination(
-                  icon: MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: Icon(Icons.home, color: appColors.secondary),
+                selectedIndex: currentIndex,
+                onDestinationSelected: navigate,
+                destinations: [
+                  NavigationDestination(
+                    icon: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: Icon(Icons.home, color: appColors.secondary),
+                    ),
+                    selectedIcon: Icon(Icons.home, color: appColors.primary),
+                    label: 'Home',
                   ),
-                  selectedIcon: Icon(Icons.home, color: appColors.primary),
-                  label: 'Home',
-                ),
-                NavigationDestination(
-                  icon: MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: Icon(Icons.search, color: appColors.secondary),
+                  NavigationDestination(
+                    icon: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: Icon(Icons.search, color: appColors.secondary),
+                    ),
+                    selectedIcon: Icon(Icons.search, color: appColors.primary),
+                    label: 'Search',
                   ),
-                  selectedIcon: Icon(Icons.search, color: appColors.primary),
-                  label: 'Search',
-                ),
-                NavigationDestination(
-                  icon: MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: Icon(Icons.settings, color: appColors.secondary),
+                  NavigationDestination(
+                    icon: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: Icon(Icons.favorite_outline_rounded, color: appColors.secondary),
+                    ),
+                    selectedIcon: Icon(Icons.favorite_rounded, color: appColors.primary),
+                    label: 'Favorite',
                   ),
-                  selectedIcon: Icon(Icons.settings, color: appColors.primary),
-                  label: 'Settings',
-                ),
-              ],
-            )),
+                  NavigationDestination(
+                    icon: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: Icon(Icons.settings, color: appColors.secondary),
+                    ),
+                    selectedIcon: Icon(Icons.settings, color: appColors.primary),
+                    label: 'Settings',
+                  ),
+                ],
+              )
+            ),
           ],
-        ));
+        )
+      );
   }
 }

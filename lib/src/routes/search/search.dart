@@ -28,7 +28,6 @@ class _SearchState extends State<SearchScreen> {
 
   List<SearchContentInfo> searchContentResult = [];
 
-  FocusNode searchFocus = FocusNode();
 
   bool isLoading = false;
   bool noMore = false;
@@ -38,6 +37,7 @@ class _SearchState extends State<SearchScreen> {
   int currentPage = 1;
   String currentSearch = "";
 
+  FocusNode searchFocus = FocusNode();
   late TextEditingController _textEditingController;
   final _scrollController = ScrollController();
   
@@ -270,9 +270,7 @@ class _SearchState extends State<SearchScreen> {
                           ),
                           IconButton(
                             mouseCursor: SystemMouseCursors.click,
-                            onPressed: (){
-
-                            },
+                            onPressed: initSearch,
                             icon: Icon(
                               Icons.refresh,
                               color: appColors.textPrimary,

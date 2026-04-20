@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:recombox/src/global/app_color.dart';
-import 'package:recombox/src/routes/home/widgets/content_card.dart';
+import 'package:recombox/src/routes/home/widgets/trending_content_card.dart';
 import 'dart:io';
 
 import 'package:recombox/src/rust/method/metadata_provider/trending_content.dart';
@@ -65,7 +65,7 @@ class _ContentSectionState extends State<ContentSection> {
                     scrollDirection: Axis.horizontal,
                     itemCount: widget.trendingContentList.length,
                     itemBuilder: (context, index) {
-                      return ContentCard(
+                      return TrendingContentCard(
                         trendingContentInfo: widget.trendingContentList[index],
                       );
                     },

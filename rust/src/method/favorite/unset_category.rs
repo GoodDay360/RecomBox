@@ -1,10 +1,12 @@
 use std::path::PathBuf;
 use redb::{Database, ReadableDatabase};
+use serde_json::{to_vec};
+
 use crate::utils::settings::Settings;
 
-use super::{CATEGORY_TABLE, ITEM_AND_CATEGORY_TABLE, CATEGORY_AND_ITEM_TABLE, DATABASE_NAME};
+use super::{CATEGORY_TABLE, ITEM_AND_CATEGORY_TABLE, CATEGORY_AND_ITEM_TABLE, DATABASE_NAME, ItemInfo};
 
-pub async fn unset_category(category_id: u64, item_id: &str) -> Result<(), String> {
+pub async fn unset_category(category_id: u64, item_info: ItemInfo) -> Result<(), String> {
     let settings = Settings::get()
         .map_err(|e| e.to_string())?;
 
@@ -36,11 +38,14 @@ pub async fn unset_category(category_id: u64, item_id: &str) -> Result<(), Strin
         let mut item_cat_table = write_txn.open_multimap_table(ITEM_AND_CATEGORY_TABLE)
             .map_err(|e| e.to_string())?;
 
-        // Remove the specific mapping
-        cat_item_table.remove(category_id, item_id)
+        let serialized_item_info = to_vec(&item_info)
             .map_err(|e| e.to_string())?;
 
-        item_cat_table.remove(item_id, category_id)
+        // Remove the specific mapping
+        cat_item_table.remove(category_id, &serialized_item_info.as_slice())
+            .map_err(|e| e.to_string())?;
+
+        item_cat_table.remove(&serialized_item_info.as_slice(), category_id)
             .map_err(|e| e.to_string())?;
     }
 

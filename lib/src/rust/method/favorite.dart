@@ -28,3 +28,14 @@ sealed class CategoryOrderMap with _$CategoryOrderMap {
   factory CategoryOrderMap.fromJson(Map<String, dynamic> json) =>
       _$CategoryOrderMapFromJson(json);
 }
+
+@freezed
+sealed class ItemInfo with _$ItemInfo {
+  const factory ItemInfo({
+    required String source,
+    required String id,
+  }) = _ItemInfo;
+
+  factory ItemInfo.fromJson(Map<String, dynamic> json) =>
+      _$ItemInfoFromJson(json);
+}

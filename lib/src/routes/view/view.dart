@@ -4,6 +4,7 @@ import 'package:recombox/src/global/dialogs/favorite/set_category_dialog.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/routes/view/widgets/episode_tile.dart';
+import 'package:recombox/src/rust/method/favorite.dart';
 import 'package:recombox/src/rust/method/favorite/is_in_category.dart';
 import 'package:recombox/src/rust/method/metadata_provider/view_content.dart';
 import 'dart:io';
@@ -158,7 +159,12 @@ class _ViewState extends State<ViewScreen> {
   }
 
   Future<void> onFavoriteUpdate() async {
-    bool inFavorite = await isInCategory(itemId: args.id);
+    bool inFavorite = await isInCategory(
+      itemInfo: ItemInfo(
+        source: args.source.name, 
+        id: args.id,
+      )
+    );
     setState(() {
       isInFavorite = inFavorite;
     });
@@ -406,6 +412,7 @@ class _ViewState extends State<ViewScreen> {
                               showDialog(
                                 context: context,
                                 builder: (_) => SetCategoryDialog(
+                                  source: args.source,
                                   itemId: args.id,
                                   onDone: onFavoriteUpdate,
                                 ),

@@ -102,6 +102,15 @@ class _NavigationBarVerticalState extends State<NavigationBarVertical> {
                 NavigationRailDestination(
                   icon: MouseRegion(
                     cursor: SystemMouseCursors.click,
+                    child: Icon(Icons.favorite_outline_rounded),
+                  ),
+                  selectedIcon: Icon(Icons.favorite_rounded),
+                  label: Text('Favorite'),
+                ),
+                
+                NavigationRailDestination(
+                  icon: MouseRegion(
+                    cursor: SystemMouseCursors.click,
                     child: Icon(Icons.settings),
                   ),
                   label: Text('Settings'),

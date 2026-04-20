@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:recombox/src/global/init_app.dart';
 import 'package:recombox/src/routes/edit_category/edit_category.dart';
+import 'package:recombox/src/routes/favorite/favorite.dart';
 import 'package:recombox/src/routes/search/search.dart';
 import 'package:recombox/src/routes/select_file/select_file.dart';
 import 'package:recombox/src/routes/select_plugin/select_plugin.dart';
@@ -55,7 +56,7 @@ class App extends StatelessWidget {
 					},
 				),
 				debugShowCheckedModeBanner: false,
-				initialRoute: "/",
+				initialRoute: "/favorite",
 				title: 'RecomBox',
 				routes: {
 						"/": (context) => const HomeScreen(),
@@ -67,6 +68,8 @@ class App extends StatelessWidget {
 						"/select_torrent": (context) => const SelectTorrentScreen(),
 						"/select_file": (context) => const SelectFileScreen(),
 						"/watch": (context) => const WatchScreen(),
+						"/favorite": (context) => const FavoriteScreen(),
+
 					},
 				);
 			}

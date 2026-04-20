@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:recombox/src/global/dialogs/favorite/widgets/set_category_tile.dart';
 import 'package:recombox/src/global/app_color.dart';
+import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/rust/method/favorite.dart';
 import 'dart:math';
 
@@ -13,10 +14,12 @@ import 'package:recombox/src/rust/method/favorite/get_category_order.dart';
 class SetCategoryDialog extends StatefulWidget {
   const SetCategoryDialog({
     super.key,
+    required this.source,
     required this.itemId,
     this.onDone
   });
 
+  final Source source;
   final String itemId;
   final Function? onDone;
 
@@ -43,7 +46,12 @@ class _FavoriteDialogState extends State<SetCategoryDialog> {
     debugPrint(widget.itemId);
     CategoryMap getAllCategoryResult = await getAllCategory();
     CategoryOrderMap getCategoryOrderResult = await getCategoryOrder();
-    CategoryMap itemCategoryResult = await getAllCategoryByItemId(itemId: widget.itemId);
+    CategoryMap itemCategoryResult = await getAllCategoryByItemId(
+      itemInfo: ItemInfo(
+        source: widget.source.name, 
+        id: widget.itemId,
+      )
+    );
 
     final entriesAllCategoryResult = getAllCategoryResult.field0.entries.toList();
 
@@ -67,7 +75,12 @@ class _FavoriteDialogState extends State<SetCategoryDialog> {
 
   Future<void> onDone() async {
     try{
-      CategoryMap itemCategoryResult = await getAllCategoryByItemId(itemId: widget.itemId);
+      CategoryMap itemCategoryResult = await getAllCategoryByItemId(
+        itemInfo: ItemInfo(
+          source: widget.source.name, 
+          id: widget.itemId,
+        )
+      );
       if (itemCategoryResult.field0.length == itemCategoryMap.field0.length) return;
 
       if (widget.onDone != null) widget.onDone!();
@@ -118,6 +131,7 @@ class _FavoriteDialogState extends State<SetCategoryDialog> {
                   itemBuilder: (context, index) {
                     return SetCategoryTile(
                       selected: itemCategoryMap.field0.containsKey(allCategoryKeyList[index]),
+                      source: widget.source,
                       itemId: widget.itemId,
                       categoryID: allCategoryKeyList[index],
                       categoryName: allCategoryValueList[index],

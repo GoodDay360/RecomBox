@@ -17,6 +17,11 @@ void navigateHander(BuildContext context, int index) {
         context, '/search'
       );
       break;
+    case 2:
+      Navigator.pushNamed(
+        context, '/favorite'
+      );
+      break;
   }
 
   lastIndex = index;

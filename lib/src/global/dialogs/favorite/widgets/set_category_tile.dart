@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:recombox/src/global/app_color.dart';
+import 'package:recombox/src/global/types.dart';
+import 'package:recombox/src/rust/method/favorite.dart';
 import 'package:recombox/src/rust/method/favorite/set_category.dart';
 import 'package:recombox/src/rust/method/favorite/unset_category.dart';
 
@@ -8,12 +10,14 @@ class SetCategoryTile extends StatefulWidget {
   const SetCategoryTile({
     super.key,
     required this.selected,
+    required this.source,
     required this.itemId,
     required this.categoryID,
     required this.categoryName,
   });
 
   final bool selected;
+  final Source source;
   final String itemId;
   final BigInt categoryID;
   final String categoryName;
@@ -39,12 +43,19 @@ class _SetCategoryTileState extends State<SetCategoryTile> {
       if (value) {
         await setCategory(
           categoryId: widget.categoryID, 
-          itemId: widget.itemId
+          itemInfo: ItemInfo(
+            source: widget.source.name, 
+            id: widget.itemId
+          )
+
         );
       }else{
         await unsetCategory(
           categoryId: widget.categoryID, 
-          itemId: widget.itemId
+          itemInfo: ItemInfo(
+            source: widget.source.name, 
+            id: widget.itemId
+          )
         );
       }
     }catch(e){

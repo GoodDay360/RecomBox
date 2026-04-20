@@ -5,8 +5,8 @@ import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/routes/view/view.dart';
 import 'package:recombox/src/rust/method/metadata_provider/trending_content.dart';
 
-class ContentCard extends StatefulWidget {
-  const ContentCard({
+class TrendingContentCard extends StatefulWidget {
+  const TrendingContentCard({
     super.key,
     required this.trendingContentInfo,
   });
@@ -14,10 +14,10 @@ class ContentCard extends StatefulWidget {
   final TrendingContentInfo trendingContentInfo;
 
   @override
-  State<ContentCard> createState() => _ContentCardState();
+  State<TrendingContentCard> createState() => _TrendingContentCardState();
 }
 
-class _ContentCardState extends State<ContentCard> {
+class _TrendingContentCardState extends State<TrendingContentCard> {
   AppColorsScheme appColors = appColorsNotifier.value;
 
   void onNavigate(){

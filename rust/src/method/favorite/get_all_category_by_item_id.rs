@@ -1,11 +1,13 @@
 use std::collections::HashMap;
 use std::path::PathBuf;
 use redb::{Database, ReadableDatabase};
+use serde_json::{to_vec};
+
 use crate::utils::settings::Settings;
 
-use super::{CATEGORY_TABLE, ITEM_AND_CATEGORY_TABLE, DATABASE_NAME, CategoryMap};
+use super::{CATEGORY_TABLE, ITEM_AND_CATEGORY_TABLE, DATABASE_NAME, CategoryMap, ItemInfo};
 
-pub async fn get_all_category_by_item_id(item_id: &str) -> Result<CategoryMap, String> {
+pub async fn get_all_category_by_item_id(item_info: ItemInfo) -> Result<CategoryMap, String> {
     let settings = Settings::get()
         .map_err(|e| e.to_string())?;
 
@@ -29,8 +31,11 @@ pub async fn get_all_category_by_item_id(item_id: &str) -> Result<CategoryMap, S
 
     let mut map: HashMap<u64, String> = HashMap::new();
 
+    let serialized_item_info = to_vec(&item_info)
+        .map_err(|e| e.to_string())?;
+
     // MultimapValue is iterable
-    let values = item_cat_table.get(item_id).map_err(|e| e.to_string())?;
+    let values = item_cat_table.get(serialized_item_info.as_slice()).map_err(|e| e.to_string())?;
 
     for entry in values {
         let cat_id = entry.map_err(|e| e.to_string())?;

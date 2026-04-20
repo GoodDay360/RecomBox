@@ -29,3 +29,13 @@ Map<String, dynamic> _$CategoryOrderMapToJson(_CategoryOrderMap instance) =>
       'field0':
           instance.field0.map((k, e) => MapEntry(k.toString(), e.toString())),
     };
+
+_ItemInfo _$ItemInfoFromJson(Map<String, dynamic> json) => _ItemInfo(
+      source: json['source'] as String,
+      id: json['id'] as String,
+    );
+
+Map<String, dynamic> _$ItemInfoToJson(_ItemInfo instance) => <String, dynamic>{
+      'source': instance.source,
+      'id': instance.id,
+    };

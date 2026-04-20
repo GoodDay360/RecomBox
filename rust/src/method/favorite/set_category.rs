@@ -2,14 +2,17 @@
 
 use std::path::PathBuf;
 use redb::{Database, ReadableDatabase};
+use serde_json::{to_vec};
 
-use super::{CATEGORY_TABLE, ITEM_AND_CATEGORY_TABLE, CATEGORY_AND_ITEM_TABLE, DATABASE_NAME};
+use super::{CATEGORY_TABLE, ITEM_AND_CATEGORY_TABLE, CATEGORY_AND_ITEM_TABLE, DATABASE_NAME, ItemInfo};
 
 
 use crate::utils::settings::Settings;
 
 
-pub async fn set_category(category_id: u64, item_id: &str) -> Result<(), String> {
+
+
+pub async fn set_category(category_id: u64, item_info: ItemInfo) -> Result<(), String> {
     let settings = Settings::get()
         .map_err(|e| e.to_string())?;
 
@@ -42,10 +45,13 @@ pub async fn set_category(category_id: u64, item_id: &str) -> Result<(), String>
         let mut item_cat_table = write_txn.open_multimap_table(ITEM_AND_CATEGORY_TABLE)
             .map_err(|e| e.to_string())?;
 
-        cat_item_table.insert(category_id, item_id)
+        let serialized_item_info = to_vec(&item_info)
             .map_err(|e| e.to_string())?;
 
-        item_cat_table.insert(item_id, category_id)
+        cat_item_table.insert(category_id, &serialized_item_info.as_slice())
+            .map_err(|e| e.to_string())?;
+
+        item_cat_table.insert(&serialized_item_info.as_slice(), category_id)
             .map_err(|e| e.to_string())?;
     }
     write_txn.commit()
