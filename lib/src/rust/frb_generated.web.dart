@@ -84,9 +84,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool dco_decode_bool(dynamic raw);
 
   @protected
-  ItemInfo dco_decode_box_autoadd_item_info(dynamic raw);
-
-  @protected
   PluginInfo dco_decode_box_autoadd_plugin_info(dynamic raw);
 
   @protected
@@ -111,6 +108,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   double dco_decode_f_32(dynamic raw);
 
   @protected
+  FavoriteItemInfo dco_decode_favorite_item_info(dynamic raw);
+
+  @protected
   FeaturedContentInfo dco_decode_featured_content_info(dynamic raw);
 
   @protected
@@ -123,22 +123,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   InstalledPluginInfo dco_decode_installed_plugin_info(dynamic raw);
 
   @protected
-  ItemInfo dco_decode_item_info(dynamic raw);
-
-  @protected
   List<String> dco_decode_list_String(dynamic raw);
 
   @protected
   List<EpisodeInfo> dco_decode_list_episode_info(dynamic raw);
 
   @protected
+  List<FavoriteItemInfo> dco_decode_list_favorite_item_info(dynamic raw);
+
+  @protected
   List<FeaturedContentInfo> dco_decode_list_featured_content_info(dynamic raw);
 
   @protected
   List<FileInfo> dco_decode_list_file_info(dynamic raw);
-
-  @protected
-  List<ItemInfo> dco_decode_list_item_info(dynamic raw);
 
   @protected
   List<List<EpisodeInfo>> dco_decode_list_list_episode_info(dynamic raw);
@@ -265,9 +262,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool sse_decode_bool(SseDeserializer deserializer);
 
   @protected
-  ItemInfo sse_decode_box_autoadd_item_info(SseDeserializer deserializer);
-
-  @protected
   PluginInfo sse_decode_box_autoadd_plugin_info(SseDeserializer deserializer);
 
   @protected
@@ -292,6 +286,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   double sse_decode_f_32(SseDeserializer deserializer);
 
   @protected
+  FavoriteItemInfo sse_decode_favorite_item_info(SseDeserializer deserializer);
+
+  @protected
   FeaturedContentInfo sse_decode_featured_content_info(
       SseDeserializer deserializer);
 
@@ -306,13 +303,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  ItemInfo sse_decode_item_info(SseDeserializer deserializer);
-
-  @protected
   List<String> sse_decode_list_String(SseDeserializer deserializer);
 
   @protected
   List<EpisodeInfo> sse_decode_list_episode_info(SseDeserializer deserializer);
+
+  @protected
+  List<FavoriteItemInfo> sse_decode_list_favorite_item_info(
+      SseDeserializer deserializer);
 
   @protected
   List<FeaturedContentInfo> sse_decode_list_featured_content_info(
@@ -320,9 +318,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<FileInfo> sse_decode_list_file_info(SseDeserializer deserializer);
-
-  @protected
-  List<ItemInfo> sse_decode_list_item_info(SseDeserializer deserializer);
 
   @protected
   List<List<EpisodeInfo>> sse_decode_list_list_episode_info(
@@ -460,10 +455,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_bool(bool self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_item_info(
-      ItemInfo self, SseSerializer serializer);
-
-  @protected
   void sse_encode_box_autoadd_plugin_info(
       PluginInfo self, SseSerializer serializer);
 
@@ -490,6 +481,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_f_32(double self, SseSerializer serializer);
 
   @protected
+  void sse_encode_favorite_item_info(
+      FavoriteItemInfo self, SseSerializer serializer);
+
+  @protected
   void sse_encode_featured_content_info(
       FeaturedContentInfo self, SseSerializer serializer);
 
@@ -504,9 +499,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       InstalledPluginInfo self, SseSerializer serializer);
 
   @protected
-  void sse_encode_item_info(ItemInfo self, SseSerializer serializer);
-
-  @protected
   void sse_encode_list_String(List<String> self, SseSerializer serializer);
 
   @protected
@@ -514,14 +506,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<EpisodeInfo> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_favorite_item_info(
+      List<FavoriteItemInfo> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_featured_content_info(
       List<FeaturedContentInfo> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_file_info(List<FileInfo> self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_list_item_info(List<ItemInfo> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_list_episode_info(

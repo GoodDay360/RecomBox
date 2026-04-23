@@ -6,13 +6,7 @@ use actix_web::{
     HttpResponse,
     HttpServer,
 };
-use std::io::SeekFrom;
-use tokio::io::AsyncSeekExt;
-use tokio_util::io::ReaderStream;
-use std::path::PathBuf;
 use tokio;
-use num_cpus;
-
 
 use crate::{ utils::settings::Settings};
 use crate::api::routes;

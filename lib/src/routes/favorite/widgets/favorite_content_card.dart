@@ -4,6 +4,7 @@ import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/routes/view/view.dart';
 import 'package:recombox/src/rust/method/metadata_provider/view_content.dart';
+import 'dart:io';
 
 class FavoriteContentCard extends StatefulWidget {
   const FavoriteContentCard({
@@ -40,7 +41,7 @@ class _FavoriteContentCardState extends State<FavoriteContentCard> {
       ViewContentInfo viewContentInfoResult = await ViewContentInfo.get_(
         source: widget.source.name,
         id: widget.id, 
-        fromCache: true
+        fromCache: true,
       );
 
       widget.addTitle(viewContentInfoResult.title);
@@ -93,25 +94,17 @@ class _FavoriteContentCardState extends State<FavoriteContentCard> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    thumbnailUrl.isNotEmpty
-                      ? Ink.image(
-                        image: NetworkImage(
-                          thumbnailUrl,
-                        ),
-                        width: 155,
-                        height: 225,
-                        fit: BoxFit.fill,
-                        
-                      )
-                      : Ink.image(
-                        image: AssetImage(
-                          "assets/thumbnail_placeholder.png",
-                        ),
-                        width: 155,
-                        height: 225,
-                        fit: BoxFit.fill,
-                        
-                      ),
+                    Ink.image(
+                      image: thumbnailUrl.isEmpty
+                          ? const AssetImage("assets/thumbnail_placeholder.png")
+                          : thumbnailUrl.startsWith('http')
+                              ? NetworkImage(thumbnailUrl)
+                              : FileImage(File(thumbnailUrl)),
+                      width: 155,
+                      height: 225,
+                      fit: BoxFit.fill,
+                    ),
+
                     Text(
                       title,
                       style: GoogleFonts.nunito(

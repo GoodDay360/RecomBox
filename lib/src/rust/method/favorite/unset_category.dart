@@ -4,10 +4,11 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../../frb_generated.dart';
-import '../favorite.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 Future<void> unsetCategory(
-        {required BigInt categoryId, required ItemInfo itemInfo}) =>
+        {required BigInt categoryId,
+        required String source,
+        required String id}) =>
     RustLib.instance.api.crateMethodFavoriteUnsetCategoryUnsetCategory(
-        categoryId: categoryId, itemInfo: itemInfo);
+        categoryId: categoryId, source: source, id: id);

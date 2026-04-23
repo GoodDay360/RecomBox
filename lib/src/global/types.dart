@@ -12,7 +12,7 @@ extension SourceExtension on Source {
       case Source.movies:
         return "Movies";
       case Source.tv:
-        return "TV"; // special case so it’s not just "Tv"
+        return "TV";
     }
   }
 

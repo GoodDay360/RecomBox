@@ -4,10 +4,12 @@
 use redb::{ReadableDatabase};
 use serde_json::{to_vec};
 
-use super::{get_db, CATEGORY_TABLE, ITEM_AND_CATEGORY_TABLE, CATEGORY_AND_ITEM_TABLE, ItemInfo};
+use crate::method::favorite::is_in_category::is_in_category;
+
+use super::{get_db, CATEGORY_TABLE, ITEM_AND_CATEGORY_TABLE, CATEGORY_AND_ITEM_TABLE};
 
 
-pub async fn set_category(category_id: u64, item_info: ItemInfo) -> Result<(), String> {
+pub async fn set_category(category_id: u64, source: &str, id: &str) -> Result<(), String> {
     let db = get_db()?;
 
     // First check if category exists
@@ -33,17 +35,19 @@ pub async fn set_category(category_id: u64, item_info: ItemInfo) -> Result<(), S
         let mut item_cat_table = write_txn.open_multimap_table(ITEM_AND_CATEGORY_TABLE)
             .map_err(|e| e.to_string())?;
 
-        let serialized_item_info = to_vec(&item_info)
+        let encoded_item = to_vec(&[source,id])
             .map_err(|e| e.to_string())?;
 
-        cat_item_table.insert(category_id, &serialized_item_info.as_slice())
+        cat_item_table.insert(category_id, encoded_item.as_slice())
             .map_err(|e| e.to_string())?;
 
-        item_cat_table.insert(&serialized_item_info.as_slice(), category_id)
+        item_cat_table.insert(encoded_item.as_slice(), category_id)
             .map_err(|e| e.to_string())?;
     }
     write_txn.commit()
         .map_err(|e| e.to_string())?;
     
+    let is_in_fav = is_in_category(source, id).await?;
+
     return Ok(());
 }

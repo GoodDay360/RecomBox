@@ -1,9 +1,9 @@
 use redb::{ReadableDatabase};
 use serde_json::{to_vec};
 
-use super::{get_db, CATEGORY_TABLE, ITEM_AND_CATEGORY_TABLE, CATEGORY_AND_ITEM_TABLE, ItemInfo};
+use super::{get_db, CATEGORY_TABLE, ITEM_AND_CATEGORY_TABLE, CATEGORY_AND_ITEM_TABLE};
 
-pub async fn unset_category(category_id: u64, item_info: ItemInfo) -> Result<(), String> {
+pub async fn unset_category(category_id: u64, source: &str, id: &str) -> Result<(), String> {
     let db = get_db()?;
 
     // First check if category exists
@@ -28,14 +28,14 @@ pub async fn unset_category(category_id: u64, item_info: ItemInfo) -> Result<(),
         let mut item_cat_table = write_txn.open_multimap_table(ITEM_AND_CATEGORY_TABLE)
             .map_err(|e| e.to_string())?;
 
-        let serialized_item_info = to_vec(&item_info)
+        let encoded_item = to_vec(&[source,id])
             .map_err(|e| e.to_string())?;
 
         // Remove the specific mapping
-        cat_item_table.remove(category_id, &serialized_item_info.as_slice())
+        cat_item_table.remove(category_id, encoded_item.as_slice())
             .map_err(|e| e.to_string())?;
 
-        item_cat_table.remove(&serialized_item_info.as_slice(), category_id)
+        item_cat_table.remove(encoded_item.as_slice(), category_id)
             .map_err(|e| e.to_string())?;
     }
 

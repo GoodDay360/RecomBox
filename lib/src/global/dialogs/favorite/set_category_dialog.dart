@@ -46,10 +46,8 @@ class _SetCategoryDialogState extends State<SetCategoryDialog> {
     CategoryMap getAllCategoryResult = await getAllCategory();
     CategoryOrderMap getCategoryOrderResult = await getCategoryOrder();
     CategoryMap itemCategoryResult = await getAllCategoryByItemId(
-      itemInfo: ItemInfo(
         source: widget.source.name, 
         id: widget.itemId,
-      )
     );
 
     final entriesAllCategoryResult = getAllCategoryResult.field0.entries.toList();
@@ -75,10 +73,8 @@ class _SetCategoryDialogState extends State<SetCategoryDialog> {
   Future<void> onDone() async {
     try{
       CategoryMap itemCategoryResult = await getAllCategoryByItemId(
-        itemInfo: ItemInfo(
           source: widget.source.name, 
           id: widget.itemId,
-        )
       );
       if (itemCategoryResult.field0.length == itemCategoryMap.field0.length) return;
 

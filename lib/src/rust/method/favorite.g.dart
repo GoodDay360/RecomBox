@@ -30,12 +30,14 @@ Map<String, dynamic> _$CategoryOrderMapToJson(_CategoryOrderMap instance) =>
           instance.field0.map((k, e) => MapEntry(k.toString(), e.toString())),
     };
 
-_ItemInfo _$ItemInfoFromJson(Map<String, dynamic> json) => _ItemInfo(
+_FavoriteItemInfo _$FavoriteItemInfoFromJson(Map<String, dynamic> json) =>
+    _FavoriteItemInfo(
       source: json['source'] as String,
       id: json['id'] as String,
     );
 
-Map<String, dynamic> _$ItemInfoToJson(_ItemInfo instance) => <String, dynamic>{
+Map<String, dynamic> _$FavoriteItemInfoToJson(_FavoriteItemInfo instance) =>
+    <String, dynamic>{
       'source': instance.source,
       'id': instance.id,
     };

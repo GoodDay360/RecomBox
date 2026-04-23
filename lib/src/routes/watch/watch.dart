@@ -133,7 +133,7 @@ class _WatchState extends State<WatchScreen> {
         debugPrint(args!.season.toString());
         debugPrint(args!.episode.toString());
         await ViewContentInfo.updateLastWatch(
-          source: args!.source.toString(), 
+          source: args!.source.name, 
           id: args!.viewID, 
           seasonIndex: args!.season, 
           episodeIndex: args!.episode

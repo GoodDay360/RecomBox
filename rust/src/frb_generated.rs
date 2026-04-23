@@ -226,9 +226,10 @@ fn wire__crate__method__favorite__get_all_category_by_item_id__get_all_category_
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec,_,_,_>(flutter_rust_bridge::for_generated::TaskInfo{ debug_name: "get_all_category_by_item_id", port: Some(port_), mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal }, move || { 
             let message = unsafe { flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(ptr_, rust_vec_len_, data_len_) };
             let mut deserializer = flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_item_info = <crate::method::favorite::ItemInfo>::sse_decode(&mut deserializer);deserializer.end(); move |context| async move {
+            let api_source = <String>::sse_decode(&mut deserializer);
+let api_id = <String>::sse_decode(&mut deserializer);deserializer.end(); move |context| async move {
                     transform_result_sse::<_, String>((move || async move {
-                         let output_ok = crate::method::favorite::get_all_category_by_item_id::get_all_category_by_item_id(api_item_info).await?;   Ok(output_ok)
+                         let output_ok = crate::method::favorite::get_all_category_by_item_id::get_all_category_by_item_id(&api_source, &api_id).await?;   Ok(output_ok)
                     })().await)
                 } })
 }
@@ -727,14 +728,17 @@ fn wire__crate__method__favorite__is_in_category__is_in_category_impl(
             };
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_item_info = <crate::method::favorite::ItemInfo>::sse_decode(&mut deserializer);
+            let api_source = <String>::sse_decode(&mut deserializer);
+            let api_id = <String>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, String>(
                     (move || async move {
-                        let output_ok =
-                            crate::method::favorite::is_in_category::is_in_category(api_item_info)
-                                .await?;
+                        let output_ok = crate::method::favorite::is_in_category::is_in_category(
+                            &api_source,
+                            &api_id,
+                        )
+                        .await?;
                         Ok(output_ok)
                     })()
                     .await,
@@ -896,14 +900,16 @@ fn wire__crate__method__favorite__set_category__set_category_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_category_id = <u64>::sse_decode(&mut deserializer);
-            let api_item_info = <crate::method::favorite::ItemInfo>::sse_decode(&mut deserializer);
+            let api_source = <String>::sse_decode(&mut deserializer);
+            let api_id = <String>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, String>(
                     (move || async move {
                         let output_ok = crate::method::favorite::set_category::set_category(
                             api_category_id,
-                            api_item_info,
+                            &api_source,
+                            &api_id,
                         )
                         .await?;
                         Ok(output_ok)
@@ -1021,14 +1027,16 @@ fn wire__crate__method__favorite__unset_category__unset_category_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_category_id = <u64>::sse_decode(&mut deserializer);
-            let api_item_info = <crate::method::favorite::ItemInfo>::sse_decode(&mut deserializer);
+            let api_source = <String>::sse_decode(&mut deserializer);
+            let api_id = <String>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, String>(
                     (move || async move {
                         let output_ok = crate::method::favorite::unset_category::unset_category(
                             api_category_id,
-                            api_item_info,
+                            &api_source,
+                            &api_id,
                         )
                         .await?;
                         Ok(output_ok)
@@ -1222,6 +1230,18 @@ impl SseDecode for f32 {
     }
 }
 
+impl SseDecode for crate::method::favorite::FavoriteItemInfo {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_source = <String>::sse_decode(deserializer);
+        let mut var_id = <String>::sse_decode(deserializer);
+        return crate::method::favorite::FavoriteItemInfo {
+            source: var_source,
+            id: var_id,
+        };
+    }
+}
+
 impl SseDecode for crate::method::metadata_provider::featured_content::FeaturedContentInfo {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1287,18 +1307,6 @@ impl SseDecode for crate::method::plugin_provider::get_installed_plugins::Instal
     }
 }
 
-impl SseDecode for crate::method::favorite::ItemInfo {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_source = <String>::sse_decode(deserializer);
-        let mut var_id = <String>::sse_decode(deserializer);
-        return crate::method::favorite::ItemInfo {
-            source: var_source,
-            id: var_id,
-        };
-    }
-}
-
 impl SseDecode for Vec<String> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1327,6 +1335,20 @@ impl SseDecode for Vec<crate::method::metadata_provider::view_content::EpisodeIn
     }
 }
 
+impl SseDecode for Vec<crate::method::favorite::FavoriteItemInfo> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<crate::method::favorite::FavoriteItemInfo>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for Vec<crate::method::metadata_provider::featured_content::FeaturedContentInfo> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1350,20 +1372,6 @@ impl SseDecode for Vec<crate::method::torrent_provider::get_torrent_metadata::Fi
                     deserializer,
                 ),
             );
-        }
-        return ans_;
-    }
-}
-
-impl SseDecode for Vec<crate::method::favorite::ItemInfo> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut len_ = <i32>::sse_decode(deserializer);
-        let mut ans_ = Vec::with_capacity(len_ as usize);
-        for idx_ in 0..len_ {
-            ans_.push(<crate::method::favorite::ItemInfo>::sse_decode(
-                deserializer,
-            ));
         }
         return ans_;
     }
@@ -1914,6 +1922,27 @@ impl flutter_rust_bridge::IntoIntoDart<crate::method::metadata_provider::view_co
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::method::favorite::FavoriteItemInfo {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.source.into_into_dart().into_dart(),
+            self.id.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::method::favorite::FavoriteItemInfo
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::method::favorite::FavoriteItemInfo>
+    for crate::method::favorite::FavoriteItemInfo
+{
+    fn into_into_dart(self) -> crate::method::favorite::FavoriteItemInfo {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart
     for crate::method::metadata_provider::featured_content::FeaturedContentInfo
 {
@@ -2000,27 +2029,6 @@ impl
     fn into_into_dart(
         self,
     ) -> crate::method::plugin_provider::get_installed_plugins::InstalledPluginInfo {
-        self
-    }
-}
-// Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for crate::method::favorite::ItemInfo {
-    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        [
-            self.source.into_into_dart().into_dart(),
-            self.id.into_into_dart().into_dart(),
-        ]
-        .into_dart()
-    }
-}
-impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for crate::method::favorite::ItemInfo
-{
-}
-impl flutter_rust_bridge::IntoIntoDart<crate::method::favorite::ItemInfo>
-    for crate::method::favorite::ItemInfo
-{
-    fn into_into_dart(self) -> crate::method::favorite::ItemInfo {
         self
     }
 }
@@ -2357,6 +2365,14 @@ impl SseEncode for f32 {
     }
 }
 
+impl SseEncode for crate::method::favorite::FavoriteItemInfo {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.source, serializer);
+        <String>::sse_encode(self.id, serializer);
+    }
+}
+
 impl SseEncode for crate::method::metadata_provider::featured_content::FeaturedContentInfo {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2399,14 +2415,6 @@ impl SseEncode for crate::method::plugin_provider::get_installed_plugins::Instal
     }
 }
 
-impl SseEncode for crate::method::favorite::ItemInfo {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <String>::sse_encode(self.source, serializer);
-        <String>::sse_encode(self.id, serializer);
-    }
-}
-
 impl SseEncode for Vec<String> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2425,6 +2433,16 @@ impl SseEncode for Vec<crate::method::metadata_provider::view_content::EpisodeIn
             <crate::method::metadata_provider::view_content::EpisodeInfo>::sse_encode(
                 item, serializer,
             );
+        }
+    }
+}
+
+impl SseEncode for Vec<crate::method::favorite::FavoriteItemInfo> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::method::favorite::FavoriteItemInfo>::sse_encode(item, serializer);
         }
     }
 }
@@ -2449,16 +2467,6 @@ impl SseEncode for Vec<crate::method::torrent_provider::get_torrent_metadata::Fi
             <crate::method::torrent_provider::get_torrent_metadata::FileInfo>::sse_encode(
                 item, serializer,
             );
-        }
-    }
-}
-
-impl SseEncode for Vec<crate::method::favorite::ItemInfo> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <i32>::sse_encode(self.len() as _, serializer);
-        for item in self {
-            <crate::method::favorite::ItemInfo>::sse_encode(item, serializer);
         }
     }
 }

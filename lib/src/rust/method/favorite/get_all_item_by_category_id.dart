@@ -7,7 +7,8 @@ import '../../frb_generated.dart';
 import '../favorite.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-Future<List<ItemInfo>> getAllItemByCategoryId({required BigInt categoryId}) =>
+Future<List<FavoriteItemInfo>> getAllItemByCategoryId(
+        {required BigInt categoryId}) =>
     RustLib.instance.api
         .crateMethodFavoriteGetAllItemByCategoryIdGetAllItemByCategoryId(
             categoryId: categoryId);

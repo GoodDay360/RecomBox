@@ -44,19 +44,15 @@ class _SetCategoryTileState extends State<SetCategoryTile> {
       if (value) {
         await setCategory(
           categoryId: widget.categoryID, 
-          itemInfo: ItemInfo(
-            source: widget.source.name, 
-            id: widget.itemId
-          )
+          source: widget.source.name, 
+          id: widget.itemId
 
         );
       }else{
         await unsetCategory(
           categoryId: widget.categoryID, 
-          itemInfo: ItemInfo(
-            source: widget.source.name, 
-            id: widget.itemId
-          )
+          source: widget.source.name, 
+          id: widget.itemId
         );
       }
     }catch(e){

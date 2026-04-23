@@ -166,10 +166,8 @@ class _ViewState extends State<ViewScreen> with RouteAware {
 
   Future<void> onFavoriteUpdate() async {
     bool inFavorite = await isInCategory(
-      itemInfo: ItemInfo(
         source: args.source.name, 
         id: args.id,
-      )
     );
     setState(() {
       isInFavorite = inFavorite;
@@ -286,9 +284,11 @@ class _ViewState extends State<ViewScreen> with RouteAware {
                       child: Stack(
                         children: [
                           Ink.image(
-                            image: viewContentInfoResult!.bannerUrl.isNotEmpty
-                              ? NetworkImage(viewContentInfoResult!.bannerUrl)
-                              : const AssetImage('assets/default_banner.png'),
+                            image: viewContentInfoResult!.bannerUrl.isEmpty
+                              ? const AssetImage('assets/default_banner.png')
+                              : viewContentInfoResult!.bannerUrl.startsWith('http')
+                                  ? NetworkImage(viewContentInfoResult!.bannerUrl)
+                                  : FileImage(File(viewContentInfoResult!.bannerUrl)),
                             width: double.infinity,
                             height: double.infinity,
                             fit: BoxFit.cover,

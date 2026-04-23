@@ -40,13 +40,13 @@ pub struct CategoryMap(pub HashMap<u64, String>);
 #[derive(Serialize, Deserialize)]
 pub struct CategoryOrderMap(pub HashMap<u64, u64>);
 
-
 #[frb(json_serializable)]
 #[derive(Serialize, Deserialize)]
-pub struct ItemInfo{
+pub struct FavoriteItemInfo{
     pub source: String,
     pub id: String,
 }
+
 
 
 
@@ -54,11 +54,15 @@ pub fn get_db() -> Result<Arc<Database>, String> {
     let settings = Settings::get()
         .map_err(|e| e.to_string())?;
 
-    fs::create_dir_all(&settings.paths.app_support_dir)
+    let db_dir = PathBuf::from(&settings.paths.app_support_dir)
+        .join("favorite");
+
+    fs::create_dir_all(&db_dir)
         .map_err(|e| e.to_string())?;
 
-    let db_path = PathBuf::from(&settings.paths.app_support_dir)
+    let db_path = PathBuf::from(&db_dir)
         .join(DATABASE_NAME);
+    
     let is_exist = fs::exists(&db_path)
         .map_err(|e| e.to_string())?;
 

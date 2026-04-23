@@ -24,7 +24,6 @@ pub async fn get_torrents(
     page: u64,
 
 ) -> Result<Vec<TorrentInfo>, String> {
-    println!("GET TORRENTS ID: {}", id);
     let source = Source::from_str(&source)
         .ok_or("Invalid Source")
         .map_err(|e| e.to_string())?;

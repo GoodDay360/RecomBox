@@ -11,7 +11,8 @@ use std::path::PathBuf;
 use std::fs;
 
 
-use crate::method::favorite::{is_in_category::is_in_category, ItemInfo};
+use crate::method::favorite::{is_in_category::is_in_category};
+use crate::utils::download_file;
 use crate::utils::settings::Settings;
 
 #[frb(json_serializable)]
@@ -49,35 +50,53 @@ impl ViewContentInfo{
 		let settings = Settings::get()
 			.map_err(|e| e.to_string())?;
 
-		let is_in_fav = is_in_category(ItemInfo { 
-			source: source.to_string(), 
-			id: id.to_string() 
-		}).await?;
+		let is_in_fav = is_in_category(&source.to_string(), id).await?;
 
 		if is_in_fav {
 			let cache_dir = PathBuf::from(settings.paths.app_support_dir.clone())
-				.join("favorite");
+				.join("favorite")
+				.join(source.to_string())
+				.join(id.to_string());
 			return Ok(cache_dir);
 		}else{
 			
 			let temp_dir = PathBuf::from(settings.paths.temp_dir.clone())
-				.join("view_content_info");
+				.join("view_content_info")
+				.join(source.to_string())
+				.join(id.to_string());
 			return Ok(temp_dir);
 
 		}
 
 	}
 
-	async fn save_cache(source: &Source, id: &str, data: &mut ViewContentInfo) -> Result<(), String> {
+	async fn save_cache(source: &Source, id: &str, data: &mut ViewContentInfo, cache_media: bool) -> Result<(), String> {
 
-		let cache_dir = ViewContentInfo::get_cache_dir(source, id).await?
-			.join(source.to_string());
+		
+
+		let cache_dir = ViewContentInfo::get_cache_dir(source, id).await?;
 
 		fs::create_dir_all(&cache_dir)
 			.map_err(|e| e.to_string())?;
 
+		// -> Cache Media If in favorite
+		if cache_media {
+			let is_in_favorite = is_in_category(&source.to_string(), id).await?;
+			
+			if is_in_favorite {
+				let thumbnail_path = cache_dir
+					.join("thumbnail.png");
+				download_file::new(&data.thumbnail_url, Some(&thumbnail_path)).await.ok();
+				
+				let banner_path = cache_dir
+					.join("banner.png");
+				download_file::new(&data.banner_url, Some(&banner_path)).await.ok();
+			}
+		}
+		// <-
+
 		let file_path = cache_dir
-			.join(format!("{}.json", id));
+			.join("data.json");
 
 		data.last_update = Some(Utc::now().to_rfc3339());
 
@@ -91,20 +110,41 @@ impl ViewContentInfo{
 	}
 
 	async fn load_cache(source: &Source, id: &str, check_expire: bool) -> Result<Option<ViewContentInfo>, String> {
-		let cache_dir = ViewContentInfo::get_cache_dir(source, id).await?
-			.join(source.to_string());
+		let cache_dir = ViewContentInfo::get_cache_dir(source, id).await?;
 
+		
 		let file_path = cache_dir
-			.join(format!("{}.json", id));
+			.join("data.json");
 
-		let data = fs::read_to_string(file_path)
+		let raw_data = fs::read_to_string(file_path)
 			.map_err(|e| e.to_string())?;
 
-		let cache: ViewContentInfo = serde_json::from_str(&data)
+		let mut data: ViewContentInfo = serde_json::from_str(&raw_data)
 			.map_err(|e| e.to_string())?;
+
+		// -> Replace Media If in favorite
+		let is_in_favorite = is_in_category(&source.to_string(), id).await?;
+		
+		if is_in_favorite {
+			let thumbnail_path = cache_dir
+				.join("thumbnail.png");
+
+			if thumbnail_path.exists(){
+				data.thumbnail_url = thumbnail_path.to_string_lossy().to_string();
+			}
+			
+			let banner_path = cache_dir
+				.join("banner.png");
+
+			if banner_path.exists(){
+				data.banner_url = banner_path.to_string_lossy().to_string();
+			}
+			
+		}
+		// <-
 		
 		if check_expire {
-			match &cache.last_update {
+			match &data.last_update {
 				Some(last_update_raw) => {
 					let last_update = DateTime::parse_from_rfc3339(last_update_raw)
 						.map_err(|e| e.to_string())?
@@ -119,29 +159,27 @@ impl ViewContentInfo{
 			
 		}
 
-		return Ok(Some(cache));
+		return Ok(Some(data));
 	}
 
 	pub async fn update_last_watch(source: &str, id: &str, season_index:u64, episode_index: u64) -> Result<(), String> {
+
 		let source = Source::from_str(source);
 		
-		match is_in_category(ItemInfo { 
-			source: source.to_string(), 
-			id: id.to_string() 
-		}).await? {
-			false => return Ok(()),
+		match is_in_category(&source.to_string(), id).await? {
+			false => {
+				return Ok(())
+			},
 			true => {}
 		};
-
 		
-
 		let mut data = ViewContentInfo::load_cache(&source, id, false).await?
 			.ok_or("Not in favorite. Can't update last watch.")?;
 
 		data.last_watch_season_index = Some(season_index);
 		data.last_watch_episode_index = Some(episode_index);
 
-		ViewContentInfo::save_cache(&source, id, &mut data).await?;
+		ViewContentInfo::save_cache(&source, id, &mut data, false).await?;
 		
 		return Ok(());
 	}
@@ -222,8 +260,7 @@ impl ViewContentInfo{
 			last_update: available_cache.as_ref().and_then(|f| f.last_update.to_owned()),
 		};
 
-
-		ViewContentInfo::save_cache(&source, &id,&mut result).await?;
+		ViewContentInfo::save_cache(&source, &id,&mut result, true).await?;
 		
 		return Ok(result);
 	}

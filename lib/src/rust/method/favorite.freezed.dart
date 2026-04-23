@@ -620,25 +620,26 @@ class __$CategoryOrderMapCopyWithImpl<$Res>
 }
 
 /// @nodoc
-mixin _$ItemInfo {
+mixin _$FavoriteItemInfo {
   String get source;
   String get id;
 
-  /// Create a copy of ItemInfo
+  /// Create a copy of FavoriteItemInfo
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $ItemInfoCopyWith<ItemInfo> get copyWith =>
-      _$ItemInfoCopyWithImpl<ItemInfo>(this as ItemInfo, _$identity);
+  $FavoriteItemInfoCopyWith<FavoriteItemInfo> get copyWith =>
+      _$FavoriteItemInfoCopyWithImpl<FavoriteItemInfo>(
+          this as FavoriteItemInfo, _$identity);
 
-  /// Serializes this ItemInfo to a JSON map.
+  /// Serializes this FavoriteItemInfo to a JSON map.
   Map<String, dynamic> toJson();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is ItemInfo &&
+            other is FavoriteItemInfo &&
             (identical(other.source, source) || other.source == source) &&
             (identical(other.id, id) || other.id == id));
   }
@@ -649,26 +650,28 @@ mixin _$ItemInfo {
 
   @override
   String toString() {
-    return 'ItemInfo(source: $source, id: $id)';
+    return 'FavoriteItemInfo(source: $source, id: $id)';
   }
 }
 
 /// @nodoc
-abstract mixin class $ItemInfoCopyWith<$Res> {
-  factory $ItemInfoCopyWith(ItemInfo value, $Res Function(ItemInfo) _then) =
-      _$ItemInfoCopyWithImpl;
+abstract mixin class $FavoriteItemInfoCopyWith<$Res> {
+  factory $FavoriteItemInfoCopyWith(
+          FavoriteItemInfo value, $Res Function(FavoriteItemInfo) _then) =
+      _$FavoriteItemInfoCopyWithImpl;
   @useResult
   $Res call({String source, String id});
 }
 
 /// @nodoc
-class _$ItemInfoCopyWithImpl<$Res> implements $ItemInfoCopyWith<$Res> {
-  _$ItemInfoCopyWithImpl(this._self, this._then);
+class _$FavoriteItemInfoCopyWithImpl<$Res>
+    implements $FavoriteItemInfoCopyWith<$Res> {
+  _$FavoriteItemInfoCopyWithImpl(this._self, this._then);
 
-  final ItemInfo _self;
-  final $Res Function(ItemInfo) _then;
+  final FavoriteItemInfo _self;
+  final $Res Function(FavoriteItemInfo) _then;
 
-  /// Create a copy of ItemInfo
+  /// Create a copy of FavoriteItemInfo
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -689,8 +692,8 @@ class _$ItemInfoCopyWithImpl<$Res> implements $ItemInfoCopyWith<$Res> {
   }
 }
 
-/// Adds pattern-matching-related methods to [ItemInfo].
-extension ItemInfoPatterns on ItemInfo {
+/// Adds pattern-matching-related methods to [FavoriteItemInfo].
+extension FavoriteItemInfoPatterns on FavoriteItemInfo {
   /// A variant of `map` that fallback to returning `orElse`.
   ///
   /// It is equivalent to doing:
@@ -705,12 +708,12 @@ extension ItemInfoPatterns on ItemInfo {
 
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
-    TResult Function(_ItemInfo value)? $default, {
+    TResult Function(_FavoriteItemInfo value)? $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
-      case _ItemInfo() when $default != null:
+      case _FavoriteItemInfo() when $default != null:
         return $default(_that);
       case _:
         return orElse();
@@ -732,11 +735,11 @@ extension ItemInfoPatterns on ItemInfo {
 
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
-    TResult Function(_ItemInfo value) $default,
+    TResult Function(_FavoriteItemInfo value) $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _ItemInfo():
+      case _FavoriteItemInfo():
         return $default(_that);
     }
   }
@@ -755,11 +758,11 @@ extension ItemInfoPatterns on ItemInfo {
 
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_ItemInfo value)? $default,
+    TResult? Function(_FavoriteItemInfo value)? $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _ItemInfo() when $default != null:
+      case _FavoriteItemInfo() when $default != null:
         return $default(_that);
       case _:
         return null;
@@ -785,7 +788,7 @@ extension ItemInfoPatterns on ItemInfo {
   }) {
     final _that = this;
     switch (_that) {
-      case _ItemInfo() when $default != null:
+      case _FavoriteItemInfo() when $default != null:
         return $default(_that.source, _that.id);
       case _:
         return orElse();
@@ -811,7 +814,7 @@ extension ItemInfoPatterns on ItemInfo {
   ) {
     final _that = this;
     switch (_that) {
-      case _ItemInfo():
+      case _FavoriteItemInfo():
         return $default(_that.source, _that.id);
     }
   }
@@ -834,7 +837,7 @@ extension ItemInfoPatterns on ItemInfo {
   ) {
     final _that = this;
     switch (_that) {
-      case _ItemInfo() when $default != null:
+      case _FavoriteItemInfo() when $default != null:
         return $default(_that.source, _that.id);
       case _:
         return null;
@@ -844,27 +847,27 @@ extension ItemInfoPatterns on ItemInfo {
 
 /// @nodoc
 @JsonSerializable()
-class _ItemInfo implements ItemInfo {
-  const _ItemInfo({required this.source, required this.id});
-  factory _ItemInfo.fromJson(Map<String, dynamic> json) =>
-      _$ItemInfoFromJson(json);
+class _FavoriteItemInfo implements FavoriteItemInfo {
+  const _FavoriteItemInfo({required this.source, required this.id});
+  factory _FavoriteItemInfo.fromJson(Map<String, dynamic> json) =>
+      _$FavoriteItemInfoFromJson(json);
 
   @override
   final String source;
   @override
   final String id;
 
-  /// Create a copy of ItemInfo
+  /// Create a copy of FavoriteItemInfo
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$ItemInfoCopyWith<_ItemInfo> get copyWith =>
-      __$ItemInfoCopyWithImpl<_ItemInfo>(this, _$identity);
+  _$FavoriteItemInfoCopyWith<_FavoriteItemInfo> get copyWith =>
+      __$FavoriteItemInfoCopyWithImpl<_FavoriteItemInfo>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$ItemInfoToJson(
+    return _$FavoriteItemInfoToJson(
       this,
     );
   }
@@ -873,7 +876,7 @@ class _ItemInfo implements ItemInfo {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _ItemInfo &&
+            other is _FavoriteItemInfo &&
             (identical(other.source, source) || other.source == source) &&
             (identical(other.id, id) || other.id == id));
   }
@@ -884,28 +887,30 @@ class _ItemInfo implements ItemInfo {
 
   @override
   String toString() {
-    return 'ItemInfo(source: $source, id: $id)';
+    return 'FavoriteItemInfo(source: $source, id: $id)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$ItemInfoCopyWith<$Res>
-    implements $ItemInfoCopyWith<$Res> {
-  factory _$ItemInfoCopyWith(_ItemInfo value, $Res Function(_ItemInfo) _then) =
-      __$ItemInfoCopyWithImpl;
+abstract mixin class _$FavoriteItemInfoCopyWith<$Res>
+    implements $FavoriteItemInfoCopyWith<$Res> {
+  factory _$FavoriteItemInfoCopyWith(
+          _FavoriteItemInfo value, $Res Function(_FavoriteItemInfo) _then) =
+      __$FavoriteItemInfoCopyWithImpl;
   @override
   @useResult
   $Res call({String source, String id});
 }
 
 /// @nodoc
-class __$ItemInfoCopyWithImpl<$Res> implements _$ItemInfoCopyWith<$Res> {
-  __$ItemInfoCopyWithImpl(this._self, this._then);
+class __$FavoriteItemInfoCopyWithImpl<$Res>
+    implements _$FavoriteItemInfoCopyWith<$Res> {
+  __$FavoriteItemInfoCopyWithImpl(this._self, this._then);
 
-  final _ItemInfo _self;
-  final $Res Function(_ItemInfo) _then;
+  final _FavoriteItemInfo _self;
+  final $Res Function(_FavoriteItemInfo) _then;
 
-  /// Create a copy of ItemInfo
+  /// Create a copy of FavoriteItemInfo
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -913,7 +918,7 @@ class __$ItemInfoCopyWithImpl<$Res> implements _$ItemInfoCopyWith<$Res> {
     Object? source = null,
     Object? id = null,
   }) {
-    return _then(_ItemInfo(
+    return _then(_FavoriteItemInfo(
       source: null == source
           ? _self.source
           : source // ignore: cast_nullable_to_non_nullable

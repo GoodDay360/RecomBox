@@ -39,7 +39,7 @@ class _FavoriteState extends State<FavoriteScreen> {
   FocusNode searchFocus = FocusNode();
 
   CategoryMap categoryMap = CategoryMap(field0: {});
-  List<ItemInfo> itemInfoList = [];
+  List<FavoriteItemInfo> FavoriteItemInfoList = [];
 
   Map<int, String> itemTitleMap = {};
 
@@ -76,16 +76,16 @@ class _FavoriteState extends State<FavoriteScreen> {
       );
 
 
-      List<ItemInfo> itemInfoListResult = await getAllItemByCategoryId(
+      List<FavoriteItemInfo> FavoriteItemInfoListResult = await getAllItemByCategoryId(
         categoryId: categoryMapResult.field0.keys.toList()[currentCategoryIndex],
       );
 
-      debugPrint(itemInfoListResult.toString());
+      debugPrint(FavoriteItemInfoListResult.toString());
 
 
       setState(() {
         categoryMap = categoryMapResult;
-        itemInfoList = itemInfoListResult;
+        FavoriteItemInfoList = FavoriteItemInfoListResult;
       });
     }catch(e){
       debugPrint(e.toString());
@@ -110,22 +110,22 @@ class _FavoriteState extends State<FavoriteScreen> {
     });
   }
 
-  List<ItemInfo> onFilterSearch() {
+  List<FavoriteItemInfo> onFilterSearch() {
     String query = _textEditingController.text.toLowerCase();
     
-    if (query.isEmpty || itemTitleMap.isEmpty) return itemInfoList;
+    if (query.isEmpty || itemTitleMap.isEmpty) return FavoriteItemInfoList;
 
-    List<int> sortedItemInfoIndexList = Map.fromEntries(
+    List<int> sortedFavoriteItemInfoIndexList = Map.fromEntries(
       itemTitleMap.entries.where((entry) => entry.value.toLowerCase().contains(query))
     ).keys.toList();
 
 
-    return sortedItemInfoIndexList.map((i) => itemInfoList[i]).toList();
+    return sortedFavoriteItemInfoIndexList.map((i) => FavoriteItemInfoList[i]).toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    List<ItemInfo> filteredItemInfoList = onFilterSearch();
+    List<FavoriteItemInfo> filteredFavoriteItemInfoList = onFilterSearch();
 
     return SafeArea(
       child: Material(
@@ -256,12 +256,12 @@ class _FavoriteState extends State<FavoriteScreen> {
                                         controller: _textEditingController,
                                         onChanged: (_) {
                                           setState(() {
-                                            filteredItemInfoList = onFilterSearch();
+                                            filteredFavoriteItemInfoList = onFilterSearch();
                                           });
                                         },
                                         onSubmitted: (_){
                                           setState(() {
-                                            filteredItemInfoList = onFilterSearch();
+                                            filteredFavoriteItemInfoList = onFilterSearch();
                                           });
                                         },
                                         cursorColor: appColors.textPrimary,
@@ -296,7 +296,7 @@ class _FavoriteState extends State<FavoriteScreen> {
                       )
                     ),
 
-                    if (itemInfoList.isEmpty)
+                    if (FavoriteItemInfoList.isEmpty)
                     Expanded(
                       child: Container(
                         height: double.infinity,
@@ -313,7 +313,7 @@ class _FavoriteState extends State<FavoriteScreen> {
                       ),
                     ),
 
-                    if (itemInfoList.isNotEmpty)
+                    if (FavoriteItemInfoList.isNotEmpty)
                       Expanded(
                         child: Container(
                           padding: EdgeInsets.all(15),
@@ -325,15 +325,15 @@ class _FavoriteState extends State<FavoriteScreen> {
                                 mainAxisSpacing: 10,
                                 childAspectRatio: 1, 
                               ),
-                              itemCount: filteredItemInfoList.length,
+                              itemCount: filteredFavoriteItemInfoList.length,
                               itemBuilder: (context, index) {
                                 return FavoriteContentCard(
-                                  key: ValueKey(filteredItemInfoList[index].id),
+                                  key: ValueKey(filteredFavoriteItemInfoList[index].id),
                                   addTitle: (String title) {
                                     addTitle(index, title);
                                   },
-                                  source: SourceExtension.fromString(filteredItemInfoList[index].source), 
-                                  id: filteredItemInfoList[index].id,
+                                  source: SourceExtension.fromString(filteredFavoriteItemInfoList[index].source), 
+                                  id: filteredFavoriteItemInfoList[index].id,
                                 );
                               },
                             )

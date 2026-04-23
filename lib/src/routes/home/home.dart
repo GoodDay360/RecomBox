@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/routes/home/widgets/content_section.dart';
@@ -26,6 +27,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeState extends State<HomeScreen> {
 
   bool isLoading = false;
+  bool isError = false;
 
 	List<FeaturedContentInfo> featuredContentList = [];
 	Map<Source, List<TrendingContentInfo>> trendingContentMap = {};
@@ -79,6 +81,11 @@ class _HomeState extends State<HomeScreen> {
       ]);
     }catch(e){
       debugPrint(e.toString());
+      if (context.mounted){
+        setState(() {
+          isError = true;
+        });
+      }
     }
 
     setState(() {
@@ -112,58 +119,75 @@ class _HomeState extends State<HomeScreen> {
                         )
                       ),
                     if (!isLoading)
-                      SizedBox(
-                        height: double.infinity,
-                        child: SingleChildScrollView(
-                            physics: ScrollPhysics(),
-                            child: Column(
-                              children: [
-                                Stack(
-                                  children: [
-                                    CarouselSlider(
-                                      options: CarouselOptions(
-                                        height: MediaQuery.of(context).size.height * 0.5,
-                                        viewportFraction: 1.0,
-                                        autoPlay: featuredContentList.isEmpty ? false : true,
-                                        autoPlayInterval: Duration(seconds: 8),
-                                        pauseAutoPlayOnTouch: true,
-                                        pauseAutoPlayOnManualNavigate: true,
-                                      ),
-                                      items: [
-                                        for (final item in featuredContentList)
-                                          FeaturedSection(
-                                            featuredContentInfo: item,
-                                          ),
-                                      ],
-                                    ),
-                                    
-                                    if (!((Platform.isWindows || Platform.isLinux || Platform.isMacOS)))
-                                      Container(
-                                        padding: EdgeInsets.only(right: 10, top: 10),
-                                        alignment: Alignment.topRight,
-                                        child: InkWell(
-                                            mouseCursor: SystemMouseCursors.click,
-                                            onTap: () {
-                                              initMetadataProvider(fromCache: false);
-                                            },
-                                            child: Icon(
-                                              color: appColors.secondary,
-                                              Icons.refresh
-                                            )
-                                          )
+                      if (isError)
+                        Expanded(
+                            child: Container(
+                              padding: EdgeInsets.all(15),
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Something went wrong while fetching content",
+                                style: GoogleFonts.nunito(
+                                  fontSize: 24,
+                                  color: appColors.textPrimary,
+                                  fontWeight: FontWeight(700)
+                                ),
+                                textAlign: TextAlign.center,
+                              )
+                          ),
+                        ),
+                      if (!isError)
+                        SizedBox(
+                          height: double.infinity,
+                          child: SingleChildScrollView(
+                              physics: ScrollPhysics(),
+                              child: Column(
+                                children: [
+                                  Stack(
+                                    children: [
+                                      CarouselSlider(
+                                        options: CarouselOptions(
+                                          height: MediaQuery.of(context).size.height * 0.5,
+                                          viewportFraction: 1.0,
+                                          autoPlay: featuredContentList.isEmpty ? false : true,
+                                          autoPlayInterval: Duration(seconds: 8),
+                                          pauseAutoPlayOnTouch: true,
+                                          pauseAutoPlayOnManualNavigate: true,
+                                        ),
+                                        items: [
+                                          for (final item in featuredContentList)
+                                            FeaturedSection(
+                                              featuredContentInfo: item,
+                                            ),
+                                        ],
                                       ),
                                       
-                                  ]
-                                ),
-                                for (final source in trendingContentMap.keys)
-                                  ContentSection(
-                                    label: "Trending ${source.label}",
-                                    trendingContentList: trendingContentMap[source]!,
+                                      if (!((Platform.isWindows || Platform.isLinux || Platform.isMacOS)))
+                                        Container(
+                                          padding: EdgeInsets.only(right: 10, top: 10),
+                                          alignment: Alignment.topRight,
+                                          child: InkWell(
+                                              mouseCursor: SystemMouseCursors.click,
+                                              onTap: () {
+                                                initMetadataProvider(fromCache: false);
+                                              },
+                                              child: Icon(
+                                                color: appColors.secondary,
+                                                Icons.refresh
+                                              )
+                                            )
+                                        ),
+                                        
+                                    ]
                                   ),
-                              ]
-                            )
-                          ),
-                      ),
+                                  for (final source in trendingContentMap.keys)
+                                    ContentSection(
+                                      label: "Trending ${source.label}",
+                                      trendingContentList: trendingContentMap[source]!,
+                                    ),
+                                ]
+                              )
+                            ),
+                        ),
                       if (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
                         Positioned(top: 0, left: 0, right: 0, 
                           child: Container(

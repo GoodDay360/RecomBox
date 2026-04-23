@@ -35,21 +35,21 @@ pub async fn start() -> anyhow::Result<()>{
                         let is_should_check_update: bool = match should_check_update(value).await {
                             Ok(r) => r,
                             Err(e) => {
-                                eprintln!("Failed to check if plugin {} should update: {}", key, e);
+                                eprintln!("[{}:{}] Failed to check if plugin {} should update: {}", file!(), line!(), key, e);
                                 true
                             }
                         };
                         if is_should_check_update {
                             check_and_install_new_update(source.as_str(), key, value).await.unwrap();
                         }else{
-                            println!("[PluginUpdater] Last check update was recent for plugin: {}. -> Skipping...", value.plugin_path);
+                            println!("[{}:{}] Last check update was recent for plugin: {}. -> Skipping...", file!(), line!(), value.plugin_path);
                         }
                     }
                 }
             }).await{
                 Ok(_) => {}
                 Err(e) => {
-                    eprintln!("[PluginUpdater] Failed to update plugins: {}", e);
+                    eprintln!("[{}:{}] Failed to update plugins: {}", file!(), line!(), e);
                 }
             }
 
@@ -64,10 +64,14 @@ pub async fn start() -> anyhow::Result<()>{
 fn get_db() -> anyhow::Result<Arc<Database>> {
     let settings = Settings::get()?;
 
-    fs::create_dir_all(&settings.paths.app_support_dir)?;
+    let db_dir = PathBuf::from(&settings.paths.app_support_dir)
+        .join("plugins");
 
-    let db_path = PathBuf::from(&settings.paths.app_support_dir)
+    fs::create_dir_all(&db_dir)?;
+
+    let db_path = PathBuf::from(&db_dir)
         .join(DATABASE_NAME);
+
     let is_exist = fs::exists(&db_path)?;
 
     if is_exist {
@@ -105,7 +109,7 @@ async fn should_check_update(installed_plugin_info: &InstalledPluginInfo) -> any
     let last_update_table = match read_txn.open_table(PLUGIN_LAST_UPDATE_TABLE) {
         Ok(t) => t,
         Err(e) => {
-            eprintln!("[PluginUpdater] Failed to open table: {} -> should_update: true", e);
+            eprintln!("[{}:{}] Failed to open table: {} -> should_update: true", file!(), line!(), e);
             return Ok(true);
         }
     };
@@ -148,8 +152,8 @@ async fn check_and_install_new_update(source: &str, plugin_id: &str, installed_p
         .await?;
     let remote_version = semver::Version::parse(&remote_plugin_info.version)?;
     let installed_version = semver::Version::parse(&installed_plugin_info.plugin_version)?;
-    println!("[PluginUpdater] PluginPath: {}", installed_plugin_info.plugin_path);
-    println!("[PluginUpdater] Remote Version: {}, Installed Version: {}", remote_version, installed_version);
+    println!("[{}:{}] PluginPath: {}", file!(), line!(), installed_plugin_info.plugin_path);
+    println!("[{}:{}] Remote Version: {}, Installed Version: {}", file!(), line!(), remote_version, installed_version);
     if remote_version > installed_version {
         let plugin_info = PluginInfo { 
             hashed_manifest_repo_id: installed_plugin_info.hashed_manifest_repo_id.clone(), 
@@ -159,21 +163,21 @@ async fn check_and_install_new_update(source: &str, plugin_id: &str, installed_p
             plugin_repo_url: installed_plugin_info.plugin_repo_url.clone(), 
             plugin_icon_url: installed_plugin_info.plugin_icon_url.clone()
         };
-        println!("[PluginUpdater] Installing new plugin version for: {}", installed_plugin_info.plugin_path);
+        println!("[{}:{}] Installing new plugin version for: {}", file!(), line!(), installed_plugin_info.plugin_path);
         install_plugin(
             source,
             &plugin_info
         ).await.map_err(|e| anyhow::Error::msg(e.to_string()))?;
     }else{
-        println!("[PluginUpdater] Already up-to-date for plugin: {}. -> Skipping...", installed_plugin_info.plugin_path);
+        println!("[{}:{}] Already up-to-date for plugin: {}. -> Skipping...", file!(), line!(), installed_plugin_info.plugin_path);
     }
 
-    save_last_update(&installed_plugin_info.plugin_path).await?;
+    save_last_check_update(&installed_plugin_info.plugin_path).await?;
 
     return Ok(());
 }
 
-async fn save_last_update(plugin_path: &str) -> anyhow::Result<()> {
+async fn save_last_check_update(plugin_path: &str) -> anyhow::Result<()> {
     let db = get_db()?;
     let write_txn = db.begin_write()
         .map_err(|e| anyhow::Error::msg(e.to_string()))?;

@@ -35,12 +35,12 @@ sealed class CategoryOrderMap with _$CategoryOrderMap {
 }
 
 @freezed
-sealed class ItemInfo with _$ItemInfo {
-  const factory ItemInfo({
+sealed class FavoriteItemInfo with _$FavoriteItemInfo {
+  const factory FavoriteItemInfo({
     required String source,
     required String id,
-  }) = _ItemInfo;
+  }) = _FavoriteItemInfo;
 
-  factory ItemInfo.fromJson(Map<String, dynamic> json) =>
-      _$ItemInfoFromJson(json);
+  factory FavoriteItemInfo.fromJson(Map<String, dynamic> json) =>
+      _$FavoriteItemInfoFromJson(json);
 }
