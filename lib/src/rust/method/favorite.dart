@@ -44,3 +44,15 @@ sealed class FavoriteItemInfo with _$FavoriteItemInfo {
   factory FavoriteItemInfo.fromJson(Map<String, dynamic> json) =>
       _$FavoriteItemInfoFromJson(json);
 }
+
+@freezed
+sealed class LastWatchTorrentInfo with _$LastWatchTorrentInfo {
+  const factory LastWatchTorrentInfo({
+    required String torrentSource,
+    required BigInt fileId,
+    required String mimeType,
+  }) = _LastWatchTorrentInfo;
+
+  factory LastWatchTorrentInfo.fromJson(Map<String, dynamic> json) =>
+      _$LastWatchTorrentInfoFromJson(json);
+}

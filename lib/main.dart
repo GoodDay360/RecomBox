@@ -56,7 +56,7 @@ class App extends StatelessWidget {
 					},
 				),
 				debugShowCheckedModeBanner: false,
-				initialRoute: "/",
+				initialRoute: "/watch",
 				title: 'RecomBox',
 				routes: {
 						"/": (context) => const HomeScreen(),
@@ -69,7 +69,6 @@ class App extends StatelessWidget {
 						"/select_file": (context) => const SelectFileScreen(),
 						"/watch": (context) => const WatchScreen(),
 						"/favorite": (context) => const FavoriteScreen(),
-
 					},
 				);
 			}

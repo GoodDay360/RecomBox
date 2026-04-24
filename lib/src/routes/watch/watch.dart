@@ -6,6 +6,7 @@ import 'package:mime/mime.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/routes/home/widgets/content_section.dart';
+import 'package:recombox/src/routes/select_plugin/select_plugin.dart';
 import 'package:recombox/src/routes/view/view.dart';
 import 'package:recombox/src/routes/watch/dialogs/audio_track_control.dart';
 import 'package:recombox/src/routes/watch/dialogs/subtitle_track_control%20.dart';
@@ -18,6 +19,8 @@ import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:math';
 import 'package:media_kit_video/media_kit_video.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 
 
 import 'package:recombox/src/global/widgets/navigation_bar/navigation_bar_vertical.dart';
@@ -29,8 +32,11 @@ import 'package:window_manager/window_manager.dart';
 
 
 class WatchScreenArguments {
-  String viewID;
   Source source;
+  String viewID;
+  String externalID;
+  String title;
+  String titleSecondary;
   String torrentSource;
   String mimeType;
   BigInt fileID;
@@ -38,8 +44,11 @@ class WatchScreenArguments {
   BigInt episode;
 
   WatchScreenArguments({
-    required this.viewID,
     required this.source,
+    required this.viewID,
+    required this.externalID,
+    required this.title,
+    required this.titleSecondary,
     required this.torrentSource,
     required this.mimeType,
     required this.fileID,
@@ -76,7 +85,15 @@ class _WatchState extends State<WatchScreen> {
       enableHardwareAcceleration: true
     )
   );
-  
+  final List<BoxFit> boxFitList = [
+    BoxFit.contain,
+    BoxFit.cover,
+    BoxFit.fill,
+    BoxFit.fitWidth,
+    BoxFit.fitHeight,
+    BoxFit.scaleDown,
+  ];
+  int currentBoxFitIndex = 0;
   
 
   @override
@@ -90,7 +107,10 @@ class _WatchState extends State<WatchScreen> {
             ? rawArgs
             :  WatchScreenArguments(
               viewID: "72673844%20loki-test",
+              externalID: "tt123",
               source: Source.tv,
+              title: "One Piece",
+              titleSecondary: "One Piece",
               torrentSource: "magnet:?xt=urn:btih:b130fefafb59f52390650a758b5c2810d4333e5c&dn=%5BToonsHub%5D%20One%20Piece%20S01E01-16%201080p%20NF%20WEB-DL%20MULTi%20AAC2.0%20H.264%20%28REMASTERED%2C%20Multi-Audio%2C%20Multi-Subs%29%20%5BBATCH%5D&tr=http%3A%2F%2Fnyaa.tracker.wf%3A7777%2Fannounce&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fexodus.desync.com%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce",
               mimeType: "video/mp4",
               fileID: BigInt.from(0),
@@ -184,13 +204,48 @@ class _WatchState extends State<WatchScreen> {
     
   }
 
+  void onToggleFitBox() {
+    if (context.mounted){
+      setState(() {
+        currentBoxFitIndex = (currentBoxFitIndex + 1) % boxFitList.length;
+      });
+    }
+    
+  }
 
-  Future<void> onNavigateBack() async {
+  Future<void> onSelectOption(int value) async {
+      if (!context.mounted) return;
+      switch (value) {
+        case 0: 
+          final ctx = context;
+          await onNavigateCleanUp();
+          if (!ctx.mounted) return;
+          Navigator.pushNamedAndRemoveUntil(
+            ctx, 
+            "/select_plugin",
+            (route) => false,
+            arguments: SelectPluginScreenArguments(
+              source: args!.source, 
+              id: args!.viewID, 
+              externalID: args!.externalID, 
+              title: args!.title, 
+              titleSecondary: args!.titleSecondary, 
+              season: args!.season, 
+              episode: args!.episode
+            )
+          );
+          break;
+        default: break;
+        
+      }
+  }
+
+  Future<void> onNavigateCleanUp() async {
     final ctx = context;
     debugPrint(isFullscreen(ctx).toString());
 
     // ->Reset Screen on Mobile
-    await exitFullscreen(context);
+    await exitFullscreen(ctx);
     await SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.edgeToEdge,
       overlays: SystemUiOverlay.values,
@@ -209,20 +264,6 @@ class _WatchState extends State<WatchScreen> {
       await windowManager.setFullScreen(false);
     }
     // <-
-
-    if (!ctx.mounted) return;
-
-    Navigator.pushNamedAndRemoveUntil(
-      ctx,
-      "/view", 
-      ModalRoute.withName("/"),
-      arguments: ViewScreenArguments(
-        source: args!.source, 
-        id: args!.viewID
-      )
-    );
-    
-    
   }
 
   @override
@@ -246,7 +287,24 @@ class _WatchState extends State<WatchScreen> {
       mouseCursor: SystemMouseCursors.click,
       iconSize: 32,
       color: appColors.secondary,
-      onPressed: onNavigateBack,
+      onPressed: ()async{
+        if (context.mounted){
+          final ctx = context;
+          await onNavigateCleanUp();
+
+          if (!ctx.mounted) return;
+          Navigator.pushNamedAndRemoveUntil(
+            ctx,
+            "/view", 
+            (route) => false,
+            arguments: ViewScreenArguments(
+              source: args!.source, 
+              id: args!.viewID
+            )
+          );
+        }
+
+      },
       icon: Icon(
         Icons.arrow_back_rounded,
         color: appColors.secondary,
@@ -289,6 +347,71 @@ class _WatchState extends State<WatchScreen> {
       } ,
       icon: Icon(Icons.audio_file_rounded)
     ),
+
+    Theme(
+      data: Theme.of(context).copyWith(
+        popupMenuTheme: PopupMenuThemeData(
+          color: appColors.tertiary,
+          textStyle: GoogleFonts.nunito(
+            fontSize: 18,
+            color: appColors.textPrimary,
+            fontWeight: FontWeight(600)
+          ),
+        ),
+      ),
+      child: PopupMenuButton<int>(
+        icon: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: Icon(
+            Icons.more_vert_rounded,
+            color: appColors.secondary,
+          ),
+        ),
+        tooltip: "Show options",
+        itemBuilder: (BuildContext context) => [
+          PopupMenuItem<int>(
+            onTap: () => onSelectOption(0),
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: Text(
+                'Change Plugin',
+                style: GoogleFonts.nunito(
+                  fontSize: 18,
+                  color: appColors.textPrimary,
+                  fontWeight: FontWeight(600)
+                ),
+              ),
+            )
+            
+          ),
+        ],
+        
+      ),
+    )
+
+
+  ];
+
+  List<Widget> bottomButtonBar = [
+    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ...[
+      MaterialPlayOrPauseButton(),
+      const SizedBox(width: 10),
+    ],
+    
+    MaterialPositionIndicator(),
+    const Spacer(),
+    IconButton(
+      mouseCursor: SystemMouseCursors.click,
+      iconSize: 32,
+      color: appColors.secondary,
+      onPressed: onToggleFitBox,
+      icon: Icon(Icons.fit_screen_outlined)
+    ),
+    const SizedBox(width: 10),
+
+    MaterialFullscreenButton(),
+    
+    
   
   ];
 
@@ -310,19 +433,21 @@ class _WatchState extends State<WatchScreen> {
                       MaterialDesktopVideoControlsTheme(
                         fullscreen: MaterialDesktopVideoControlsThemeData(
                           padding: const EdgeInsets.all(25),
-                          buttonBarButtonSize: 32,
-                          buttonBarButtonColor: appColors.secondary,
                           topButtonBar: topButtonBar,
+                          bottomButtonBar: bottomButtonBar,
+
                         ),
                         normal: MaterialDesktopVideoControlsThemeData(
                           padding: const EdgeInsets.all(25),
                           topButtonBar: topButtonBar,
+                          bottomButtonBar: bottomButtonBar,
                           
                         ),
                         
                         child: Scaffold(
                           body: Video(
                             controller: controller,
+                            fit: boxFitList[currentBoxFitIndex],
                           ),
                         ),
                       ),
@@ -332,16 +457,21 @@ class _WatchState extends State<WatchScreen> {
                         fullscreen: MaterialVideoControlsThemeData(
                           padding: const EdgeInsets.all(25),
                           topButtonBar: topButtonBar,
+                          bottomButtonBar: bottomButtonBar,
+
                         ),
                         normal: MaterialVideoControlsThemeData(
                           padding: const EdgeInsets.all(25),
                           topButtonBar: topButtonBar,
+                          bottomButtonBar: bottomButtonBar,
+
                           
                         ),
                         
                         child: Scaffold(
                           body: Video(
                             controller: controller,
+                            fit: boxFitList[currentBoxFitIndex],
                           ),
                         ),
                       ),

@@ -6,6 +6,7 @@ import 'package:recombox/src/global/types.dart';
 
 import 'package:recombox/src/global/widgets/title_bar.dart';
 import 'package:recombox/src/routes/select_plugin/widgets/select_plugin_tile.dart';
+import 'package:recombox/src/routes/view/view.dart';
 import 'package:recombox/src/rust/method/metadata_provider/view_content.dart';
 import 'package:recombox/src/rust/method/plugin_provider/get_installed_plugins.dart';
 
@@ -114,7 +115,17 @@ class _SelectPluginState extends State<SelectPluginScreen> {
     );
   }
 
-
+  void onNavigateBack() {
+    Navigator.pushNamedAndRemoveUntil(
+      context, 
+      "/view",
+      (route) => false,
+      arguments: ViewScreenArguments(
+        source: args.source, 
+        id: args.id,
+      )
+    );
+  }
 
 
 
@@ -145,9 +156,7 @@ class _SelectPluginState extends State<SelectPluginScreen> {
                           children: [
                             IconButton(
                               mouseCursor: SystemMouseCursors.click,
-                              onPressed: (){
-                                Navigator.pop(context);
-                              },
+                              onPressed: onNavigateBack,
                               icon: Icon(
                                 Icons.arrow_back_rounded,
                                 color: appColors.secondary,

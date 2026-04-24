@@ -41,3 +41,19 @@ Map<String, dynamic> _$FavoriteItemInfoToJson(_FavoriteItemInfo instance) =>
       'source': instance.source,
       'id': instance.id,
     };
+
+_LastWatchTorrentInfo _$LastWatchTorrentInfoFromJson(
+        Map<String, dynamic> json) =>
+    _LastWatchTorrentInfo(
+      torrentSource: json['torrentSource'] as String,
+      fileId: BigInt.parse(json['fileId'] as String),
+      mimeType: json['mimeType'] as String,
+    );
+
+Map<String, dynamic> _$LastWatchTorrentInfoToJson(
+        _LastWatchTorrentInfo instance) =>
+    <String, dynamic>{
+      'torrentSource': instance.torrentSource,
+      'fileId': instance.fileId.toString(),
+      'mimeType': instance.mimeType,
+    };

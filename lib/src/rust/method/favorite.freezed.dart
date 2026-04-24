@@ -931,4 +931,342 @@ class __$FavoriteItemInfoCopyWithImpl<$Res>
   }
 }
 
+/// @nodoc
+mixin _$LastWatchTorrentInfo {
+  String get torrentSource;
+  BigInt get fileId;
+  String get mimeType;
+
+  /// Create a copy of LastWatchTorrentInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $LastWatchTorrentInfoCopyWith<LastWatchTorrentInfo> get copyWith =>
+      _$LastWatchTorrentInfoCopyWithImpl<LastWatchTorrentInfo>(
+          this as LastWatchTorrentInfo, _$identity);
+
+  /// Serializes this LastWatchTorrentInfo to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is LastWatchTorrentInfo &&
+            (identical(other.torrentSource, torrentSource) ||
+                other.torrentSource == torrentSource) &&
+            (identical(other.fileId, fileId) || other.fileId == fileId) &&
+            (identical(other.mimeType, mimeType) ||
+                other.mimeType == mimeType));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, torrentSource, fileId, mimeType);
+
+  @override
+  String toString() {
+    return 'LastWatchTorrentInfo(torrentSource: $torrentSource, fileId: $fileId, mimeType: $mimeType)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $LastWatchTorrentInfoCopyWith<$Res> {
+  factory $LastWatchTorrentInfoCopyWith(LastWatchTorrentInfo value,
+          $Res Function(LastWatchTorrentInfo) _then) =
+      _$LastWatchTorrentInfoCopyWithImpl;
+  @useResult
+  $Res call({String torrentSource, BigInt fileId, String mimeType});
+}
+
+/// @nodoc
+class _$LastWatchTorrentInfoCopyWithImpl<$Res>
+    implements $LastWatchTorrentInfoCopyWith<$Res> {
+  _$LastWatchTorrentInfoCopyWithImpl(this._self, this._then);
+
+  final LastWatchTorrentInfo _self;
+  final $Res Function(LastWatchTorrentInfo) _then;
+
+  /// Create a copy of LastWatchTorrentInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? torrentSource = null,
+    Object? fileId = null,
+    Object? mimeType = null,
+  }) {
+    return _then(_self.copyWith(
+      torrentSource: null == torrentSource
+          ? _self.torrentSource
+          : torrentSource // ignore: cast_nullable_to_non_nullable
+              as String,
+      fileId: null == fileId
+          ? _self.fileId
+          : fileId // ignore: cast_nullable_to_non_nullable
+              as BigInt,
+      mimeType: null == mimeType
+          ? _self.mimeType
+          : mimeType // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// Adds pattern-matching-related methods to [LastWatchTorrentInfo].
+extension LastWatchTorrentInfoPatterns on LastWatchTorrentInfo {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_LastWatchTorrentInfo value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _LastWatchTorrentInfo() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_LastWatchTorrentInfo value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _LastWatchTorrentInfo():
+        return $default(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_LastWatchTorrentInfo value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _LastWatchTorrentInfo() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(String torrentSource, BigInt fileId, String mimeType)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _LastWatchTorrentInfo() when $default != null:
+        return $default(_that.torrentSource, _that.fileId, _that.mimeType);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(String torrentSource, BigInt fileId, String mimeType)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _LastWatchTorrentInfo():
+        return $default(_that.torrentSource, _that.fileId, _that.mimeType);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(String torrentSource, BigInt fileId, String mimeType)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _LastWatchTorrentInfo() when $default != null:
+        return $default(_that.torrentSource, _that.fileId, _that.mimeType);
+      case _:
+        return null;
+    }
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _LastWatchTorrentInfo implements LastWatchTorrentInfo {
+  const _LastWatchTorrentInfo(
+      {required this.torrentSource,
+      required this.fileId,
+      required this.mimeType});
+  factory _LastWatchTorrentInfo.fromJson(Map<String, dynamic> json) =>
+      _$LastWatchTorrentInfoFromJson(json);
+
+  @override
+  final String torrentSource;
+  @override
+  final BigInt fileId;
+  @override
+  final String mimeType;
+
+  /// Create a copy of LastWatchTorrentInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$LastWatchTorrentInfoCopyWith<_LastWatchTorrentInfo> get copyWith =>
+      __$LastWatchTorrentInfoCopyWithImpl<_LastWatchTorrentInfo>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$LastWatchTorrentInfoToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _LastWatchTorrentInfo &&
+            (identical(other.torrentSource, torrentSource) ||
+                other.torrentSource == torrentSource) &&
+            (identical(other.fileId, fileId) || other.fileId == fileId) &&
+            (identical(other.mimeType, mimeType) ||
+                other.mimeType == mimeType));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, torrentSource, fileId, mimeType);
+
+  @override
+  String toString() {
+    return 'LastWatchTorrentInfo(torrentSource: $torrentSource, fileId: $fileId, mimeType: $mimeType)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$LastWatchTorrentInfoCopyWith<$Res>
+    implements $LastWatchTorrentInfoCopyWith<$Res> {
+  factory _$LastWatchTorrentInfoCopyWith(_LastWatchTorrentInfo value,
+          $Res Function(_LastWatchTorrentInfo) _then) =
+      __$LastWatchTorrentInfoCopyWithImpl;
+  @override
+  @useResult
+  $Res call({String torrentSource, BigInt fileId, String mimeType});
+}
+
+/// @nodoc
+class __$LastWatchTorrentInfoCopyWithImpl<$Res>
+    implements _$LastWatchTorrentInfoCopyWith<$Res> {
+  __$LastWatchTorrentInfoCopyWithImpl(this._self, this._then);
+
+  final _LastWatchTorrentInfo _self;
+  final $Res Function(_LastWatchTorrentInfo) _then;
+
+  /// Create a copy of LastWatchTorrentInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? torrentSource = null,
+    Object? fileId = null,
+    Object? mimeType = null,
+  }) {
+    return _then(_LastWatchTorrentInfo(
+      torrentSource: null == torrentSource
+          ? _self.torrentSource
+          : torrentSource // ignore: cast_nullable_to_non_nullable
+              as String,
+      fileId: null == fileId
+          ? _self.fileId
+          : fileId // ignore: cast_nullable_to_non_nullable
+              as BigInt,
+      mimeType: null == mimeType
+          ? _self.mimeType
+          : mimeType // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
 // dart format on

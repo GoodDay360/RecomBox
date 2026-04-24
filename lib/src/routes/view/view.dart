@@ -3,8 +3,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:recombox/src/global/dialogs/favorite/set_category_dialog.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/types.dart';
+import 'package:recombox/src/routes/select_plugin/select_plugin.dart';
 import 'package:recombox/src/routes/view/widgets/episode_tile.dart';
+import 'package:recombox/src/routes/watch/watch.dart';
 import 'package:recombox/src/rust/method/favorite.dart';
+import 'package:recombox/src/rust/method/favorite/get_last_watch_torrent.dart';
 import 'package:recombox/src/rust/method/favorite/is_in_category.dart';
 import 'package:recombox/src/rust/method/metadata_provider/view_content.dart';
 import 'dart:io';
@@ -206,7 +209,61 @@ class _ViewState extends State<ViewScreen> with RouteAware {
 
   }
 
-  
+  Future<void> onNavigateWatch(BigInt seasonIndex, BigInt episodeIndex) async{
+    final ctx = context;
+    try{
+      LastWatchTorrentInfo? lastWatchTorrentInfo = await getLastWatchTorrent(
+        source: args.source.name, 
+        id: args.id, 
+        seasonIndex: seasonIndex, 
+        episodeIndex: episodeIndex
+      );
+      debugPrint(lastWatchTorrentInfo.toString());
+      if (lastWatchTorrentInfo != null){
+        WatchScreenArguments watchScreenArgs = WatchScreenArguments(
+          source: args.source, 
+          viewID: args.id, 
+          externalID: viewContentInfoResult!.externalId, 
+          title: viewContentInfoResult!.title, 
+          titleSecondary: viewContentInfoResult!.titleSecondary, 
+          torrentSource: lastWatchTorrentInfo.torrentSource, 
+          mimeType: lastWatchTorrentInfo.mimeType, 
+          fileID: lastWatchTorrentInfo.fileId, 
+          season: seasonIndex,
+          episode: episodeIndex
+        );
+        if (ctx.mounted){
+          Navigator.pushNamed(
+            ctx,
+            '/watch',
+            arguments: watchScreenArgs,
+          );
+        }
+        return;
+      }
+    }catch(e){
+      debugPrint(e.toString());
+    }
+    
+    SelectPluginScreenArguments selectPluginArgs = SelectPluginScreenArguments(
+      source: args.source,
+      id: args.id,
+      externalID: viewContentInfoResult!.externalId,
+      title: viewContentInfoResult!.title,
+      titleSecondary: viewContentInfoResult!.titleSecondary,
+      season: seasonIndex,
+      episode: episodeIndex
+    );
+
+    if (ctx.mounted){
+      Navigator.pushNamed(
+        ctx,
+        '/select_plugin',
+        arguments: selectPluginArgs,
+      );
+    }
+
+  }
 
 
   @override
@@ -402,9 +459,16 @@ class _ViewState extends State<ViewScreen> with RouteAware {
                           ElevatedButton.icon(
                             icon: Icon(Icons.play_arrow),
                             onPressed: () {
-
+                              onNavigateWatch(
+                                viewContentInfoResult!.lastWatchSeasonIndex??BigInt.from(0), 
+                                viewContentInfoResult!.lastWatchEpisodeIndex??BigInt.from(0)
+                              );
                             },
-                            label: Text("Watch Now"),
+                            label: Text(
+                              (((viewContentInfoResult?.lastWatchSeasonIndex??BigInt.from(0)) > BigInt.from(0)) && ((viewContentInfoResult?.lastWatchEpisodeIndex??BigInt.from(0)) > BigInt.from(0)))
+                              ? "Continue Watching"
+                              : "Watch Now",
+                            ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: appColors.secondary,
                               foregroundColor: appColors.primary,
@@ -819,13 +883,10 @@ class _ViewState extends State<ViewScreen> with RouteAware {
                                       return Container(
                                         color: viewContentInfoResult!.lastWatchEpisodeIndex == BigInt.from(index) ? appColors.tertiary : Colors.transparent,
                                         child: EpisodeTile(
-                                          id: args.id,
-                                          externalID: viewContentInfoResult!.externalId,
-                                          title: viewContentInfoResult!.title,
-                                          titleSecondary: viewContentInfoResult!.titleSecondary,
                                           season: BigInt.from(currentSeasonIndex),
                                           episode: BigInt.from(index),
                                           episodeInfo: filteredEpisodes[index],
+                                          onNavigateWatch: onNavigateWatch,
                                           
                                         )
                                       );

@@ -308,6 +308,9 @@ class _SelectSourceState extends State<SelectSourceScreen> {
                                 return SelectSourceTile(
                                   key: ValueKey(sourceInfoList[index].id),
                                   viewID: args!.selectPluginScreenArguments.id,
+                                  externalID: args!.selectPluginScreenArguments.externalID,
+                                  title: args!.selectPluginScreenArguments.title,
+                                  titleSecondary: args!.selectPluginScreenArguments.titleSecondary,
                                   pluginPath: args!.pluginPath,
                                   source: args!.selectPluginScreenArguments.source,
                                   sourceInfo: sourceInfoList[index],

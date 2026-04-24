@@ -14,9 +14,11 @@ import 'method/favorite/get_all_category.dart';
 import 'method/favorite/get_all_category_by_item_id.dart';
 import 'method/favorite/get_all_item_by_category_id.dart';
 import 'method/favorite/get_category_order.dart';
+import 'method/favorite/get_last_watch_torrent.dart';
 import 'method/favorite/is_in_category.dart';
 import 'method/favorite/rename_category.dart';
 import 'method/favorite/set_category.dart';
+import 'method/favorite/set_last_watch_torrent.dart';
 import 'method/favorite/swap_category_order.dart';
 import 'method/favorite/unset_category.dart';
 import 'method/get_settings.dart';
@@ -82,6 +84,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool dco_decode_bool(dynamic raw);
 
   @protected
+  LastWatchTorrentInfo dco_decode_box_autoadd_last_watch_torrent_info(
+      dynamic raw);
+
+  @protected
   PluginInfo dco_decode_box_autoadd_plugin_info(dynamic raw);
 
   @protected
@@ -119,6 +125,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   InstalledPluginInfo dco_decode_installed_plugin_info(dynamic raw);
+
+  @protected
+  LastWatchTorrentInfo dco_decode_last_watch_torrent_info(dynamic raw);
 
   @protected
   List<String> dco_decode_list_String(dynamic raw);
@@ -168,6 +177,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   String? dco_decode_opt_String(dynamic raw);
+
+  @protected
+  LastWatchTorrentInfo? dco_decode_opt_box_autoadd_last_watch_torrent_info(
+      dynamic raw);
 
   @protected
   BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw);
@@ -260,6 +273,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool sse_decode_bool(SseDeserializer deserializer);
 
   @protected
+  LastWatchTorrentInfo sse_decode_box_autoadd_last_watch_torrent_info(
+      SseDeserializer deserializer);
+
+  @protected
   PluginInfo sse_decode_box_autoadd_plugin_info(SseDeserializer deserializer);
 
   @protected
@@ -298,6 +315,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   InstalledPluginInfo sse_decode_installed_plugin_info(
+      SseDeserializer deserializer);
+
+  @protected
+  LastWatchTorrentInfo sse_decode_last_watch_torrent_info(
       SseDeserializer deserializer);
 
   @protected
@@ -356,6 +377,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   String? sse_decode_opt_String(SseDeserializer deserializer);
+
+  @protected
+  LastWatchTorrentInfo? sse_decode_opt_box_autoadd_last_watch_torrent_info(
+      SseDeserializer deserializer);
 
   @protected
   BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer);
@@ -453,6 +478,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_bool(bool self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_last_watch_torrent_info(
+      LastWatchTorrentInfo self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_plugin_info(
       PluginInfo self, SseSerializer serializer);
 
@@ -495,6 +524,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_installed_plugin_info(
       InstalledPluginInfo self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_last_watch_torrent_info(
+      LastWatchTorrentInfo self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_String(List<String> self, SseSerializer serializer);
@@ -556,6 +589,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_last_watch_torrent_info(
+      LastWatchTorrentInfo? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer);

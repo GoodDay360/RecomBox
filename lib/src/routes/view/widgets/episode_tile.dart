@@ -7,22 +7,17 @@ import 'package:recombox/src/rust/method/metadata_provider/view_content.dart';
 class EpisodeTile extends StatefulWidget {
   const EpisodeTile({
     super.key,
-    required this.id,
-    required this.externalID,
-    required this.title,
-    required this.titleSecondary,
     required this.season,
     required this.episode,
     required this.episodeInfo,
+    required this.onNavigateWatch
   });
 
-  final String id;
-  final String externalID;
-  final String titleSecondary;
-  final String title;
   final BigInt season;
   final BigInt episode;
   final EpisodeInfo episodeInfo;
+
+  final Function(BigInt seasonidnex, BigInt episodeIndex) onNavigateWatch;
 
   @override
   State<EpisodeTile> createState() => _EpisodeTileState();
@@ -33,33 +28,13 @@ class _EpisodeTileState extends State<EpisodeTile> {
   AppColorsScheme appColors = appColorsNotifier.value;
   bool failLoadThumbnail = false;
 
-  void onNavigate() {
-    debugPrint(widget.season.toString());
-    debugPrint(widget.episode.toString());
-    SelectPluginScreenArguments args = SelectPluginScreenArguments(
-      source: SourceExtension.fromString(widget.episodeInfo.source),
-      id: widget.id,
-      externalID: widget.externalID,
-      title: widget.title,
-      titleSecondary: widget.titleSecondary,
-      season: widget.season,
-      episode: widget.episode
-
-    );
-
-    Navigator.pushNamed(
-      context,
-      '/select_plugin',
-      arguments: args,
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: onNavigate,
+        onTap: () => widget.onNavigateWatch(widget.season, widget.episode),
         mouseCursor: SystemMouseCursors.click,
         child: SizedBox(
             width: double.infinity,

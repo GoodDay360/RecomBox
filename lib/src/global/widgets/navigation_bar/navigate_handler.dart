@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
-int lastIndex = 0;
 
 void navigateHander(BuildContext context, int index) {
-  if (lastIndex == index) return;
-  debugPrint(lastIndex.toString());
   debugPrint(index.toString());
   switch (index) {
     case 0:
@@ -23,6 +20,4 @@ void navigateHander(BuildContext context, int index) {
       );
       break;
   }
-
-  lastIndex = index;
 }

@@ -5,6 +5,8 @@ import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/dialogs/install_plugin/install_plugin_dialog.dart';
 import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/routes/watch/watch.dart';
+import 'package:recombox/src/rust/method/favorite.dart';
+import 'package:recombox/src/rust/method/favorite/set_last_watch_torrent.dart';
 import 'package:recombox/src/rust/method/plugin_provider.dart';
 import 'package:recombox/src/rust/method/plugin_provider/get_installed_plugins.dart';
 import 'package:recombox/src/rust/method/plugin_provider/get_sources.dart';
@@ -19,6 +21,9 @@ class SelectFileTile extends StatefulWidget {
     super.key,
     required this.source,
     required this.viewID,
+    required this.externalID,
+    required this.title,
+    required this.titleSecondary,
     required this.torrentSource,
     required this.fileInfo,
     required this.season,
@@ -27,6 +32,9 @@ class SelectFileTile extends StatefulWidget {
 
   final Source source;
   final String viewID;
+  final String externalID;
+  final String title;
+  final String titleSecondary;
   final String torrentSource;
   final FileInfo fileInfo;
   final BigInt season;
@@ -48,12 +56,31 @@ class _SelectFileTileState extends State<SelectFileTile> {
     
   }
 
-  void onNavigate() {
+  Future<void> onNavigate() async {
     final mimeType = lookupMimeType(widget.fileInfo.path??"")??"application/octet-stream";
+
+    try{
+      await setLastWatchTorrent(
+        source: widget.source.name, 
+        id: widget.viewID, 
+        seasonIndex: widget.season, 
+        episodeIndex: widget.episode, 
+        lastWatchTorrentInfo: LastWatchTorrentInfo(
+          torrentSource: widget.torrentSource, 
+          mimeType: mimeType,
+          fileId: widget.fileInfo.id
+        )
+      );
+    }catch(e){
+      debugPrint(e.toString());
+    }
 
     WatchScreenArguments watchScreenArgs = WatchScreenArguments(
       viewID: widget.viewID,
       source: widget.source,
+      externalID: widget.externalID,
+      title: widget.title,
+      titleSecondary: widget.titleSecondary,
       mimeType: mimeType,
       torrentSource: widget.torrentSource,
       fileID: widget.fileInfo.id,

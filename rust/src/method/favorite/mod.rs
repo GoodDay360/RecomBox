@@ -9,7 +9,8 @@ pub mod get_category_order;
 pub mod swap_category_order;
 pub mod rename_category;
 pub mod is_in_category;
-
+pub mod get_last_watch_torrent;
+pub mod set_last_watch_torrent;
 
 pub use redb::Database;
 use redb::{TableDefinition, MultimapTableDefinition};
@@ -26,6 +27,7 @@ use crate::utils::settings::Settings;
 static DATABASE: Lazy<RwLock<Option<Arc<Database>>>> = Lazy::new(|| RwLock::new(None));
 
 const DATABASE_NAME: &str = "favorite.redb";
+const LAST_WATCH_TORRENT_TABLE: TableDefinition<&[u8], &[u8]> = TableDefinition::new("last_watch_torrent");
 const CATEGORY_TABLE: TableDefinition<u64, &str> = TableDefinition::new("category");
 const CATEGORY_ORDER_TABLE:TableDefinition<u64, u64> = TableDefinition::new("category_order");
 const CATEGORY_AND_ITEM_TABLE: MultimapTableDefinition<u64, &[u8]> = MultimapTableDefinition::new("category_and_item");
@@ -45,6 +47,14 @@ pub struct CategoryOrderMap(pub HashMap<u64, u64>);
 pub struct FavoriteItemInfo{
     pub source: String,
     pub id: String,
+}
+
+#[frb(json_serializable)]
+#[derive(Serialize, Deserialize)]
+pub struct LastWatchTorrentInfo{
+    pub torrent_source: String,
+    pub file_id: u64,
+    pub mime_type: String,
 }
 
 

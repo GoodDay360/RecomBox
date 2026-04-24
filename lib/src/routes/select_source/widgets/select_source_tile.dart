@@ -14,6 +14,10 @@ class SelectSourceTile extends StatefulWidget {
   const SelectSourceTile({
     super.key,
     required this.viewID,
+    required this.externalID,
+    required this.title,
+    required this.titleSecondary,
+    
     required this.pluginPath,
     required this.source,
     required this.sourceInfo,
@@ -23,6 +27,9 @@ class SelectSourceTile extends StatefulWidget {
   }); 
 
   final String viewID;
+  final String externalID;
+  final String title;
+  final String titleSecondary;
   final String pluginPath;
   final Source source;
   final SourceInfo sourceInfo;
@@ -51,6 +58,9 @@ class _SelectSourceTileState extends State<SelectSourceTile> {
       "/select_torrent",
       arguments: SelectTorrentScreenArguments(
         viewID: widget.viewID,
+        externalID: widget.externalID,
+        title: widget.title,
+        titleSecondary: widget.titleSecondary,
         pluginPath: widget.pluginPath,
         source: widget.source,
         id: widget.sourceInfo.id,

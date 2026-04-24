@@ -18,6 +18,9 @@ import 'package:recombox/src/rust/method/plugin_provider/get_torrents.dart';
 
 class SelectTorrentScreenArguments {
   String viewID;
+  String externalID;
+  String title;
+  String titleSecondary;
   String pluginPath;
   String id;
   Source source;
@@ -26,6 +29,9 @@ class SelectTorrentScreenArguments {
 
   SelectTorrentScreenArguments({
     required this.viewID,
+    required this.externalID,
+    required this.title,
+    required this.titleSecondary,
     required this.pluginPath,
     required this.id,
     required this.source,
@@ -68,6 +74,9 @@ class _SelectTorrentState extends State<SelectTorrentScreen> {
             ? rawArgs
             : SelectTorrentScreenArguments(
               viewID: "72673844%20spider",
+              externalID: "tt999",
+              title: "Loki",
+              titleSecondary: "Loki",
               pluginPath: "movies/8c8fb2b288439bcd9a71ff75051af9922162ba23b8a8ebd3db1dbe905cca00ee/2036011253247552227.js", 
               id: "72673844",
               source: Source.anime,
@@ -281,6 +290,9 @@ class _SelectTorrentState extends State<SelectTorrentScreen> {
                                   key: ValueKey(filteredTorrentList[index].torrentUrl),
                                   source: args!.source,
                                   viewID: args!.viewID,
+                                  externalID: args!.externalID,
+                                  title: args!.title,
+                                  titleSecondary: args!.titleSecondary,
                                   torrentInfo: filteredTorrentList[index],
                                   season: args!.season,
                                   episode: args!.episode

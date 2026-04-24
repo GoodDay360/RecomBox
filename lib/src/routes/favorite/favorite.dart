@@ -76,16 +76,16 @@ class _FavoriteState extends State<FavoriteScreen> {
       );
 
 
-      List<FavoriteItemInfo> FavoriteItemInfoListResult = await getAllItemByCategoryId(
+      List<FavoriteItemInfo> favoriteItemInfoListResult = await getAllItemByCategoryId(
         categoryId: categoryMapResult.field0.keys.toList()[currentCategoryIndex],
       );
 
-      debugPrint(FavoriteItemInfoListResult.toString());
+      debugPrint(favoriteItemInfoListResult.toString());
 
 
       setState(() {
         categoryMap = categoryMapResult;
-        FavoriteItemInfoList = FavoriteItemInfoListResult;
+        FavoriteItemInfoList = favoriteItemInfoListResult;
       });
     }catch(e){
       debugPrint(e.toString());
@@ -187,7 +187,7 @@ class _FavoriteState extends State<FavoriteScreen> {
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.zero,
                                       ),
-                                      padding: EdgeInsets.all(20),
+                                      
                                     ),
                                     child: Text(
                                       categoryMap.field0.values.toList()[index],
@@ -195,7 +195,9 @@ class _FavoriteState extends State<FavoriteScreen> {
                                         color: appColors.textPrimary,
                                         fontSize: 18,
                                         fontWeight: FontWeight(500)
+                                        
                                       ),
+                                      maxLines: 1,
                                     ),
                                   )
                                 );
