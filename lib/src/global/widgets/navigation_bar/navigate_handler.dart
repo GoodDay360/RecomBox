@@ -19,5 +19,12 @@ void navigateHander(BuildContext context, int index) {
         context, '/favorite'
       );
       break;
+    case 3:
+      Navigator.pushNamed(
+        context, '/download'
+      );
+      break;
+    default:
+      break;
   }
 }

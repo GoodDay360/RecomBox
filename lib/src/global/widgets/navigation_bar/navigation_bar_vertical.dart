@@ -107,6 +107,15 @@ class _NavigationBarVerticalState extends State<NavigationBarVertical> {
                   selectedIcon: Icon(Icons.favorite_rounded),
                   label: Text('Favorite'),
                 ),
+
+                NavigationRailDestination(
+                  icon: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: Icon(Icons.download_outlined),
+                  ),
+                  selectedIcon: Icon(Icons.download_rounded),
+                  label: Text('Download'),
+                ),
                 
                 NavigationRailDestination(
                   icon: MouseRegion(

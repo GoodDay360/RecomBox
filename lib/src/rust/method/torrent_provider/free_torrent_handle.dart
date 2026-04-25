@@ -4,9 +4,15 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../../frb_generated.dart';
+import '../../utils/torrent_provider/torrent_handle.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-Future<void> freeTorrentHandle({required BigInt handleId}) =>
+Future<void> freeTorrentHandle(
+        {required TorrentHandleMode torrentHandleMode,
+        required String torrentSource,
+        required bool deleteFiles}) =>
     RustLib.instance.api
         .crateMethodTorrentProviderFreeTorrentHandleFreeTorrentHandle(
-            handleId: handleId);
+            torrentHandleMode: torrentHandleMode,
+            torrentSource: torrentSource,
+            deleteFiles: deleteFiles);

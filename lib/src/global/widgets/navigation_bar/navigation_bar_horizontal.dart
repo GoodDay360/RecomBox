@@ -49,7 +49,6 @@ class _NavigationBarHorizontalState extends State<NavigationBarHorizontal> {
             Expanded(
               child: NavigationBar(
                 // -> Styles
-                
                 backgroundColor: appColors.primary,
                 indicatorColor: appColors.secondary, 
                 labelTextStyle: WidgetStateProperty.all(
@@ -64,7 +63,7 @@ class _NavigationBarHorizontalState extends State<NavigationBarHorizontal> {
                   NavigationDestination(
                     icon: MouseRegion(
                       cursor: SystemMouseCursors.click,
-                      child: Icon(Icons.home, color: appColors.secondary),
+                      child: Icon(Icons.home_outlined, color: appColors.secondary),
                     ),
                     selectedIcon: Icon(Icons.home, color: appColors.primary),
                     label: 'Home',
@@ -88,9 +87,17 @@ class _NavigationBarHorizontalState extends State<NavigationBarHorizontal> {
                   NavigationDestination(
                     icon: MouseRegion(
                       cursor: SystemMouseCursors.click,
-                      child: Icon(Icons.settings, color: appColors.secondary),
+                      child: Icon(Icons.download_outlined, color: appColors.secondary),
                     ),
-                    selectedIcon: Icon(Icons.settings, color: appColors.primary),
+                    selectedIcon: Icon(Icons.download_rounded, color: appColors.primary),
+                    label: 'Download',
+                  ),
+                  NavigationDestination(
+                    icon: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: Icon(Icons.settings_outlined, color: appColors.secondary),
+                    ),
+                    selectedIcon: Icon(Icons.settings_rounded, color: appColors.primary),
                     label: 'Settings',
                   ),
                 ],

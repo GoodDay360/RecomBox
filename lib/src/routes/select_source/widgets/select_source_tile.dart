@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/dialogs/install_plugin/install_plugin_dialog.dart';
 import 'package:recombox/src/global/types.dart';
+import 'package:recombox/src/routes/select_file/select_file.dart';
 import 'package:recombox/src/routes/select_torrent/select_torrent.dart';
 import 'package:recombox/src/rust/method/plugin_provider.dart';
 import 'package:recombox/src/rust/method/plugin_provider/get_installed_plugins.dart';
@@ -13,6 +14,7 @@ import 'package:recombox/src/rust/method/plugin_provider/remove_plugin.dart';
 class SelectSourceTile extends StatefulWidget {
   const SelectSourceTile({
     super.key,
+    required this.selectFileMode,
     required this.viewID,
     required this.externalID,
     required this.title,
@@ -26,6 +28,7 @@ class SelectSourceTile extends StatefulWidget {
 
   }); 
 
+  final SelectFileMode selectFileMode;
   final String viewID;
   final String externalID;
   final String title;
@@ -57,6 +60,7 @@ class _SelectSourceTileState extends State<SelectSourceTile> {
       context, 
       "/select_torrent",
       arguments: SelectTorrentScreenArguments(
+        selectFileMode: widget.selectFileMode,
         viewID: widget.viewID,
         externalID: widget.externalID,
         title: widget.title,

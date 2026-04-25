@@ -2,7 +2,7 @@ use std::{sync::{Arc, Mutex}};
 use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 use flutter_rust_bridge::frb;
-
+use std::path::PathBuf;
 
 static SETTIGNS: Lazy<Mutex<Option<Arc<Settings>>>> = Lazy::new(|| Mutex::new(None));
 
@@ -24,18 +24,16 @@ pub struct Paths {
 
 impl Settings {
     pub fn temp_init() -> anyhow::Result<()> {
-        use std::env;
-        let temp_dir = env::temp_dir()
-            .join("recombox_temp");
+        let temp_dir = PathBuf::from("recombox_temp");
 
         std::fs::create_dir_all(&temp_dir).unwrap();
 
         let temp_settings = Settings {
             port: 0,
             paths: Paths {
-                app_support_dir: temp_dir.to_string_lossy().to_string(),
-                app_cache_dir: temp_dir.to_string_lossy().to_string(),
-                temp_dir: temp_dir.to_string_lossy().to_string(),
+                app_support_dir: temp_dir.join("app_support_dir").to_string_lossy().to_string(),
+                app_cache_dir: temp_dir.join("app_cache_dir").to_string_lossy().to_string(),
+                temp_dir: temp_dir.join("temp_dir").to_string_lossy().to_string(),
             }
         };
         let mut guard = SETTIGNS.lock()

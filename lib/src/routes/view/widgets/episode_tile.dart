@@ -2,22 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/routes/select_plugin/select_plugin.dart';
+import 'package:recombox/src/rust/method/download_provider.dart';
+import 'package:recombox/src/rust/method/download_provider/get_all_download.dart';
+import 'package:recombox/src/rust/method/download_provider/get_download.dart';
 import 'package:recombox/src/rust/method/metadata_provider/view_content.dart';
 
 class EpisodeTile extends StatefulWidget {
   const EpisodeTile({
     super.key,
+    required this.source,
+    required this.viewID,
     required this.season,
     required this.episode,
     required this.episodeInfo,
-    required this.onNavigateWatch
+    required this.onNavigateWatch,
+    required this.onNavigateDownload
   });
 
+  final Source source;
+  final String viewID;
   final BigInt season;
   final BigInt episode;
   final EpisodeInfo episodeInfo;
 
-  final Function(BigInt seasonidnex, BigInt episodeIndex) onNavigateWatch;
+  final Function() onNavigateWatch;
+  final Function() onNavigateDownload;
+
 
   @override
   State<EpisodeTile> createState() => _EpisodeTileState();
@@ -27,14 +37,40 @@ class _EpisodeTileState extends State<EpisodeTile> {
 
   AppColorsScheme appColors = appColorsNotifier.value;
   bool failLoadThumbnail = false;
+  bool isInDownload = false;
 
+  @override
+  void initState() {
+    super.initState();
+
+    initEpisode();
+  }
+
+  Future<void> initEpisode() async {
+    try{
+      DownloadItemValue? downloadItemValue = await getDownload(
+        source: widget.source.name, 
+        id: widget.viewID, 
+        seasonIndex:  widget.season, 
+        episodeIndex: widget.episode
+      );
+      if (downloadItemValue != null){
+        setState(() {
+          isInDownload = true;
+        });
+      }
+    }catch(e){
+      debugPrint(e.toString());
+    }
+
+  }
 
   @override
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => widget.onNavigateWatch(widget.season, widget.episode),
+        onTap: widget.onNavigateWatch,
         mouseCursor: SystemMouseCursors.click,
         child: SizedBox(
             width: double.infinity,
@@ -84,6 +120,39 @@ class _EpisodeTileState extends State<EpisodeTile> {
                 //     color: appColors.secondary,
                 //   )
                 // )
+                if (!isInDownload)
+                  IconButton(
+                    mouseCursor: SystemMouseCursors.click,
+                    onPressed: widget.onNavigateDownload,
+                    icon: Icon(
+                      Icons.download_rounded,
+                      color: appColors.secondary,
+                      size: 32
+                    )
+                  ),
+                if (isInDownload)
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        SizedBox(
+                          width: 32,
+                          height: 32,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 3,
+                            valueColor: AlwaysStoppedAnimation<Color>(appColors.secondary),
+                          ),
+                        ),
+                        Icon(
+                          Icons.download_rounded,
+                          size: 18,
+                          color: appColors.secondary,
+                        ),
+                      ],
+                    ),
+                  )
+                
               ],
             ),
           ),

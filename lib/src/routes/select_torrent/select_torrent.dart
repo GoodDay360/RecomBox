@@ -5,6 +5,7 @@ import 'package:recombox/src/global/dialogs/install_plugin/install_plugin_dialog
 import 'package:recombox/src/global/types.dart';
 
 import 'package:recombox/src/global/widgets/title_bar.dart';
+import 'package:recombox/src/routes/select_file/select_file.dart';
 import 'package:recombox/src/routes/select_plugin/select_plugin.dart';
 import 'package:recombox/src/routes/select_plugin/widgets/select_plugin_tile.dart';
 import 'package:recombox/src/routes/select_source/widgets/select_source_tile.dart';
@@ -17,6 +18,7 @@ import 'package:recombox/src/rust/method/plugin_provider/get_sources.dart';
 import 'package:recombox/src/rust/method/plugin_provider/get_torrents.dart';
 
 class SelectTorrentScreenArguments {
+  SelectFileMode selectFileMode;
   String viewID;
   String externalID;
   String title;
@@ -28,6 +30,7 @@ class SelectTorrentScreenArguments {
   BigInt episode;
 
   SelectTorrentScreenArguments({
+    required this.selectFileMode,
     required this.viewID,
     required this.externalID,
     required this.title,
@@ -73,6 +76,7 @@ class _SelectTorrentState extends State<SelectTorrentScreen> {
         args = rawArgs is SelectTorrentScreenArguments
             ? rawArgs
             : SelectTorrentScreenArguments(
+              selectFileMode: SelectFileMode.watch,
               viewID: "72673844%20spider",
               externalID: "tt999",
               title: "Loki",
@@ -288,6 +292,7 @@ class _SelectTorrentState extends State<SelectTorrentScreen> {
                               itemBuilder: (context, index) {
                                 return SelectTorrentTile(
                                   key: ValueKey(filteredTorrentList[index].torrentUrl),
+                                  selectFileMode: args!.selectFileMode,
                                   source: args!.source,
                                   viewID: args!.viewID,
                                   externalID: args!.externalID,

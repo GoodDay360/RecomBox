@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:recombox/src/global/dialogs/favorite/set_category_dialog.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/types.dart';
+import 'package:recombox/src/routes/select_file/select_file.dart';
 import 'package:recombox/src/routes/select_plugin/select_plugin.dart';
 import 'package:recombox/src/routes/view/widgets/episode_tile.dart';
 import 'package:recombox/src/routes/watch/watch.dart';
@@ -221,6 +222,7 @@ class _ViewState extends State<ViewScreen> with RouteAware {
       debugPrint(lastWatchTorrentInfo.toString());
       if (lastWatchTorrentInfo != null){
         WatchScreenArguments watchScreenArgs = WatchScreenArguments(
+          selectFileMode: SelectFileMode.watch,
           source: args.source, 
           viewID: args.id, 
           externalID: viewContentInfoResult!.externalId, 
@@ -246,6 +248,7 @@ class _ViewState extends State<ViewScreen> with RouteAware {
     }
     
     SelectPluginScreenArguments selectPluginArgs = SelectPluginScreenArguments(
+      selectFileMode:  SelectFileMode.watch,
       source: args.source,
       id: args.id,
       externalID: viewContentInfoResult!.externalId,
@@ -263,6 +266,29 @@ class _ViewState extends State<ViewScreen> with RouteAware {
       );
     }
 
+  }
+
+  Future<void> onNavigateDownload(BigInt seasonIndex, BigInt episodeIndex) async {
+    final ctx = context;
+
+    SelectPluginScreenArguments selectPluginArgs = SelectPluginScreenArguments(
+      selectFileMode:  SelectFileMode.download,
+      source: args.source,
+      id: args.id,
+      externalID: viewContentInfoResult!.externalId,
+      title: viewContentInfoResult!.title,
+      titleSecondary: viewContentInfoResult!.titleSecondary,
+      season: seasonIndex,
+      episode: episodeIndex
+    );
+
+    if (ctx.mounted){
+      Navigator.pushNamed(
+        ctx,
+        '/select_plugin',
+        arguments: selectPluginArgs,
+      );
+    }
   }
 
 
@@ -881,13 +907,18 @@ class _ViewState extends State<ViewScreen> with RouteAware {
                                   itemCount: filteredEpisodes.length,
                                   itemBuilder: (current, index) {
                                       return Container(
-                                        color: viewContentInfoResult!.lastWatchEpisodeIndex == BigInt.from(index) ? appColors.tertiary : Colors.transparent,
+                                        key: ValueKey('$currentSeasonIndex:$index'),
+                                        color: ((viewContentInfoResult?.lastWatchSeasonIndex??BigInt.from(0)) == BigInt.from(currentSeasonIndex)) && ((viewContentInfoResult?.lastWatchEpisodeIndex??BigInt.from(0)) == BigInt.from(index))
+                                          ? appColors.tertiary 
+                                          : Colors.transparent,
                                         child: EpisodeTile(
+                                          source: args.source,
+                                          viewID: args.id,
                                           season: BigInt.from(currentSeasonIndex),
                                           episode: BigInt.from(index),
                                           episodeInfo: filteredEpisodes[index],
-                                          onNavigateWatch: onNavigateWatch,
-                                          
+                                          onNavigateWatch: ()=>onNavigateWatch(BigInt.from(currentSeasonIndex), BigInt.from(index)),
+                                          onNavigateDownload: ()=>onNavigateDownload(BigInt.from(currentSeasonIndex), BigInt.from(index))
                                         )
                                       );
                                   }, 

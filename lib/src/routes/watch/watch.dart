@@ -6,6 +6,7 @@ import 'package:mime/mime.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/routes/home/widgets/content_section.dart';
+import 'package:recombox/src/routes/select_file/select_file.dart';
 import 'package:recombox/src/routes/select_plugin/select_plugin.dart';
 import 'package:recombox/src/routes/view/view.dart';
 import 'package:recombox/src/routes/watch/dialogs/audio_track_control.dart';
@@ -27,11 +28,13 @@ import 'package:recombox/src/global/widgets/navigation_bar/navigation_bar_vertic
 import 'package:recombox/src/global/widgets/title_bar.dart';
 import 'package:recombox/src/rust/method/metadata_provider/view_content.dart';
 import 'package:recombox/src/rust/method/torrent_provider/free_torrent_handle.dart';
+import 'package:recombox/src/rust/utils/torrent_provider/torrent_handle.dart';
 import 'package:snowflaker/snowflaker.dart';
 import 'package:window_manager/window_manager.dart';
 
 
 class WatchScreenArguments {
+  SelectFileMode selectFileMode;
   Source source;
   String viewID;
   String externalID;
@@ -44,6 +47,7 @@ class WatchScreenArguments {
   BigInt episode;
 
   WatchScreenArguments({
+    required this.selectFileMode,
     required this.source,
     required this.viewID,
     required this.externalID,
@@ -106,6 +110,7 @@ class _WatchState extends State<WatchScreen> {
         args = rawArgs is  WatchScreenArguments
             ? rawArgs
             :  WatchScreenArguments(
+              selectFileMode: SelectFileMode.watch,
               viewID: "72673844%20loki-test",
               externalID: "tt123",
               source: Source.tv,
@@ -129,7 +134,11 @@ class _WatchState extends State<WatchScreen> {
   void dispose() {
     player.dispose();
     try{
-      freeTorrentHandle(handleId: handleID);
+      freeTorrentHandle(
+        torrentHandleMode: TorrentHandleMode.watch,
+        torrentSource: args!.torrentSource,
+        deleteFiles: true
+      );
     }catch(e){
       debugPrint(e.toString());
     }
@@ -176,7 +185,6 @@ class _WatchState extends State<WatchScreen> {
         port: port,
         path: 'stream_video',
         queryParameters: {
-          'handle_id': handleID.toString(),
           'torrent_source': args!.torrentSource,
           'mime_type': args!.mimeType,
           'file_id': args!.fileID.toString(),
@@ -225,6 +233,7 @@ class _WatchState extends State<WatchScreen> {
             "/select_plugin",
             (route) => false,
             arguments: SelectPluginScreenArguments(
+              selectFileMode: args!.selectFileMode,
               source: args!.source, 
               id: args!.viewID, 
               externalID: args!.externalID, 
@@ -348,6 +357,8 @@ class _WatchState extends State<WatchScreen> {
       icon: Icon(Icons.audio_file_rounded)
     ),
 
+    const SizedBox(width: 10),
+
     Theme(
       data: Theme.of(context).copyWith(
         popupMenuTheme: PopupMenuThemeData(
@@ -396,10 +407,14 @@ class _WatchState extends State<WatchScreen> {
     if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ...[
       MaterialPlayOrPauseButton(),
       const SizedBox(width: 10),
+      MaterialDesktopVolumeButton(),
+      const SizedBox(width: 10),
     ],
     
     MaterialPositionIndicator(),
+
     const Spacer(),
+
     IconButton(
       mouseCursor: SystemMouseCursors.click,
       iconSize: 32,

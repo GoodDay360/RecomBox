@@ -7,6 +7,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi' as ffi;
 import 'frb_generated.dart';
+import 'method/download_provider.dart';
+import 'method/download_provider/add_download.dart';
+import 'method/download_provider/get_all_download.dart';
+import 'method/download_provider/get_download.dart';
+import 'method/download_provider/get_download_status.dart';
+import 'method/download_provider/set_download_status.dart';
 import 'method/favorite.dart';
 import 'method/favorite/add_category.dart';
 import 'method/favorite/delete_category.dart';
@@ -41,6 +47,7 @@ import 'method/torrent_provider/free_torrent_handle.dart';
 import 'method/torrent_provider/get_torrent_metadata.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_io.dart';
 import 'utils/settings.dart';
+import 'utils/torrent_provider/torrent_handle.dart';
 
 abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RustLibApiImplPlatform({
@@ -84,6 +91,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool dco_decode_bool(dynamic raw);
 
   @protected
+  DownloadItemKey dco_decode_box_autoadd_download_item_key(dynamic raw);
+
+  @protected
+  DownloadItemValue dco_decode_box_autoadd_download_item_value(dynamic raw);
+
+  @protected
+  DownloadStatus dco_decode_box_autoadd_download_status(dynamic raw);
+
+  @protected
   LastWatchTorrentInfo dco_decode_box_autoadd_last_watch_torrent_info(
       dynamic raw);
 
@@ -106,6 +122,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   CategoryOrderMap dco_decode_category_order_map(dynamic raw);
 
   @protected
+  DownloadItem dco_decode_download_item(dynamic raw);
+
+  @protected
+  DownloadItemKey dco_decode_download_item_key(dynamic raw);
+
+  @protected
+  DownloadItemValue dco_decode_download_item_value(dynamic raw);
+
+  @protected
+  DownloadStatus dco_decode_download_status(dynamic raw);
+
+  @protected
   EpisodeInfo dco_decode_episode_info(dynamic raw);
 
   @protected
@@ -121,6 +149,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   FileInfo dco_decode_file_info(dynamic raw);
 
   @protected
+  int dco_decode_i_32(dynamic raw);
+
+  @protected
   PlatformInt64 dco_decode_i_64(dynamic raw);
 
   @protected
@@ -131,6 +162,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<String> dco_decode_list_String(dynamic raw);
+
+  @protected
+  List<DownloadItem> dco_decode_list_download_item(dynamic raw);
 
   @protected
   List<EpisodeInfo> dco_decode_list_episode_info(dynamic raw);
@@ -179,6 +213,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String? dco_decode_opt_String(dynamic raw);
 
   @protected
+  DownloadItemValue? dco_decode_opt_box_autoadd_download_item_value(
+      dynamic raw);
+
+  @protected
+  DownloadStatus? dco_decode_opt_box_autoadd_download_status(dynamic raw);
+
+  @protected
   LastWatchTorrentInfo? dco_decode_opt_box_autoadd_last_watch_torrent_info(
       dynamic raw);
 
@@ -212,6 +253,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   SourceInfo dco_decode_source_info(dynamic raw);
+
+  @protected
+  TorrentHandleMode dco_decode_torrent_handle_mode(dynamic raw);
 
   @protected
   TorrentInfo dco_decode_torrent_info(dynamic raw);
@@ -273,6 +317,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool sse_decode_bool(SseDeserializer deserializer);
 
   @protected
+  DownloadItemKey sse_decode_box_autoadd_download_item_key(
+      SseDeserializer deserializer);
+
+  @protected
+  DownloadItemValue sse_decode_box_autoadd_download_item_value(
+      SseDeserializer deserializer);
+
+  @protected
+  DownloadStatus sse_decode_box_autoadd_download_status(
+      SseDeserializer deserializer);
+
+  @protected
   LastWatchTorrentInfo sse_decode_box_autoadd_last_watch_torrent_info(
       SseDeserializer deserializer);
 
@@ -295,6 +351,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   CategoryOrderMap sse_decode_category_order_map(SseDeserializer deserializer);
 
   @protected
+  DownloadItem sse_decode_download_item(SseDeserializer deserializer);
+
+  @protected
+  DownloadItemKey sse_decode_download_item_key(SseDeserializer deserializer);
+
+  @protected
+  DownloadItemValue sse_decode_download_item_value(
+      SseDeserializer deserializer);
+
+  @protected
+  DownloadStatus sse_decode_download_status(SseDeserializer deserializer);
+
+  @protected
   EpisodeInfo sse_decode_episode_info(SseDeserializer deserializer);
 
   @protected
@@ -311,6 +380,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   FileInfo sse_decode_file_info(SseDeserializer deserializer);
 
   @protected
+  int sse_decode_i_32(SseDeserializer deserializer);
+
+  @protected
   PlatformInt64 sse_decode_i_64(SseDeserializer deserializer);
 
   @protected
@@ -323,6 +395,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<String> sse_decode_list_String(SseDeserializer deserializer);
+
+  @protected
+  List<DownloadItem> sse_decode_list_download_item(
+      SseDeserializer deserializer);
 
   @protected
   List<EpisodeInfo> sse_decode_list_episode_info(SseDeserializer deserializer);
@@ -379,6 +455,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String? sse_decode_opt_String(SseDeserializer deserializer);
 
   @protected
+  DownloadItemValue? sse_decode_opt_box_autoadd_download_item_value(
+      SseDeserializer deserializer);
+
+  @protected
+  DownloadStatus? sse_decode_opt_box_autoadd_download_status(
+      SseDeserializer deserializer);
+
+  @protected
   LastWatchTorrentInfo? sse_decode_opt_box_autoadd_last_watch_torrent_info(
       SseDeserializer deserializer);
 
@@ -415,6 +499,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   SourceInfo sse_decode_source_info(SseDeserializer deserializer);
 
   @protected
+  TorrentHandleMode sse_decode_torrent_handle_mode(
+      SseDeserializer deserializer);
+
+  @protected
   TorrentInfo sse_decode_torrent_info(SseDeserializer deserializer);
 
   @protected
@@ -441,9 +529,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ViewContentInfo sse_decode_view_content_info(SseDeserializer deserializer);
-
-  @protected
-  int sse_decode_i_32(SseDeserializer deserializer);
 
   @protected
   void sse_encode_AnyhowException(
@@ -478,6 +563,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_bool(bool self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_download_item_key(
+      DownloadItemKey self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_download_item_value(
+      DownloadItemValue self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_download_status(
+      DownloadStatus self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_last_watch_torrent_info(
       LastWatchTorrentInfo self, SseSerializer serializer);
 
@@ -502,6 +599,21 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       CategoryOrderMap self, SseSerializer serializer);
 
   @protected
+  void sse_encode_download_item(DownloadItem self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_download_item_key(
+      DownloadItemKey self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_download_item_value(
+      DownloadItemValue self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_download_status(
+      DownloadStatus self, SseSerializer serializer);
+
+  @protected
   void sse_encode_episode_info(EpisodeInfo self, SseSerializer serializer);
 
   @protected
@@ -519,6 +631,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_file_info(FileInfo self, SseSerializer serializer);
 
   @protected
+  void sse_encode_i_32(int self, SseSerializer serializer);
+
+  @protected
   void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer);
 
   @protected
@@ -531,6 +646,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_list_String(List<String> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_download_item(
+      List<DownloadItem> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_episode_info(
@@ -591,6 +710,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_opt_String(String? self, SseSerializer serializer);
 
   @protected
+  void sse_encode_opt_box_autoadd_download_item_value(
+      DownloadItemValue? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_download_status(
+      DownloadStatus? self, SseSerializer serializer);
+
+  @protected
   void sse_encode_opt_box_autoadd_last_watch_torrent_info(
       LastWatchTorrentInfo? self, SseSerializer serializer);
 
@@ -629,6 +756,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_source_info(SourceInfo self, SseSerializer serializer);
 
   @protected
+  void sse_encode_torrent_handle_mode(
+      TorrentHandleMode self, SseSerializer serializer);
+
+  @protected
   void sse_encode_torrent_info(TorrentInfo self, SseSerializer serializer);
 
   @protected
@@ -657,9 +788,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_view_content_info(
       ViewContentInfo self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_i_32(int self, SseSerializer serializer);
 }
 
 // Section: wire_class

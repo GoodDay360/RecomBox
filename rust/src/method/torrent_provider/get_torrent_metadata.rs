@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use flutter_rust_bridge::frb;
 
-use crate::utils;
+
 use crate::utils::torrent_provider::get_torrent_metadata;
 
 #[frb(json_serializable)]

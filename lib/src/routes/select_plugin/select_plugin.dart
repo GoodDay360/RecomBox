@@ -5,6 +5,7 @@ import 'package:recombox/src/global/dialogs/install_plugin/install_plugin_dialog
 import 'package:recombox/src/global/types.dart';
 
 import 'package:recombox/src/global/widgets/title_bar.dart';
+import 'package:recombox/src/routes/select_file/select_file.dart';
 import 'package:recombox/src/routes/select_plugin/widgets/select_plugin_tile.dart';
 import 'package:recombox/src/routes/view/view.dart';
 import 'package:recombox/src/rust/method/metadata_provider/view_content.dart';
@@ -14,6 +15,7 @@ import 'dart:io';
 
 
 class SelectPluginScreenArguments {
+  SelectFileMode selectFileMode;
   Source source;
   String id;
   String externalID;
@@ -24,6 +26,7 @@ class SelectPluginScreenArguments {
 
 
   SelectPluginScreenArguments({
+    required this.selectFileMode,
     required this.source,
     required this.id,
     required this.externalID,
@@ -63,6 +66,7 @@ class _SelectPluginState extends State<SelectPluginScreen> {
       args = rawArgs is SelectPluginScreenArguments
           ? rawArgs
           : SelectPluginScreenArguments(
+              selectFileMode: SelectFileMode.watch,
               source: Source.movies,
               id: "%2F53906%2Fspider-man",
               externalID: "tt999",

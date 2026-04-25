@@ -14,6 +14,7 @@ import 'package:recombox/src/rust/method/plugin_provider/remove_plugin.dart';
 class SelectTorrentTile extends StatefulWidget {
   const SelectTorrentTile({
     super.key,
+    required this.selectFileMode,
     required this.viewID,
     required this.source,
     required this.externalID,
@@ -25,6 +26,7 @@ class SelectTorrentTile extends StatefulWidget {
 
   }); 
 
+  final SelectFileMode selectFileMode;
   final String viewID;
   final Source source;
   final String externalID;
@@ -55,6 +57,7 @@ class _SelectTorrentTileState extends State<SelectTorrentTile> {
       context, 
       "/select_file",
       arguments: SelectFileScreenArguments(
+        selectFileMode: widget.selectFileMode,
         viewID: widget.viewID, 
         source: widget.source,
         externalID: widget.externalID,

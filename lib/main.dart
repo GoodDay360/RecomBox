@@ -56,7 +56,7 @@ class App extends StatelessWidget {
 					},
 				),
 				debugShowCheckedModeBanner: false,
-				initialRoute: "/watch",
+				initialRoute: "/",
 				title: 'RecomBox',
 				routes: {
 						"/": (context) => const HomeScreen(),

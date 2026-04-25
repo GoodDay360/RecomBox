@@ -8,6 +8,7 @@ pub mod init;
 pub mod torrent_provider;
 pub mod metadata_provider;
 pub mod plugin_provider;
+pub mod download_provider;
 pub mod favorite;
 pub mod get_settings;
 

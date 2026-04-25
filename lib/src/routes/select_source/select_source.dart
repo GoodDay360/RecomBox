@@ -5,6 +5,7 @@ import 'package:recombox/src/global/dialogs/install_plugin/install_plugin_dialog
 import 'package:recombox/src/global/types.dart';
 
 import 'package:recombox/src/global/widgets/title_bar.dart';
+import 'package:recombox/src/routes/select_file/select_file.dart';
 import 'package:recombox/src/routes/select_plugin/select_plugin.dart';
 import 'package:recombox/src/routes/select_plugin/widgets/select_plugin_tile.dart';
 import 'package:recombox/src/routes/select_source/widgets/select_source_tile.dart';
@@ -60,6 +61,7 @@ class _SelectSourceState extends State<SelectSourceScreen> {
             : SelectSourceScreenArguments(
               pluginPath: "movies/8c8fb2b288439bcd9a71ff75051af9922162ba23b8a8ebd3db1dbe905cca00ee/2036011253247552227.js", 
               selectPluginScreenArguments: SelectPluginScreenArguments(
+                  selectFileMode: SelectFileMode.watch,
                   source: Source.movies,
                   id: "%2F53906%2Fspider-man",
                   externalID: "tt999",
@@ -307,6 +309,7 @@ class _SelectSourceState extends State<SelectSourceScreen> {
                               itemBuilder: (context, index) {
                                 return SelectSourceTile(
                                   key: ValueKey(sourceInfoList[index].id),
+                                  selectFileMode: args!.selectPluginScreenArguments.selectFileMode,
                                   viewID: args!.selectPluginScreenArguments.id,
                                   externalID: args!.selectPluginScreenArguments.externalID,
                                   title: args!.selectPluginScreenArguments.title,

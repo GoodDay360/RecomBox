@@ -17,12 +17,11 @@ use once_cell::sync::Lazy;
 use tokio::runtime::Runtime;
 use num_cpus;
 
-use crate::utils::torrent_provider::torrent_handle::TorrentHandle;
+use crate::utils::torrent_provider::torrent_handle::{TorrentHandle, TorrentHandleMode};
 use crate::utils::settings::Settings;
 
 #[derive(Deserialize, Serialize)]
 struct InputPayload {
-    handle_id: u64,
     torrent_source: String,
     mime_type: String,
     file_id: usize,
@@ -57,7 +56,7 @@ pub async fn new(req: HttpRequest, query: web::Query<InputPayload>) -> Result<Ht
         .join(query.episode.to_string());
 
     let torrent_handle_builder = TorrentHandle{
-        handle_id: query.handle_id.clone(),
+        torrent_handle_mode: TorrentHandleMode::Watch,
         torrent_source:  query.torrent_source.clone(),
         file_id:  query.file_id,
         output_dir: output_dir

@@ -23,6 +23,7 @@ import 'package:recombox/src/rust/method/torrent_provider/get_torrent_metadata.d
 
 
 class SelectFileScreenArguments {
+  SelectFileMode selectFileMode;
   String viewID;
   Source source;
   String externalID;
@@ -33,6 +34,7 @@ class SelectFileScreenArguments {
   BigInt episode;
 
   SelectFileScreenArguments({
+    required this.selectFileMode,
     required this.viewID,
     required this.source,
     required this.externalID,
@@ -44,6 +46,10 @@ class SelectFileScreenArguments {
   });
 }
 
+enum SelectFileMode {
+  watch,
+  download
+}
 
 
 class SelectFileScreen extends StatefulWidget {
@@ -80,6 +86,7 @@ class _SelectFileState extends State<SelectFileScreen> {
         args = rawArgs is SelectFileScreenArguments
             ? rawArgs
             : SelectFileScreenArguments(
+              selectFileMode: SelectFileMode.watch,
               viewID: "72673844%20spider",
               source: Source.tv,
               externalID: "tt999",
@@ -338,6 +345,7 @@ class _SelectFileState extends State<SelectFileScreen> {
                               itemBuilder: (context, index) {
                                 return SelectFileTile(
                                   key: ValueKey(filteredFileList[index].id),
+                                  selectFileMode: args!.selectFileMode,
                                   source: args!.source, 
                                   viewID: args!.viewID, 
                                   externalID: args!.externalID, 

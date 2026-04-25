@@ -27,7 +27,7 @@ impl TorrentSession {
 
 
         let segments_dir = cache_session_dir.join("default");
-        let dht_file = cache_session_dir.join("dht.json");
+        let dht_file = cache_session_dir.join("dht.dat");
 
         let dht_config = PersistentDhtConfig {
             dump_interval: Some(std::time::Duration::from_secs(60)),

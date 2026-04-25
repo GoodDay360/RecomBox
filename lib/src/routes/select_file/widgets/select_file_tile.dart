@@ -4,7 +4,10 @@ import 'package:mime/mime.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/dialogs/install_plugin/install_plugin_dialog.dart';
 import 'package:recombox/src/global/types.dart';
+import 'package:recombox/src/routes/select_file/select_file.dart';
 import 'package:recombox/src/routes/watch/watch.dart';
+import 'package:recombox/src/rust/method/download_provider.dart';
+import 'package:recombox/src/rust/method/download_provider/add_download.dart';
 import 'package:recombox/src/rust/method/favorite.dart';
 import 'package:recombox/src/rust/method/favorite/set_last_watch_torrent.dart';
 import 'package:recombox/src/rust/method/plugin_provider.dart';
@@ -19,6 +22,7 @@ import 'package:recombox/src/rust/method/torrent_provider/get_torrent_metadata.d
 class SelectFileTile extends StatefulWidget {
   const SelectFileTile({
     super.key,
+    required this.selectFileMode,
     required this.source,
     required this.viewID,
     required this.externalID,
@@ -30,6 +34,7 @@ class SelectFileTile extends StatefulWidget {
     required this.episode,
   }); 
 
+  final SelectFileMode selectFileMode;
   final Source source;
   final String viewID;
   final String externalID;
@@ -40,11 +45,10 @@ class SelectFileTile extends StatefulWidget {
   final BigInt season;
   final BigInt episode;
 
-
-
   @override
   State<SelectFileTile> createState() => _SelectFileTileState();
 }
+
 
 class _SelectFileTileState extends State<SelectFileTile> {
 
@@ -56,44 +60,68 @@ class _SelectFileTileState extends State<SelectFileTile> {
     
   }
 
-  Future<void> onNavigate() async {
-    final mimeType = lookupMimeType(widget.fileInfo.path??"")??"application/octet-stream";
+  Future<void> onSelectFile() async {
+    final ctx = context;
+    if (widget.selectFileMode == SelectFileMode.watch){
+      final mimeType = lookupMimeType(widget.fileInfo.path??"")??"application/octet-stream";
 
-    try{
-      await setLastWatchTorrent(
-        source: widget.source.name, 
-        id: widget.viewID, 
-        seasonIndex: widget.season, 
-        episodeIndex: widget.episode, 
-        lastWatchTorrentInfo: LastWatchTorrentInfo(
-          torrentSource: widget.torrentSource, 
-          mimeType: mimeType,
-          fileId: widget.fileInfo.id
-        )
+      try{
+        await setLastWatchTorrent(
+          source: widget.source.name, 
+          id: widget.viewID, 
+          seasonIndex: widget.season, 
+          episodeIndex: widget.episode, 
+          lastWatchTorrentInfo: LastWatchTorrentInfo(
+            torrentSource: widget.torrentSource, 
+            mimeType: mimeType,
+            fileId: widget.fileInfo.id
+          )
+        );
+      }catch(e){
+        debugPrint(e.toString());
+      }
+
+      WatchScreenArguments watchScreenArgs = WatchScreenArguments(
+        selectFileMode: widget.selectFileMode,
+        viewID: widget.viewID,
+        source: widget.source,
+        externalID: widget.externalID,
+        title: widget.title,
+        titleSecondary: widget.titleSecondary,
+        mimeType: mimeType,
+        torrentSource: widget.torrentSource,
+        fileID: widget.fileInfo.id,
+        season: widget.season,
+        episode: widget.episode
       );
-    }catch(e){
-      debugPrint(e.toString());
+
+      if (ctx.mounted){
+        Navigator.pushNamed(
+          ctx,
+          '/watch',
+          arguments: watchScreenArgs,
+        );
+      }
+    }else if (widget.selectFileMode == SelectFileMode.download){
+      try{
+        await addDownload(
+          downloadItemKey: DownloadItemKey(
+            source: widget.source.name, 
+            id: widget.viewID, 
+            seasonIndex: widget.season, 
+            episodeIndex: widget.season
+          ), 
+          downloadItemValue: DownloadItemValue(
+            torrentSource: widget.torrentSource, 
+            fileId: widget.fileInfo.id, 
+            filePath: widget.fileInfo.path!
+          )
+        );
+        
+      }catch(e){
+        debugPrint(e.toString());
+      }
     }
-
-    WatchScreenArguments watchScreenArgs = WatchScreenArguments(
-      viewID: widget.viewID,
-      source: widget.source,
-      externalID: widget.externalID,
-      title: widget.title,
-      titleSecondary: widget.titleSecondary,
-      mimeType: mimeType,
-      torrentSource: widget.torrentSource,
-      fileID: widget.fileInfo.id,
-      season: widget.season,
-      episode: widget.episode
-    );
-
-    Navigator.pushNamed(
-      context,
-      '/watch',
-      arguments: watchScreenArgs,
-    );
-    
   }
 
   @override
@@ -102,7 +130,7 @@ class _SelectFileTileState extends State<SelectFileTile> {
       color: Colors.transparent,
       child: InkWell(
         mouseCursor: SystemMouseCursors.click,
-        onTap: onNavigate,
+        onTap: onSelectFile,
         child: Container(
           padding: EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 10),
           child: Row(
