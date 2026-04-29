@@ -59,7 +59,7 @@ impl TorrentSession {
             .map_err(|e| anyhow::Error::msg(e.to_string()))?
             .clone();
 
-        println!("TAKING SESSION");
+
         match guard {
             Some(session) => {
                 let is_cancelled = session.cancellation_token().is_cancelled();
@@ -69,7 +69,6 @@ impl TorrentSession {
                         .map_err(|e| anyhow::Error::msg(e.to_string()))?;
                     return Ok(new_session);
                 }
-                println!("FREE SESSION");
                 return Ok(session.clone())
             },
             None => {

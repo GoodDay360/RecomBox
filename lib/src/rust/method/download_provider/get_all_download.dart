@@ -4,8 +4,35 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../../frb_generated.dart';
-import '../download_provider.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
+part 'get_all_download.freezed.dart';
+part 'get_all_download.g.dart';
 
-Future<List<DownloadItem>> getAllDownload() => RustLib.instance.api
-    .crateMethodDownloadProviderGetAllDownloadGetAllDownload();
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_receiver_is_total_eq`, `assert_receiver_is_total_eq`, `clone`, `clone`, `eq`, `eq`, `fmt`, `fmt`, `hash`, `hash`
+
+Future<Map<AllDownloadItemKey, List<AllDownloadItemValue>>> getAllDownload() =>
+    RustLib.instance.api
+        .crateMethodDownloadProviderGetAllDownloadGetAllDownload();
+
+@freezed
+sealed class AllDownloadItemKey with _$AllDownloadItemKey {
+  const factory AllDownloadItemKey({
+    required String source,
+    required String id,
+  }) = _AllDownloadItemKey;
+
+  factory AllDownloadItemKey.fromJson(Map<String, dynamic> json) =>
+      _$AllDownloadItemKeyFromJson(json);
+}
+
+@freezed
+sealed class AllDownloadItemValue with _$AllDownloadItemValue {
+  const factory AllDownloadItemValue({
+    required BigInt seasonIndex,
+    required BigInt episodeIndex,
+  }) = _AllDownloadItemValue;
+
+  factory AllDownloadItemValue.fromJson(Map<String, dynamic> json) =>
+      _$AllDownloadItemValueFromJson(json);
+}

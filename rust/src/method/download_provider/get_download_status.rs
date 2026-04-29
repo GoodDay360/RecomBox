@@ -4,7 +4,7 @@ use serde_json::from_slice;
 use super::{get_db, DOWNLOAD_STATUS_TABLE, DownloadItemKey, DownloadStatus};
 
 pub async fn get_download_status(
-    download_item_key: DownloadItemKey,
+    download_item_key: &DownloadItemKey,
 ) -> Result<Option<DownloadStatus>, String> {
     let db = get_db()?;
     let read_txn = db.begin_read().map_err(|e| e.to_string())?;
@@ -14,8 +14,8 @@ pub async fn get_download_status(
 
     // Encode the key as an array (same style as add_download)
     let encoded_key = serde_json::to_vec(&[
-        download_item_key.source,
-        download_item_key.id,
+        download_item_key.source.clone(),
+        download_item_key.id.clone(),
         download_item_key.season_index.to_string(),
         download_item_key.episode_index.to_string(),
     ])

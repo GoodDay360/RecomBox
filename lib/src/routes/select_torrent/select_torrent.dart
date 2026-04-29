@@ -193,7 +193,7 @@ class _SelectTorrentState extends State<SelectTorrentScreen> {
                               ),
                             ),
                             Text(
-                              'Select Torrent',
+                              'Select Torrent [Mode: ${args!.selectFileMode.name}]',
                               style: GoogleFonts.nunito(
                                 color: appColors.textPrimary,
                                 fontSize: 28,

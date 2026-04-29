@@ -39,7 +39,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.12.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -216228156;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 39966045;
 
 // Section: executor
 
@@ -119,8 +119,8 @@ fn wire__crate__method__download_provider__add_download__add_download_impl(
                     (move || async move {
                         let output_ok =
                             crate::method::download_provider::add_download::add_download(
-                                api_download_item_key,
-                                api_download_item_value,
+                                &api_download_item_key,
+                                &api_download_item_value,
                             )
                             .await?;
                         Ok(output_ok)
@@ -225,7 +225,7 @@ fn wire__crate__method__torrent_provider__free_torrent_handle__free_torrent_hand
 let api_torrent_source = <String>::sse_decode(&mut deserializer);
 let api_delete_files = <bool>::sse_decode(&mut deserializer);deserializer.end(); move |context| async move {
                     transform_result_sse::<_, String>((move || async move {
-                         let output_ok = crate::method::torrent_provider::free_torrent_handle::free_torrent_handle(api_torrent_handle_mode, &api_torrent_source, api_delete_files).await?;   Ok(output_ok)
+                         let output_ok = crate::method::torrent_provider::free_torrent_handle::free_torrent_handle(&api_torrent_handle_mode, &api_torrent_source, api_delete_files).await?;   Ok(output_ok)
                     })().await)
                 } })
 }
@@ -491,7 +491,7 @@ fn wire__crate__method__download_provider__get_download_status__get_download_sta
             let mut deserializer = flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_download_item_key = <crate::method::download_provider::DownloadItemKey>::sse_decode(&mut deserializer);deserializer.end(); move |context| async move {
                     transform_result_sse::<_, String>((move || async move {
-                         let output_ok = crate::method::download_provider::get_download_status::get_download_status(api_download_item_key).await?;   Ok(output_ok)
+                         let output_ok = crate::method::download_provider::get_download_status::get_download_status(&api_download_item_key).await?;   Ok(output_ok)
                     })().await)
                 } })
 }
@@ -943,6 +943,47 @@ fn wire__crate__method__favorite__is_in_category__is_in_category_impl(
         },
     )
 }
+fn wire__crate__method__download_provider__remove_download__remove_download_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "remove_download",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_download_item_key =
+                <crate::method::download_provider::DownloadItemKey>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, String>(
+                    (move || async move {
+                        let output_ok =
+                            crate::method::download_provider::remove_download::remove_download(
+                                &api_download_item_key,
+                            )
+                            .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__method__plugin_provider__remove_plugin__remove_plugins_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1126,9 +1167,10 @@ fn wire__crate__method__download_provider__set_download_status__set_download_sta
             let message = unsafe { flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(ptr_, rust_vec_len_, data_len_) };
             let mut deserializer = flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_download_item_key = <crate::method::download_provider::DownloadItemKey>::sse_decode(&mut deserializer);
-let api_download_status = <crate::method::download_provider::DownloadStatus>::sse_decode(&mut deserializer);deserializer.end(); move |context| async move {
+let api_download_status = <crate::method::download_provider::DownloadStatus>::sse_decode(&mut deserializer);
+let api_apply_progress = <bool>::sse_decode(&mut deserializer);deserializer.end(); move |context| async move {
                     transform_result_sse::<_, String>((move || async move {
-                         let output_ok = crate::method::download_provider::set_download_status::set_download_status(api_download_item_key, api_download_status).await?;   Ok(output_ok)
+                         let output_ok = crate::method::download_provider::set_download_status::set_download_status(&api_download_item_key, &api_download_status, api_apply_progress).await?;   Ok(output_ok)
                     })().await)
                 } })
 }
@@ -1383,6 +1425,22 @@ impl SseDecode
     }
 }
 
+impl SseDecode
+    for std::collections::HashMap<
+        crate::method::download_provider::get_all_download::AllDownloadItemKey,
+        Vec<crate::method::download_provider::get_all_download::AllDownloadItemValue>,
+    >
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <Vec<(
+            crate::method::download_provider::get_all_download::AllDownloadItemKey,
+            Vec<crate::method::download_provider::get_all_download::AllDownloadItemValue>,
+        )>>::sse_decode(deserializer);
+        return inner.into_iter().collect();
+    }
+}
+
 impl SseDecode for std::collections::HashMap<u64, String> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1417,6 +1475,30 @@ impl SseDecode for String {
     }
 }
 
+impl SseDecode for crate::method::download_provider::get_all_download::AllDownloadItemKey {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_source = <String>::sse_decode(deserializer);
+        let mut var_id = <String>::sse_decode(deserializer);
+        return crate::method::download_provider::get_all_download::AllDownloadItemKey {
+            source: var_source,
+            id: var_id,
+        };
+    }
+}
+
+impl SseDecode for crate::method::download_provider::get_all_download::AllDownloadItemValue {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_seasonIndex = <u64>::sse_decode(deserializer);
+        let mut var_episodeIndex = <u64>::sse_decode(deserializer);
+        return crate::method::download_provider::get_all_download::AllDownloadItemValue {
+            season_index: var_seasonIndex,
+            episode_index: var_episodeIndex,
+        };
+    }
+}
+
 impl SseDecode for bool {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1437,17 +1519,6 @@ impl SseDecode for crate::method::favorite::CategoryOrderMap {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_field0 = <std::collections::HashMap<u64, u64>>::sse_decode(deserializer);
         return crate::method::favorite::CategoryOrderMap(var_field0);
-    }
-}
-
-impl SseDecode for crate::method::download_provider::DownloadItem {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_field0 =
-            <crate::method::download_provider::DownloadItemKey>::sse_decode(deserializer);
-        let mut var_field1 =
-            <crate::method::download_provider::DownloadItemValue>::sse_decode(deserializer);
-        return crate::method::download_provider::DownloadItem(var_field0, var_field1);
     }
 }
 
@@ -1628,13 +1699,13 @@ impl SseDecode for Vec<String> {
     }
 }
 
-impl SseDecode for Vec<crate::method::download_provider::DownloadItem> {
+impl SseDecode for Vec<crate::method::download_provider::get_all_download::AllDownloadItemValue> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut len_ = <i32>::sse_decode(deserializer);
         let mut ans_ = Vec::with_capacity(len_ as usize);
         for idx_ in 0..len_ {
-            ans_.push(<crate::method::download_provider::DownloadItem>::sse_decode(deserializer));
+            ans_.push(<crate::method::download_provider::get_all_download::AllDownloadItemValue>::sse_decode(deserializer));
         }
         return ans_;
     }
@@ -1733,6 +1804,26 @@ impl SseDecode for Vec<u8> {
         let mut ans_ = Vec::with_capacity(len_ as usize);
         for idx_ in 0..len_ {
             ans_.push(<u8>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode
+    for Vec<(
+        crate::method::download_provider::get_all_download::AllDownloadItemKey,
+        Vec<crate::method::download_provider::get_all_download::AllDownloadItemValue>,
+    )>
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<(
+                crate::method::download_provider::get_all_download::AllDownloadItemKey,
+                Vec<crate::method::download_provider::get_all_download::AllDownloadItemValue>,
+            )>::sse_decode(deserializer));
         }
         return ans_;
     }
@@ -1943,6 +2034,25 @@ impl SseDecode for crate::method::plugin_provider::PluginInfo {
             plugin_repo_url: var_pluginRepoUrl,
             plugin_icon_url: var_pluginIconUrl,
         };
+    }
+}
+
+impl SseDecode
+    for (
+        crate::method::download_provider::get_all_download::AllDownloadItemKey,
+        Vec<crate::method::download_provider::get_all_download::AllDownloadItemValue>,
+    )
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_field0 =
+            <crate::method::download_provider::get_all_download::AllDownloadItemKey>::sse_decode(
+                deserializer,
+            );
+        let mut var_field1 = <Vec<
+            crate::method::download_provider::get_all_download::AllDownloadItemValue,
+        >>::sse_decode(deserializer);
+        return (var_field0, var_field1);
     }
 }
 
@@ -2194,17 +2304,18 @@ fn pde_ffi_dispatcher_primary_impl(
 25 => wire__crate__method__init__init_worker__init_worker_impl(port, ptr, rust_vec_len, data_len),
 26 => wire__crate__method__plugin_provider__install_plugin__install_plugin_impl(port, ptr, rust_vec_len, data_len),
 27 => wire__crate__method__favorite__is_in_category__is_in_category_impl(port, ptr, rust_vec_len, data_len),
-28 => wire__crate__method__plugin_provider__remove_plugin__remove_plugins_impl(port, ptr, rust_vec_len, data_len),
-29 => wire__crate__method__favorite__rename_category__rename_category_impl(port, ptr, rust_vec_len, data_len),
-30 => wire__crate__method__metadata_provider__search_content__search_content_impl(port, ptr, rust_vec_len, data_len),
-31 => wire__crate__method__favorite__set_category__set_category_impl(port, ptr, rust_vec_len, data_len),
-32 => wire__crate__method__download_provider__set_download_status__set_download_status_impl(port, ptr, rust_vec_len, data_len),
-33 => wire__crate__method__favorite__set_last_watch_torrent__set_last_watch_torrent_impl(port, ptr, rust_vec_len, data_len),
-34 => wire__crate__method__favorite__swap_category_order__swap_category_order_impl(port, ptr, rust_vec_len, data_len),
-35 => wire__crate__method__metadata_provider__trending_content__trending_content_impl(port, ptr, rust_vec_len, data_len),
-36 => wire__crate__method__favorite__unset_category__unset_category_impl(port, ptr, rust_vec_len, data_len),
-37 => wire__crate__method__metadata_provider__view_content__view_content_info_get_impl(port, ptr, rust_vec_len, data_len),
-38 => wire__crate__method__metadata_provider__view_content__view_content_info_update_last_watch_impl(port, ptr, rust_vec_len, data_len),
+28 => wire__crate__method__download_provider__remove_download__remove_download_impl(port, ptr, rust_vec_len, data_len),
+29 => wire__crate__method__plugin_provider__remove_plugin__remove_plugins_impl(port, ptr, rust_vec_len, data_len),
+30 => wire__crate__method__favorite__rename_category__rename_category_impl(port, ptr, rust_vec_len, data_len),
+31 => wire__crate__method__metadata_provider__search_content__search_content_impl(port, ptr, rust_vec_len, data_len),
+32 => wire__crate__method__favorite__set_category__set_category_impl(port, ptr, rust_vec_len, data_len),
+33 => wire__crate__method__download_provider__set_download_status__set_download_status_impl(port, ptr, rust_vec_len, data_len),
+34 => wire__crate__method__favorite__set_last_watch_torrent__set_last_watch_torrent_impl(port, ptr, rust_vec_len, data_len),
+35 => wire__crate__method__favorite__swap_category_order__swap_category_order_impl(port, ptr, rust_vec_len, data_len),
+36 => wire__crate__method__metadata_provider__trending_content__trending_content_impl(port, ptr, rust_vec_len, data_len),
+37 => wire__crate__method__favorite__unset_category__unset_category_impl(port, ptr, rust_vec_len, data_len),
+38 => wire__crate__method__metadata_provider__view_content__view_content_info_get_impl(port, ptr, rust_vec_len, data_len),
+39 => wire__crate__method__metadata_provider__view_content__view_content_info_update_last_watch_impl(port, ptr, rust_vec_len, data_len),
                         _ => unreachable!(),
                     }
 }
@@ -2239,6 +2350,60 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<Arc<Database>>> for Arc<Databa
 }
 
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for crate::method::download_provider::get_all_download::AllDownloadItemKey
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.source.into_into_dart().into_dart(),
+            self.id.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::method::download_provider::get_all_download::AllDownloadItemKey
+{
+}
+impl
+    flutter_rust_bridge::IntoIntoDart<
+        crate::method::download_provider::get_all_download::AllDownloadItemKey,
+    > for crate::method::download_provider::get_all_download::AllDownloadItemKey
+{
+    fn into_into_dart(
+        self,
+    ) -> crate::method::download_provider::get_all_download::AllDownloadItemKey {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for crate::method::download_provider::get_all_download::AllDownloadItemValue
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.season_index.into_into_dart().into_dart(),
+            self.episode_index.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::method::download_provider::get_all_download::AllDownloadItemValue
+{
+}
+impl
+    flutter_rust_bridge::IntoIntoDart<
+        crate::method::download_provider::get_all_download::AllDownloadItemValue,
+    > for crate::method::download_provider::get_all_download::AllDownloadItemValue
+{
+    fn into_into_dart(
+        self,
+    ) -> crate::method::download_provider::get_all_download::AllDownloadItemValue {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::method::favorite::CategoryMap {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [self.0.into_into_dart().into_dart()].into_dart()
@@ -2269,27 +2434,6 @@ impl flutter_rust_bridge::IntoIntoDart<crate::method::favorite::CategoryOrderMap
     for crate::method::favorite::CategoryOrderMap
 {
     fn into_into_dart(self) -> crate::method::favorite::CategoryOrderMap {
-        self
-    }
-}
-// Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for crate::method::download_provider::DownloadItem {
-    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        [
-            self.0.into_into_dart().into_dart(),
-            self.1.into_into_dart().into_dart(),
-        ]
-        .into_dart()
-    }
-}
-impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for crate::method::download_provider::DownloadItem
-{
-}
-impl flutter_rust_bridge::IntoIntoDart<crate::method::download_provider::DownloadItem>
-    for crate::method::download_provider::DownloadItem
-{
-    fn into_into_dart(self) -> crate::method::download_provider::DownloadItem {
         self
     }
 }
@@ -2805,6 +2949,21 @@ impl SseEncode
     }
 }
 
+impl SseEncode
+    for std::collections::HashMap<
+        crate::method::download_provider::get_all_download::AllDownloadItemKey,
+        Vec<crate::method::download_provider::get_all_download::AllDownloadItemValue>,
+    >
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<(
+            crate::method::download_provider::get_all_download::AllDownloadItemKey,
+            Vec<crate::method::download_provider::get_all_download::AllDownloadItemValue>,
+        )>>::sse_encode(self.into_iter().collect(), serializer);
+    }
+}
+
 impl SseEncode for std::collections::HashMap<u64, String> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2837,6 +2996,22 @@ impl SseEncode for String {
     }
 }
 
+impl SseEncode for crate::method::download_provider::get_all_download::AllDownloadItemKey {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.source, serializer);
+        <String>::sse_encode(self.id, serializer);
+    }
+}
+
+impl SseEncode for crate::method::download_provider::get_all_download::AllDownloadItemValue {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <u64>::sse_encode(self.season_index, serializer);
+        <u64>::sse_encode(self.episode_index, serializer);
+    }
+}
+
 impl SseEncode for bool {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2855,14 +3030,6 @@ impl SseEncode for crate::method::favorite::CategoryOrderMap {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <std::collections::HashMap<u64, u64>>::sse_encode(self.0, serializer);
-    }
-}
-
-impl SseEncode for crate::method::download_provider::DownloadItem {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <crate::method::download_provider::DownloadItemKey>::sse_encode(self.0, serializer);
-        <crate::method::download_provider::DownloadItemValue>::sse_encode(self.1, serializer);
     }
 }
 
@@ -2987,12 +3154,14 @@ impl SseEncode for Vec<String> {
     }
 }
 
-impl SseEncode for Vec<crate::method::download_provider::DownloadItem> {
+impl SseEncode for Vec<crate::method::download_provider::get_all_download::AllDownloadItemValue> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
-            <crate::method::download_provider::DownloadItem>::sse_encode(item, serializer);
+            <crate::method::download_provider::get_all_download::AllDownloadItemValue>::sse_encode(
+                item, serializer,
+            );
         }
     }
 }
@@ -3071,6 +3240,24 @@ impl SseEncode for Vec<u8> {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
             <u8>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode
+    for Vec<(
+        crate::method::download_provider::get_all_download::AllDownloadItemKey,
+        Vec<crate::method::download_provider::get_all_download::AllDownloadItemValue>,
+    )>
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <(
+                crate::method::download_provider::get_all_download::AllDownloadItemKey,
+                Vec<crate::method::download_provider::get_all_download::AllDownloadItemValue>,
+            )>::sse_encode(item, serializer);
         }
     }
 }
@@ -3237,6 +3424,23 @@ impl SseEncode for crate::method::plugin_provider::PluginInfo {
         <String>::sse_encode(self.plugin_name, serializer);
         <String>::sse_encode(self.plugin_repo_url, serializer);
         <String>::sse_encode(self.plugin_icon_url, serializer);
+    }
+}
+
+impl SseEncode
+    for (
+        crate::method::download_provider::get_all_download::AllDownloadItemKey,
+        Vec<crate::method::download_provider::get_all_download::AllDownloadItemValue>,
+    )
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <crate::method::download_provider::get_all_download::AllDownloadItemKey>::sse_encode(
+            self.0, serializer,
+        );
+        <Vec<crate::method::download_provider::get_all_download::AllDownloadItemValue>>::sse_encode(
+            self.1, serializer,
+        );
     }
 }
 

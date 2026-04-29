@@ -1,18 +1,42 @@
 use redb::{ReadableDatabase, ReadableTable};
 use serde_json::from_slice;
+use std::{collections::HashMap, ops::{Deref, DerefMut}};
+use flutter_rust_bridge::frb;
+use serde::{Deserialize, Serialize};
 
-use super::{get_db, DOWNLOAD_TABLE, DownloadItem, DownloadItemKey, DownloadItemValue};
 
-pub async fn get_all_download() -> Result<Vec<DownloadItem>, String> {
+use super::{get_db, DOWNLOAD_TABLE};
+
+
+
+#[frb(json_serializable)]
+#[derive(Debug, Serialize, Deserialize, Eq, PartialEq, Hash, Clone)]
+pub struct AllDownloadItemKey{
+    pub source: String,
+    pub id: String,
+    
+}
+
+#[frb(json_serializable)]
+#[derive(Debug, Serialize, Deserialize, Eq, PartialEq, Hash, Clone)]
+pub struct AllDownloadItemValue{
+    pub season_index: u64,
+    pub episode_index: u64,
+}
+
+
+
+pub async fn get_all_download() -> Result<HashMap<AllDownloadItemKey,Vec<AllDownloadItemValue>>, String> {
     let db = get_db()?;
     let read_txn = db.begin_read().map_err(|e| e.to_string())?;
 
     let table = read_txn.open_table(DOWNLOAD_TABLE)
         .map_err(|e| e.to_string())?;
 
-    let mut results = Vec::new();
+    let mut result: HashMap<AllDownloadItemKey, Vec<AllDownloadItemValue>> = HashMap::new();
 
     for entry in table.iter().map_err(|e| e.to_string())? {
+        
         let (key_bytes, value_bytes) = entry.map_err(|e| e.to_string())?;
 
         // Decode key array back into struct
@@ -21,31 +45,25 @@ pub async fn get_all_download() -> Result<Vec<DownloadItem>, String> {
         if key_parts.len() != 4 {
             return Err("Invalid key format".into());
         }
-        let key = DownloadItemKey {
+        let key = AllDownloadItemKey {
             source: key_parts[0].clone(),
             id: key_parts[1].clone(),
-            season_index: key_parts[2]
-                .parse::<u64>()
-                .map_err(|e| e.to_string())?,
-            episode_index: key_parts[3]
-                .parse::<u64>()
-                .map_err(|e| e.to_string())?,
         };
 
-        // Decode value array back into struct
-        let value_parts: Vec<String> = from_slice(value_bytes.value())
-            .map_err(|e| e.to_string())?;
-        if value_parts.len() != 3 {
-            return Err("Invalid value format".into());
-        }
-        let value = DownloadItemValue {
-            torrent_source: value_parts[0].clone(),
-            file_id: value_parts[1].parse::<u64>().map_err(|e| e.to_string())?,
-            file_path: value_parts[2].clone(),
+        let value = AllDownloadItemValue {
+            season_index: key_parts[2].parse::<u64>().map_err(|e| e.to_string())?,
+            episode_index: key_parts[3].parse::<u64>().map_err(|e| e.to_string())?,
         };
 
-        results.push(DownloadItem(key, value));
+        let mut current_value = match result.get_mut(&key){
+            Some(v) => v.clone(),
+            None => {
+                vec![]
+            }
+        };
+        current_value.push(value);
+        result.insert(key, current_value.to_vec());
     }
 
-    Ok(results)
+    Ok(result)
 }

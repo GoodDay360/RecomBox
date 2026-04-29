@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:recombox/src/global/init_app.dart';
+import 'package:recombox/src/routes/download/download.dart';
 import 'package:recombox/src/routes/edit_category/edit_category.dart';
 import 'package:recombox/src/routes/favorite/favorite.dart';
 import 'package:recombox/src/routes/search/search.dart';
@@ -56,7 +57,7 @@ class App extends StatelessWidget {
 					},
 				),
 				debugShowCheckedModeBanner: false,
-				initialRoute: "/",
+				initialRoute: "/download",
 				title: 'RecomBox',
 				routes: {
 						"/": (context) => const HomeScreen(),
@@ -69,6 +70,7 @@ class App extends StatelessWidget {
 						"/select_file": (context) => const SelectFileScreen(),
 						"/watch": (context) => const WatchScreen(),
 						"/favorite": (context) => const FavoriteScreen(),
+            "/download": (context) => const DownloadScreen(),
 					},
 				);
 			}

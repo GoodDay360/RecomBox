@@ -12,6 +12,7 @@ import 'method/download_provider/add_download.dart';
 import 'method/download_provider/get_all_download.dart';
 import 'method/download_provider/get_download.dart';
 import 'method/download_provider/get_download_status.dart';
+import 'method/download_provider/remove_download.dart';
 import 'method/download_provider/set_download_status.dart';
 import 'method/favorite.dart';
 import 'method/favorite/add_category.dart';
@@ -74,6 +75,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dco_decode_Map_String_installed_plugin_info_None(dynamic raw);
 
   @protected
+  Map<AllDownloadItemKey, List<AllDownloadItemValue>>
+      dco_decode_Map_all_download_item_key_list_all_download_item_value_None(
+          dynamic raw);
+
+  @protected
   Map<BigInt, String> dco_decode_Map_u_64_String_None(dynamic raw);
 
   @protected
@@ -86,6 +92,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   String dco_decode_String(dynamic raw);
+
+  @protected
+  AllDownloadItemKey dco_decode_all_download_item_key(dynamic raw);
+
+  @protected
+  AllDownloadItemValue dco_decode_all_download_item_value(dynamic raw);
 
   @protected
   bool dco_decode_bool(dynamic raw);
@@ -120,9 +132,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   CategoryOrderMap dco_decode_category_order_map(dynamic raw);
-
-  @protected
-  DownloadItem dco_decode_download_item(dynamic raw);
 
   @protected
   DownloadItemKey dco_decode_download_item_key(dynamic raw);
@@ -164,7 +173,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<String> dco_decode_list_String(dynamic raw);
 
   @protected
-  List<DownloadItem> dco_decode_list_download_item(dynamic raw);
+  List<AllDownloadItemValue> dco_decode_list_all_download_item_value(
+      dynamic raw);
 
   @protected
   List<EpisodeInfo> dco_decode_list_episode_info(dynamic raw);
@@ -186,6 +196,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
+
+  @protected
+  List<(AllDownloadItemKey, List<AllDownloadItemValue>)>
+      dco_decode_list_record_all_download_item_key_list_all_download_item_value(
+          dynamic raw);
 
   @protected
   List<(String, InstalledPluginInfo)>
@@ -234,6 +249,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PluginInfo dco_decode_plugin_info(dynamic raw);
+
+  @protected
+  (AllDownloadItemKey, List<AllDownloadItemValue>)
+      dco_decode_record_all_download_item_key_list_all_download_item_value(
+          dynamic raw);
 
   @protected
   (String, InstalledPluginInfo) dco_decode_record_string_installed_plugin_info(
@@ -298,6 +318,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
+  Map<AllDownloadItemKey, List<AllDownloadItemValue>>
+      sse_decode_Map_all_download_item_key_list_all_download_item_value_None(
+          SseDeserializer deserializer);
+
+  @protected
   Map<BigInt, String> sse_decode_Map_u_64_String_None(
       SseDeserializer deserializer);
 
@@ -312,6 +337,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   String sse_decode_String(SseDeserializer deserializer);
+
+  @protected
+  AllDownloadItemKey sse_decode_all_download_item_key(
+      SseDeserializer deserializer);
+
+  @protected
+  AllDownloadItemValue sse_decode_all_download_item_value(
+      SseDeserializer deserializer);
 
   @protected
   bool sse_decode_bool(SseDeserializer deserializer);
@@ -349,9 +382,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   CategoryOrderMap sse_decode_category_order_map(SseDeserializer deserializer);
-
-  @protected
-  DownloadItem sse_decode_download_item(SseDeserializer deserializer);
 
   @protected
   DownloadItemKey sse_decode_download_item_key(SseDeserializer deserializer);
@@ -397,7 +427,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<String> sse_decode_list_String(SseDeserializer deserializer);
 
   @protected
-  List<DownloadItem> sse_decode_list_download_item(
+  List<AllDownloadItemValue> sse_decode_list_all_download_item_value(
       SseDeserializer deserializer);
 
   @protected
@@ -423,6 +453,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
+
+  @protected
+  List<(AllDownloadItemKey, List<AllDownloadItemValue>)>
+      sse_decode_list_record_all_download_item_key_list_all_download_item_value(
+          SseDeserializer deserializer);
 
   @protected
   List<(String, InstalledPluginInfo)>
@@ -477,6 +512,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PluginInfo sse_decode_plugin_info(SseDeserializer deserializer);
+
+  @protected
+  (AllDownloadItemKey, List<AllDownloadItemValue>)
+      sse_decode_record_all_download_item_key_list_all_download_item_value(
+          SseDeserializer deserializer);
 
   @protected
   (String, InstalledPluginInfo) sse_decode_record_string_installed_plugin_info(
@@ -544,6 +584,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       Map<String, InstalledPluginInfo> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_Map_all_download_item_key_list_all_download_item_value_None(
+      Map<AllDownloadItemKey, List<AllDownloadItemValue>> self,
+      SseSerializer serializer);
+
+  @protected
   void sse_encode_Map_u_64_String_None(
       Map<BigInt, String> self, SseSerializer serializer);
 
@@ -558,6 +603,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_String(String self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_all_download_item_key(
+      AllDownloadItemKey self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_all_download_item_value(
+      AllDownloadItemValue self, SseSerializer serializer);
 
   @protected
   void sse_encode_bool(bool self, SseSerializer serializer);
@@ -597,9 +650,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_category_order_map(
       CategoryOrderMap self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_download_item(DownloadItem self, SseSerializer serializer);
 
   @protected
   void sse_encode_download_item_key(
@@ -648,8 +698,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_list_String(List<String> self, SseSerializer serializer);
 
   @protected
-  void sse_encode_list_download_item(
-      List<DownloadItem> self, SseSerializer serializer);
+  void sse_encode_list_all_download_item_value(
+      List<AllDownloadItemValue> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_episode_info(
@@ -677,6 +727,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_list_prim_u_8_strict(
       Uint8List self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_list_record_all_download_item_key_list_all_download_item_value(
+          List<(AllDownloadItemKey, List<AllDownloadItemValue>)> self,
+          SseSerializer serializer);
 
   @protected
   void sse_encode_list_record_string_installed_plugin_info(
@@ -732,6 +788,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_plugin_info(PluginInfo self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_record_all_download_item_key_list_all_download_item_value(
+      (AllDownloadItemKey, List<AllDownloadItemValue>) self,
+      SseSerializer serializer);
 
   @protected
   void sse_encode_record_string_installed_plugin_info(

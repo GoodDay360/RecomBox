@@ -53,7 +53,7 @@ class _SelectPluginState extends State<SelectPluginScreen> {
   final TextEditingController _textEditingController = TextEditingController(text: '');
   FocusNode searchFocus = FocusNode();
 
-  late SelectPluginScreenArguments args;
+  SelectPluginScreenArguments? args;
   
   @override
   void initState() {
@@ -95,7 +95,7 @@ class _SelectPluginState extends State<SelectPluginScreen> {
 
   Future<void> initSelectPlugin() async {
     
-    Map<String, InstalledPluginInfo> getInstalledPluginMap = await getInstalledPlugins(source: args.source.name);
+    Map<String, InstalledPluginInfo> getInstalledPluginMap = await getInstalledPlugins(source: args!.source.name);
 
     setState(() {
       installedPluginMap = getInstalledPluginMap;
@@ -125,8 +125,8 @@ class _SelectPluginState extends State<SelectPluginScreen> {
       "/view",
       (route) => false,
       arguments: ViewScreenArguments(
-        source: args.source, 
-        id: args.id,
+        source: args!.source, 
+        id: args!.id,
       )
     );
   }
@@ -136,8 +136,11 @@ class _SelectPluginState extends State<SelectPluginScreen> {
   @override
   Widget build(BuildContext context) {
 
-        Map<String, InstalledPluginInfo> filteredInstalledPluginMap = onFilterSearch();
+    Map<String, InstalledPluginInfo> filteredInstalledPluginMap = onFilterSearch();
 
+    if (args == null){
+      return SizedBox();
+    }
 
     return SafeArea(
       child: Material(
@@ -167,7 +170,7 @@ class _SelectPluginState extends State<SelectPluginScreen> {
                               ),
                             ),
                             Text(
-                              'Select plugin',
+                              'Select plugin [Mode: ${args!.selectFileMode.name}]',
                               style: GoogleFonts.nunito(
                                 color: appColors.textPrimary,
                                 fontSize: 28,
@@ -251,7 +254,7 @@ class _SelectPluginState extends State<SelectPluginScreen> {
                               return SelectPluginTile(
                                 key: ValueKey(filteredInstalledPluginMap.values.toList()[index].pluginPath),
                                 pluginInfo: filteredInstalledPluginMap.values.toList()[index],
-                                selectPluginScreenArguments: args,
+                                selectPluginScreenArguments: args!,
                               );
                             },
                           ),
@@ -286,7 +289,7 @@ class _SelectPluginState extends State<SelectPluginScreen> {
                           showDialog(
                             context: context, 
                             builder: (_) => InstallPluginDialog(
-                              source: args.source,
+                              source: args!.source,
                               onChange: initSelectPlugin,
                             )
                           );

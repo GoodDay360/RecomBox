@@ -1,5 +1,7 @@
 pub mod add_download;
 pub mod get_download;
+pub mod remove_download;
+
 pub mod get_all_download;
 pub mod get_download_status;
 pub mod set_download_status;
@@ -12,6 +14,7 @@ use std::path::PathBuf;
 use std::sync::{RwLock, Arc};
 use once_cell::sync::Lazy;
 use std::fs;
+use std::cmp::{Eq, PartialEq};
 
 use crate::utils::settings::Settings;
 
@@ -23,7 +26,7 @@ const DOWNLOAD_STATUS_TABLE: TableDefinition<&[u8], &[u8]> = TableDefinition::ne
 
 
 #[frb(json_serializable)]
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Eq, PartialEq, Hash, Clone)]
 pub struct DownloadItemKey{
     pub source: String,
     pub id: String,
@@ -32,19 +35,13 @@ pub struct DownloadItemKey{
 }
 
 #[frb(json_serializable)]
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Eq, PartialEq, Hash, Clone)]
 pub struct DownloadItemValue{
     pub torrent_source: String,
     pub file_id: u64,
     pub file_path: String,
 }
 
-#[frb(json_serializable)]
-#[derive(Debug, Serialize, Deserialize)]
-pub struct DownloadItem(
-    pub DownloadItemKey,
-    pub DownloadItemValue
-);
 
 #[frb(json_serializable)]
 #[derive(Debug, Serialize, Deserialize)]

@@ -3,7 +3,9 @@ use serde_json::{to_vec};
 use super::{get_db, DOWNLOAD_TABLE, DownloadItemKey, DownloadItemValue};
 
 
-pub async fn add_download(download_item_key: DownloadItemKey, download_item_value: DownloadItemValue) -> Result<(), String> {
+pub async fn add_download(download_item_key: &DownloadItemKey, download_item_value: &DownloadItemValue) -> Result<(), String> {
+    println!("{:?}", download_item_key);
+    
     let db = get_db()?;
     
     let write_txn = db.begin_write()
@@ -22,9 +24,9 @@ pub async fn add_download(download_item_key: DownloadItemKey, download_item_valu
             .map_err(|e| e.to_string())?;
 
         let encoded_value = to_vec(&[
-            download_item_value.torrent_source,
+            download_item_value.torrent_source.clone(),
             download_item_value.file_id.to_string(),
-            download_item_value.file_path,
+            download_item_value.file_path.clone(),
             
         ])
             .map_err(|e| e.to_string())?;

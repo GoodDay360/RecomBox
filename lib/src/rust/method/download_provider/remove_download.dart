@@ -7,12 +7,7 @@ import '../../frb_generated.dart';
 import '../download_provider.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-Future<void> setDownloadStatus(
-        {required DownloadItemKey downloadItemKey,
-        required DownloadStatus downloadStatus,
-        required bool applyProgress}) =>
+Future<void> removeDownload({required DownloadItemKey downloadItemKey}) =>
     RustLib.instance.api
-        .crateMethodDownloadProviderSetDownloadStatusSetDownloadStatus(
-            downloadItemKey: downloadItemKey,
-            downloadStatus: downloadStatus,
-            applyProgress: applyProgress);
+        .crateMethodDownloadProviderRemoveDownloadRemoveDownload(
+            downloadItemKey: downloadItemKey);

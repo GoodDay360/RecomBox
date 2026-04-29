@@ -5,6 +5,7 @@ import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/dialogs/install_plugin/install_plugin_dialog.dart';
 import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/routes/select_file/select_file.dart';
+import 'package:recombox/src/routes/view/view.dart';
 import 'package:recombox/src/routes/watch/watch.dart';
 import 'package:recombox/src/rust/method/download_provider.dart';
 import 'package:recombox/src/rust/method/download_provider/add_download.dart';
@@ -96,9 +97,10 @@ class _SelectFileTileState extends State<SelectFileTile> {
       );
 
       if (ctx.mounted){
-        Navigator.pushNamed(
+        Navigator.pushNamedAndRemoveUntil(
           ctx,
           '/watch',
+          (route) => false,
           arguments: watchScreenArgs,
         );
       }
@@ -109,7 +111,7 @@ class _SelectFileTileState extends State<SelectFileTile> {
             source: widget.source.name, 
             id: widget.viewID, 
             seasonIndex: widget.season, 
-            episodeIndex: widget.season
+            episodeIndex: widget.episode
           ), 
           downloadItemValue: DownloadItemValue(
             torrentSource: widget.torrentSource, 
@@ -117,7 +119,20 @@ class _SelectFileTileState extends State<SelectFileTile> {
             filePath: widget.fileInfo.path!
           )
         );
-        
+
+        ViewScreenArguments viewScreenArguments = ViewScreenArguments(
+          source: widget.source, 
+          id: widget.viewID
+        );
+
+        if (ctx.mounted){
+        Navigator.pushNamedAndRemoveUntil(
+          ctx,
+          '/view',
+          (route) => false,
+          arguments: viewScreenArguments,
+        );
+      }
       }catch(e){
         debugPrint(e.toString());
       }

@@ -80,21 +80,27 @@ class _FavoriteContentCardState extends State<FavoriteContentCard> {
   @override
   Widget build(BuildContext context) {
     return Material(
-        borderRadius: BorderRadius.all(Radius.circular(5)),
-        clipBehavior: Clip.antiAlias,
         color: Colors.transparent,
-        child: InkWell(
-            onTap: () {
-              onNavigate();
-            },
-            mouseCursor: SystemMouseCursors.click,
-            child: Container(
-                width: 155,
-                color: Colors.transparent,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Ink.image(
+        clipBehavior: Clip.antiAlias,
+        borderRadius: BorderRadius.circular(5),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: SizedBox(
+            width: 155,
+            height: 280,
+            child: InkWell(
+              onTap: () {
+                onNavigate();
+              },
+              mouseCursor: SystemMouseCursors.click,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Material(
+                    clipBehavior: Clip.antiAlias,
+                    borderRadius: BorderRadius.circular(5),
+                    color: Colors.transparent,
+                    child: Ink.image(
                       image: thumbnailUrl.isEmpty
                           ? const AssetImage("assets/thumbnail_placeholder.png")
                           : thumbnailUrl.startsWith('http')
@@ -104,22 +110,27 @@ class _FavoriteContentCardState extends State<FavoriteContentCard> {
                       height: 225,
                       fit: BoxFit.fill,
                     ),
+                  ),
+                  
 
-                    Text(
-                      title,
-                      style: GoogleFonts.nunito(
-                        color: appColors.textPrimary,
-                        fontSize: 16,
-                        decoration: TextDecoration.none,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                  Text(
+                    title,
+                    style: GoogleFonts.nunito(
+                      color: appColors.textPrimary,
+                      fontSize: 16,
+                      decoration: TextDecoration.none,
                     ),
-                    
-                  ],
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  
+                ],
+              
                 )
               )
             )
-          );
+          )
+      );
+        
   }
 }

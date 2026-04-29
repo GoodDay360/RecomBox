@@ -9,24 +9,13 @@ import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'download_provider.freezed.dart';
 part 'download_provider.g.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`, `fmt`, `fmt`, `fmt`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_receiver_is_total_eq`, `assert_receiver_is_total_eq`, `clone`, `clone`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `hash`, `hash`
 
 Future<ArcDatabase> getDb() =>
     RustLib.instance.api.crateMethodDownloadProviderGetDb();
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc < Database >>>
 abstract class ArcDatabase implements RustOpaqueInterface {}
-
-@freezed
-sealed class DownloadItem with _$DownloadItem {
-  const factory DownloadItem({
-    required DownloadItemKey field0,
-    required DownloadItemValue field1,
-  }) = _DownloadItem;
-
-  factory DownloadItem.fromJson(Map<String, dynamic> json) =>
-      _$DownloadItemFromJson(json);
-}
 
 @freezed
 sealed class DownloadItemKey with _$DownloadItemKey {

@@ -6,19 +6,6 @@ part of 'download_provider.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_DownloadItem _$DownloadItemFromJson(Map<String, dynamic> json) =>
-    _DownloadItem(
-      field0: DownloadItemKey.fromJson(json['field0'] as Map<String, dynamic>),
-      field1:
-          DownloadItemValue.fromJson(json['field1'] as Map<String, dynamic>),
-    );
-
-Map<String, dynamic> _$DownloadItemToJson(_DownloadItem instance) =>
-    <String, dynamic>{
-      'field0': instance.field0,
-      'field1': instance.field1,
-    };
-
 _DownloadItemKey _$DownloadItemKeyFromJson(Map<String, dynamic> json) =>
     _DownloadItemKey(
       source: json['source'] as String,

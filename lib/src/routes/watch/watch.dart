@@ -250,29 +250,35 @@ class _WatchState extends State<WatchScreen> {
   }
 
   Future<void> onNavigateCleanUp() async {
-    final ctx = context;
-    debugPrint(isFullscreen(ctx).toString());
+    try{
 
-    // ->Reset Screen on Mobile
-    await exitFullscreen(ctx);
-    await SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.edgeToEdge,
-      overlays: SystemUiOverlay.values,
-    );
+      
+      final ctx = context;
+      debugPrint(isFullscreen(ctx).toString());
 
-    await SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
-    // <-
+      // ->Reset Screen on Mobile
+      await exitFullscreen(ctx);
+      await SystemChrome.setEnabledSystemUIMode(
+        SystemUiMode.edgeToEdge,
+        overlays: SystemUiOverlay.values,
+      );
 
-    // -> Reset Screen on Desktop
-    if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
-      await windowManager.setFullScreen(false);
+      await SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ]);
+      // <-
+
+      // -> Reset Screen on Desktop
+      if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
+        await windowManager.setFullScreen(false);
+      }
+      // <-
+    }catch(e){
+      debugPrint(e.toString());
     }
-    // <-
   }
 
   @override

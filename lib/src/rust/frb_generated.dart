@@ -13,6 +13,7 @@ import 'method/download_provider/add_download.dart';
 import 'method/download_provider/get_all_download.dart';
 import 'method/download_provider/get_download.dart';
 import 'method/download_provider/get_download_status.dart';
+import 'method/download_provider/remove_download.dart';
 import 'method/download_provider/set_download_status.dart';
 import 'method/favorite.dart';
 import 'method/favorite/add_category.dart';
@@ -107,7 +108,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.12.0';
 
   @override
-  int get rustContentHash => -216228156;
+  int get rustContentHash => 39966045;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -144,7 +145,7 @@ abstract class RustLibApi extends BaseApi {
       crateMethodFavoriteGetAllCategoryByItemIdGetAllCategoryByItemId(
           {required String source, required String id});
 
-  Future<List<DownloadItem>>
+  Future<Map<AllDownloadItemKey, List<AllDownloadItemValue>>>
       crateMethodDownloadProviderGetAllDownloadGetAllDownload();
 
   Future<List<FavoriteItemInfo>>
@@ -220,6 +221,9 @@ abstract class RustLibApi extends BaseApi {
   Future<bool> crateMethodFavoriteIsInCategoryIsInCategory(
       {required String source, required String id});
 
+  Future<void> crateMethodDownloadProviderRemoveDownloadRemoveDownload(
+      {required DownloadItemKey downloadItemKey});
+
   Future<void> crateMethodPluginProviderRemovePluginRemovePlugins(
       {required String source, required PluginInfo pluginInfo});
 
@@ -238,7 +242,8 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> crateMethodDownloadProviderSetDownloadStatusSetDownloadStatus(
       {required DownloadItemKey downloadItemKey,
-      required DownloadStatus downloadStatus});
+      required DownloadStatus downloadStatus,
+      required bool applyProgress});
 
   Future<void> crateMethodFavoriteSetLastWatchTorrentSetLastWatchTorrent(
       {required String source,
@@ -486,7 +491,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           );
 
   @override
-  Future<List<DownloadItem>>
+  Future<Map<AllDownloadItemKey, List<AllDownloadItemValue>>>
       crateMethodDownloadProviderGetAllDownloadGetAllDownload() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
@@ -495,7 +500,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             funcId: 8, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_list_download_item,
+        decodeSuccessData:
+            sse_decode_Map_all_download_item_key_list_all_download_item_value_None,
         decodeErrorData: sse_decode_String,
       ),
       constMeta:
@@ -1071,6 +1077,34 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<void> crateMethodDownloadProviderRemoveDownloadRemoveDownload(
+      {required DownloadItemKey downloadItemKey}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_download_item_key(downloadItemKey, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 28, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta:
+          kCrateMethodDownloadProviderRemoveDownloadRemoveDownloadConstMeta,
+      argValues: [downloadItemKey],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateMethodDownloadProviderRemoveDownloadRemoveDownloadConstMeta =>
+          const TaskConstMeta(
+            debugName: "remove_download",
+            argNames: ["downloadItemKey"],
+          );
+
+  @override
   Future<void> crateMethodPluginProviderRemovePluginRemovePlugins(
       {required String source, required PluginInfo pluginInfo}) {
     return handler.executeNormal(NormalTask(
@@ -1079,7 +1113,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(source, serializer);
         sse_encode_box_autoadd_plugin_info(pluginInfo, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 28, port: port_);
+            funcId: 29, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1107,7 +1141,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_u_64(categoryId, serializer);
         sse_encode_String(newCategoryName, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 29, port: port_);
+            funcId: 30, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1140,7 +1174,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_u_64(sort, serializer);
         sse_encode_u_64(page, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 30, port: port_);
+            funcId: 31, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_search_content_info,
@@ -1172,7 +1206,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(source, serializer);
         sse_encode_String(id, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 31, port: port_);
+            funcId: 32, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1193,14 +1227,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @override
   Future<void> crateMethodDownloadProviderSetDownloadStatusSetDownloadStatus(
       {required DownloadItemKey downloadItemKey,
-      required DownloadStatus downloadStatus}) {
+      required DownloadStatus downloadStatus,
+      required bool applyProgress}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_download_item_key(downloadItemKey, serializer);
         sse_encode_box_autoadd_download_status(downloadStatus, serializer);
+        sse_encode_bool(applyProgress, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 32, port: port_);
+            funcId: 33, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1208,7 +1244,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       ),
       constMeta:
           kCrateMethodDownloadProviderSetDownloadStatusSetDownloadStatusConstMeta,
-      argValues: [downloadItemKey, downloadStatus],
+      argValues: [downloadItemKey, downloadStatus, applyProgress],
       apiImpl: this,
     ));
   }
@@ -1217,7 +1253,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       get kCrateMethodDownloadProviderSetDownloadStatusSetDownloadStatusConstMeta =>
           const TaskConstMeta(
             debugName: "set_download_status",
-            argNames: ["downloadItemKey", "downloadStatus"],
+            argNames: ["downloadItemKey", "downloadStatus", "applyProgress"],
           );
 
   @override
@@ -1237,7 +1273,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_box_autoadd_last_watch_torrent_info(
             lastWatchTorrentInfo, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 33, port: port_);
+            funcId: 34, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1272,7 +1308,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_u_64(categoryId1, serializer);
         sse_encode_u_64(categoryId2, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 34, port: port_);
+            funcId: 35, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1302,7 +1338,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(source, serializer);
         sse_encode_bool(fromCache, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 35, port: port_);
+            funcId: 36, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_trending_content_info,
@@ -1334,7 +1370,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(source, serializer);
         sse_encode_String(id, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 36, port: port_);
+            funcId: 37, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1365,7 +1401,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(id, serializer);
         sse_encode_bool(fromCache, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 37, port: port_);
+            funcId: 38, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_view_content_info,
@@ -1400,7 +1436,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_u_64(seasonIndex, serializer);
         sse_encode_u_64(episodeIndex, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 38, port: port_);
+            funcId: 39, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1452,6 +1488,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Map<AllDownloadItemKey, List<AllDownloadItemValue>>
+      dco_decode_Map_all_download_item_key_list_all_download_item_value_None(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return Map.fromEntries(
+        dco_decode_list_record_all_download_item_key_list_all_download_item_value(
+                raw)
+            .map((e) => MapEntry(e.$1, e.$2)));
+  }
+
+  @protected
   Map<BigInt, String> dco_decode_Map_u_64_String_None(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return Map.fromEntries(dco_decode_list_record_u_64_string(raw)
@@ -1477,6 +1524,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   String dco_decode_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as String;
+  }
+
+  @protected
+  AllDownloadItemKey dco_decode_all_download_item_key(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return AllDownloadItemKey(
+      source: dco_decode_String(arr[0]),
+      id: dco_decode_String(arr[1]),
+    );
+  }
+
+  @protected
+  AllDownloadItemValue dco_decode_all_download_item_value(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return AllDownloadItemValue(
+      seasonIndex: dco_decode_u_64(arr[0]),
+      episodeIndex: dco_decode_u_64(arr[1]),
+    );
   }
 
   @protected
@@ -1553,18 +1624,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
     return CategoryOrderMap(
       field0: dco_decode_Map_u_64_u_64_None(arr[0]),
-    );
-  }
-
-  @protected
-  DownloadItem dco_decode_download_item(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    final arr = raw as List<dynamic>;
-    if (arr.length != 2)
-      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
-    return DownloadItem(
-      field0: dco_decode_download_item_key(arr[0]),
-      field1: dco_decode_download_item_value(arr[1]),
     );
   }
 
@@ -1719,9 +1778,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  List<DownloadItem> dco_decode_list_download_item(dynamic raw) {
+  List<AllDownloadItemValue> dco_decode_list_all_download_item_value(
+      dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return (raw as List<dynamic>).map(dco_decode_download_item).toList();
+    return (raw as List<dynamic>)
+        .map(dco_decode_all_download_item_value)
+        .toList();
   }
 
   @protected
@@ -1766,6 +1828,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as Uint8List;
+  }
+
+  @protected
+  List<(AllDownloadItemKey, List<AllDownloadItemValue>)>
+      dco_decode_list_record_all_download_item_key_list_all_download_item_value(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>)
+        .map(
+            dco_decode_record_all_download_item_key_list_all_download_item_value)
+        .toList();
   }
 
   @protected
@@ -1881,6 +1954,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       pluginName: dco_decode_String(arr[3]),
       pluginRepoUrl: dco_decode_String(arr[4]),
       pluginIconUrl: dco_decode_String(arr[5]),
+    );
+  }
+
+  @protected
+  (AllDownloadItemKey, List<AllDownloadItemValue>)
+      dco_decode_record_all_download_item_key_list_all_download_item_value(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2) {
+      throw Exception('Expected 2 elements, got ${arr.length}');
+    }
+    return (
+      dco_decode_all_download_item_key(arr[0]),
+      dco_decode_list_all_download_item_value(arr[1]),
     );
   }
 
@@ -2094,6 +2182,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Map<AllDownloadItemKey, List<AllDownloadItemValue>>
+      sse_decode_Map_all_download_item_key_list_all_download_item_value_None(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner =
+        sse_decode_list_record_all_download_item_key_list_all_download_item_value(
+            deserializer);
+    return Map.fromEntries(inner.map((e) => MapEntry(e.$1, e.$2)));
+  }
+
+  @protected
   Map<BigInt, String> sse_decode_Map_u_64_String_None(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -2123,6 +2222,25 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_list_prim_u_8_strict(deserializer);
     return utf8.decoder.convert(inner);
+  }
+
+  @protected
+  AllDownloadItemKey sse_decode_all_download_item_key(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_source = sse_decode_String(deserializer);
+    var var_id = sse_decode_String(deserializer);
+    return AllDownloadItemKey(source: var_source, id: var_id);
+  }
+
+  @protected
+  AllDownloadItemValue sse_decode_all_download_item_value(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_seasonIndex = sse_decode_u_64(deserializer);
+    var var_episodeIndex = sse_decode_u_64(deserializer);
+    return AllDownloadItemValue(
+        seasonIndex: var_seasonIndex, episodeIndex: var_episodeIndex);
   }
 
   @protected
@@ -2195,14 +2313,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_field0 = sse_decode_Map_u_64_u_64_None(deserializer);
     return CategoryOrderMap(field0: var_field0);
-  }
-
-  @protected
-  DownloadItem sse_decode_download_item(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_field0 = sse_decode_download_item_key(deserializer);
-    var var_field1 = sse_decode_download_item_value(deserializer);
-    return DownloadItem(field0: var_field0, field1: var_field1);
   }
 
   @protected
@@ -2359,14 +2469,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  List<DownloadItem> sse_decode_list_download_item(
+  List<AllDownloadItemValue> sse_decode_list_all_download_item_value(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     var len_ = sse_decode_i_32(deserializer);
-    var ans_ = <DownloadItem>[];
+    var ans_ = <AllDownloadItemValue>[];
     for (var idx_ = 0; idx_ < len_; ++idx_) {
-      ans_.add(sse_decode_download_item(deserializer));
+      ans_.add(sse_decode_all_download_item_value(deserializer));
     }
     return ans_;
   }
@@ -2451,6 +2561,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var len_ = sse_decode_i_32(deserializer);
     return deserializer.buffer.getUint8List(len_);
+  }
+
+  @protected
+  List<(AllDownloadItemKey, List<AllDownloadItemValue>)>
+      sse_decode_list_record_all_download_item_key_list_all_download_item_value(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <(AllDownloadItemKey, List<AllDownloadItemValue>)>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(
+          sse_decode_record_all_download_item_key_list_all_download_item_value(
+              deserializer));
+    }
+    return ans_;
   }
 
   @protected
@@ -2640,6 +2766,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         pluginName: var_pluginName,
         pluginRepoUrl: var_pluginRepoUrl,
         pluginIconUrl: var_pluginIconUrl);
+  }
+
+  @protected
+  (AllDownloadItemKey, List<AllDownloadItemValue>)
+      sse_decode_record_all_download_item_key_list_all_download_item_value(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_field0 = sse_decode_all_download_item_key(deserializer);
+    var var_field1 = sse_decode_list_all_download_item_value(deserializer);
+    return (var_field0, var_field1);
   }
 
   @protected
@@ -2841,6 +2977,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_Map_all_download_item_key_list_all_download_item_value_None(
+      Map<AllDownloadItemKey, List<AllDownloadItemValue>> self,
+      SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_record_all_download_item_key_list_all_download_item_value(
+        self.entries.map((e) => (e.key, e.value)).toList(), serializer);
+  }
+
+  @protected
   void sse_encode_Map_u_64_String_None(
       Map<BigInt, String> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -2869,6 +3014,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_String(String self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_list_prim_u_8_strict(utf8.encoder.convert(self), serializer);
+  }
+
+  @protected
+  void sse_encode_all_download_item_key(
+      AllDownloadItemKey self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.source, serializer);
+    sse_encode_String(self.id, serializer);
+  }
+
+  @protected
+  void sse_encode_all_download_item_value(
+      AllDownloadItemValue self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_64(self.seasonIndex, serializer);
+    sse_encode_u_64(self.episodeIndex, serializer);
   }
 
   @protected
@@ -2942,13 +3103,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       CategoryOrderMap self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_Map_u_64_u_64_None(self.field0, serializer);
-  }
-
-  @protected
-  void sse_encode_download_item(DownloadItem self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_download_item_key(self.field0, serializer);
-    sse_encode_download_item_value(self.field1, serializer);
   }
 
   @protected
@@ -3067,12 +3221,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_list_download_item(
-      List<DownloadItem> self, SseSerializer serializer) {
+  void sse_encode_list_all_download_item_value(
+      List<AllDownloadItemValue> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     for (final item in self) {
-      sse_encode_download_item(item, serializer);
+      sse_encode_all_download_item_value(item, serializer);
     }
   }
 
@@ -3142,6 +3296,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     serializer.buffer.putUint8List(self);
+  }
+
+  @protected
+  void
+      sse_encode_list_record_all_download_item_key_list_all_download_item_value(
+          List<(AllDownloadItemKey, List<AllDownloadItemValue>)> self,
+          SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_record_all_download_item_key_list_all_download_item_value(
+          item, serializer);
+    }
   }
 
   @protected
@@ -3295,6 +3462,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.pluginName, serializer);
     sse_encode_String(self.pluginRepoUrl, serializer);
     sse_encode_String(self.pluginIconUrl, serializer);
+  }
+
+  @protected
+  void sse_encode_record_all_download_item_key_list_all_download_item_value(
+      (AllDownloadItemKey, List<AllDownloadItemValue>) self,
+      SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_all_download_item_key(self.$1, serializer);
+    sse_encode_list_all_download_item_value(self.$2, serializer);
   }
 
   @protected

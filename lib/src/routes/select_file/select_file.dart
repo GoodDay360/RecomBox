@@ -98,8 +98,9 @@ class _SelectFileState extends State<SelectFileScreen> {
             );
       });
       debugPrint("--");
-      debugPrint(args!.season.toString());
-      debugPrint(args!.episode.toString());
+      debugPrint(args!.toString());
+      debugPrint("S"+args!.season.toString());
+      debugPrint("E"+args!.episode.toString());
 
       initSelectFile();
     });
@@ -215,7 +216,7 @@ class _SelectFileState extends State<SelectFileScreen> {
                               ),
                             ),
                             Text(
-                              'Select File',
+                              'Select File [Mode: ${args!.selectFileMode.name}]',
                               style: GoogleFonts.nunito(
                                 color: appColors.textPrimary,
                                 fontSize: 28,

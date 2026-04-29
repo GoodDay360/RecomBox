@@ -61,20 +61,7 @@ class _FeaturedSectionState extends State<FeaturedSection> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          padding: EdgeInsets.all(12),
-                          child: Text(
-                            widget.featuredContentInfo.title,
-                            style: GoogleFonts.nunito(
-                              fontSize: 38,
-                              fontWeight: FontWeight(800),
-                              color: appColors.textPrimary,
-                              decoration: TextDecoration.none,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
+                        
                         SingleChildScrollView(
                             padding: EdgeInsets.only(left: 12),
                             clipBehavior: Clip.hardEdge,
@@ -108,18 +95,36 @@ class _FeaturedSectionState extends State<FeaturedSection> {
                           width: double.infinity,
                           padding: EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                              color: appColors.primary.withAlpha(128)),
-                          child: Text(
-                            widget.featuredContentInfo.shortDescription,
-                            style: GoogleFonts.nunito(
-                              fontSize: 16,
-                              fontWeight: FontWeight.normal,
-                              color: appColors.textSecondary,
-                              decoration: TextDecoration.none,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                              color: appColors.primary.withAlpha(130)),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.featuredContentInfo.title,
+                                style: GoogleFonts.nunito(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight(800),
+                                  color: appColors.textPrimary,
+                                  decoration: TextDecoration.none,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              
+                              Text(
+                                widget.featuredContentInfo.shortDescription,
+                                style: GoogleFonts.nunito(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.normal,
+                                  color: appColors.textSecondary,
+                                  decoration: TextDecoration.none,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          )
+                          
                         )
                       ],
                     ))

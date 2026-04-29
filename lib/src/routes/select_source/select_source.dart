@@ -167,7 +167,7 @@ class _SelectSourceState extends State<SelectSourceScreen> {
                               ),
                             ),
                             Text(
-                              'Select Source',
+                              'Select Source [Mode: ${args!.selectPluginScreenArguments.selectFileMode.name}]',
                               style: GoogleFonts.nunito(
                                 color: appColors.textPrimary,
                                 fontSize: 28,
@@ -226,6 +226,19 @@ class _SelectSourceState extends State<SelectSourceScreen> {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
+                      Container(
+                        alignment: Alignment.topLeft,
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: Text(
+                          "[Note]: Manual search to disable default filter.",
+                          style: GoogleFonts.nunito(
+                            color: appColors.textPrimary,
+                            fontSize: 18,
+                            fontWeight: FontWeight.normal,
+                          ),
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
                         
                       // <-
                       if (isLoading) 

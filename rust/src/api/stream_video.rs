@@ -58,11 +58,11 @@ pub async fn new(req: HttpRequest, query: web::Query<InputPayload>) -> Result<Ht
     let torrent_handle_builder = TorrentHandle{
         torrent_handle_mode: TorrentHandleMode::Watch,
         torrent_source:  query.torrent_source.clone(),
-        file_id:  query.file_id,
+        file_id:  query.file_id as u64,
         output_dir: output_dir
     };
 
-    let torrent_handle = RUNTIME.spawn(async move {
+    let (torrent_handle,  _) = RUNTIME.spawn(async move {
         torrent_handle_builder.load().await.unwrap()
     })
         .await

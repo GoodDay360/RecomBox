@@ -53,7 +53,7 @@ pub async fn start() -> anyhow::Result<()>{
                 }
             }
 
-            tokio::time::sleep(tokio::time::Duration::from_mins(1)).await;
+            tokio::time::sleep(tokio::time::Duration::from_mins(10)).await;
         }
     });
 
