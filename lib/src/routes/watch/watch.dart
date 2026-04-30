@@ -133,11 +133,14 @@ class _WatchState extends State<WatchScreen> {
   void dispose() {
     player.dispose();
     try{
-      freeTorrentHandle(
-        torrentHandleMode: torrentHandleMode,
-        torrentSource: args!.torrentSource,
-        deleteFiles: torrentHandleMode == TorrentHandleMode.watch ? true : false
-      );
+      if (torrentHandleMode == TorrentHandleMode.watch) {
+        freeTorrentHandle(
+          torrentHandleMode: torrentHandleMode,
+          torrentSource: args!.torrentSource,
+          deleteFiles: true
+        );
+      }
+      
     }catch(e){
       debugPrint(e.toString());
     }
