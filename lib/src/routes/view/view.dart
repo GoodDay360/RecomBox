@@ -230,14 +230,14 @@ class _ViewState extends State<ViewScreen> with RouteAware {
     final ctx = context;
     // -> Get downloaded
     try{
-      final download_info = await getDownload(downloadItemKey: DownloadItemKey(
+      final downloadInfo = await getDownload(downloadItemKey: DownloadItemKey(
         source: args.source.name, 
         id: args.id, 
         seasonIndex: seasonIndex, 
         episodeIndex: episodeIndex
       ));
 
-      if (download_info != null){
+      if (downloadInfo != null){
         WatchScreenArguments watchScreenArgs = WatchScreenArguments(
           selectFileMode: SelectFileMode.watch,
           source: args.source, 
@@ -245,9 +245,9 @@ class _ViewState extends State<ViewScreen> with RouteAware {
           externalID: viewContentInfoResult!.externalId, 
           title: viewContentInfoResult!.title, 
           titleSecondary: viewContentInfoResult!.titleSecondary, 
-          torrentSource: download_info.torrentSource, 
-          mimeType: download_info.mimeType, 
-          fileID: download_info.fileId, 
+          torrentSource: downloadInfo.torrentSource, 
+          mimeType: downloadInfo.mimeType, 
+          fileID: downloadInfo.fileId, 
           season: seasonIndex,
           episode: episodeIndex
         );
@@ -258,6 +258,7 @@ class _ViewState extends State<ViewScreen> with RouteAware {
             arguments: watchScreenArgs,
           );
         }
+        return;
       }
     }catch(e){
       debugPrint(e.toString());

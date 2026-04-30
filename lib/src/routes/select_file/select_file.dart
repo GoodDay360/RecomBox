@@ -2,20 +2,12 @@ import 'package:file_type_plus/file_type_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:recombox/src/global/app_color.dart';
-import 'package:recombox/src/global/dialogs/install_plugin/install_plugin_dialog.dart';
 import 'package:recombox/src/global/types.dart';
 
 import 'package:recombox/src/global/widgets/title_bar.dart';
 import 'package:recombox/src/routes/select_file/widgets/select_file_tile.dart';
-import 'package:recombox/src/routes/select_plugin/select_plugin.dart';
-import 'package:recombox/src/routes/select_plugin/widgets/select_plugin_tile.dart';
-import 'package:recombox/src/routes/select_source/widgets/select_source_tile.dart';
-import 'package:recombox/src/routes/select_torrent/widgets/select_torrent_tile.dart';
-import 'package:recombox/src/rust/method/plugin_provider/get_installed_plugins.dart';
 import 'package:path/path.dart' as path;
 
-import 'package:recombox/src/rust/method/plugin_provider/get_sources.dart';
-import 'package:recombox/src/rust/method/plugin_provider/get_torrents.dart';
 
 import 'dart:io';
 
@@ -99,8 +91,8 @@ class _SelectFileState extends State<SelectFileScreen> {
       });
       debugPrint("--");
       debugPrint(args!.toString());
-      debugPrint("S"+args!.season.toString());
-      debugPrint("E"+args!.episode.toString());
+      debugPrint("S${args!.season}");
+      debugPrint("E${args!.episode}");
 
       initSelectFile();
     });

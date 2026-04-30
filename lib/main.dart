@@ -26,15 +26,34 @@ Future<void> main() async {
 	runApp(const App());
 }
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-class App extends StatelessWidget {
-	const App({super.key});
+class App extends StatefulWidget {
+  const App({super.key});
+
+  @override
+  State<App> createState() => _AppState();
+}
+
+
+class _AppState extends State<App> {
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      
+    });
+  }
+
 	@override
 	Widget build(BuildContext context) {
+
 		return ValueListenableBuilder<AppColorsScheme>(
 			valueListenable: appColorsNotifier,
 			builder: (context, colors, _) {
 				return  MaterialApp(
+          navigatorKey: navigatorKey,
 					theme: ThemeData(
 						pageTransitionsTheme: const PageTransitionsTheme(
 							builders: {
@@ -70,7 +89,7 @@ class App extends StatelessWidget {
 						"/select_file": (context) => const SelectFileScreen(),
 						"/watch": (context) => const WatchScreen(),
 						"/favorite": (context) => const FavoriteScreen(),
-            "/download": (context) => const DownloadScreen(),
+						"/download": (context) => const DownloadScreen(),
 					},
 				);
 			}

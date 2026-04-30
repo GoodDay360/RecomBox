@@ -8,7 +8,6 @@ import 'package:recombox/src/rust/method/plugin_provider/get_installed_plugins.d
 import 'dart:math';
 
 import 'package:recombox/src/rust/method/plugin_provider/get_plugin_list.dart';
-import 'package:recombox/src/rust/method/plugin_provider/install_plugin.dart';
 
 
 

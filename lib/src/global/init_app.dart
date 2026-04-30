@@ -4,6 +4,7 @@ import 'package:flutter_single_instance/flutter_single_instance.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:recombox/src/global/app_color.dart';
+import 'package:recombox/src/global/workers/check_update_worker.dart';
 import 'package:recombox/src/rust/frb_generated.dart';
 import 'package:recombox/src/rust/method/init/init_rest_server.dart';
 import 'package:recombox/src/rust/method/init/init_settings.dart';
@@ -85,6 +86,7 @@ Future<void> initApp() async {
   // -> Flutter Rust Bridge Initialization & Settings (Required before starting any other initialization)
 	await RustLib.init();
 	await initSettings(settings: Settings(
+    version: packageInfo.version,
     port: await getFreePort(),
 		paths: Paths(
       appSupportDir: (await getApplicationSupportDirectory()).path,
@@ -115,4 +117,6 @@ Future<void> initApp() async {
   // -> Media Kit
   MediaKit.ensureInitialized();
   // <-
+  
+  checkUpdateWorker();
 }

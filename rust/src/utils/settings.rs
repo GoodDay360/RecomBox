@@ -11,6 +11,7 @@ static SETTIGNS: Lazy<Mutex<Option<Arc<Settings>>>> = Lazy::new(|| Mutex::new(No
 pub struct Settings {
     pub port: u32,
     pub paths: Paths,
+    pub version: String
 }
 
 #[frb(json_serializable)]
@@ -34,7 +35,8 @@ impl Settings {
                 app_support_dir: temp_dir.join("app_support_dir").to_string_lossy().to_string(),
                 app_cache_dir: temp_dir.join("app_cache_dir").to_string_lossy().to_string(),
                 temp_dir: temp_dir.join("temp_dir").to_string_lossy().to_string(),
-            }
+            },
+            version: "0.0.1".to_string(),
         };
         let mut guard = SETTIGNS.lock()
             .map_err(|e| anyhow::Error::msg(e.to_string()))?;

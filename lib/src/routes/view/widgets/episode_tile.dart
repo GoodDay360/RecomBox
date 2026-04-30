@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/types.dart';
-import 'package:recombox/src/routes/select_plugin/select_plugin.dart';
 import 'package:recombox/src/rust/method/download_provider.dart';
-import 'package:recombox/src/rust/method/download_provider/get_all_download.dart';
 import 'package:recombox/src/rust/method/download_provider/get_download.dart';
 import 'package:recombox/src/rust/method/download_provider/get_download_status.dart';
 import 'package:recombox/src/rust/method/metadata_provider/view_content.dart';

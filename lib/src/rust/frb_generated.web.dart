@@ -9,6 +9,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
+import 'method/check_update.dart';
 import 'method/download_provider.dart';
 import 'method/download_provider/get_all_download.dart';
 import 'method/download_provider/get_download.dart';
@@ -105,6 +106,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool dco_decode_bool(dynamic raw);
 
   @protected
+  CheckUpdate dco_decode_box_autoadd_check_update(dynamic raw);
+
+  @protected
   DownloadItemKey dco_decode_box_autoadd_download_item_key(dynamic raw);
 
   @protected
@@ -134,6 +138,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   CategoryOrderMap dco_decode_category_order_map(dynamic raw);
+
+  @protected
+  CheckUpdate dco_decode_check_update(dynamic raw);
 
   @protected
   DownloadItemKey dco_decode_download_item_key(dynamic raw);
@@ -228,6 +235,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   String? dco_decode_opt_String(dynamic raw);
+
+  @protected
+  CheckUpdate? dco_decode_opt_box_autoadd_check_update(dynamic raw);
 
   @protected
   DownloadItemValue? dco_decode_opt_box_autoadd_download_item_value(
@@ -352,6 +362,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool sse_decode_bool(SseDeserializer deserializer);
 
   @protected
+  CheckUpdate sse_decode_box_autoadd_check_update(SseDeserializer deserializer);
+
+  @protected
   DownloadItemKey sse_decode_box_autoadd_download_item_key(
       SseDeserializer deserializer);
 
@@ -384,6 +397,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   CategoryOrderMap sse_decode_category_order_map(SseDeserializer deserializer);
+
+  @protected
+  CheckUpdate sse_decode_check_update(SseDeserializer deserializer);
 
   @protected
   DownloadItemKey sse_decode_download_item_key(SseDeserializer deserializer);
@@ -490,6 +506,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   String? sse_decode_opt_String(SseDeserializer deserializer);
+
+  @protected
+  CheckUpdate? sse_decode_opt_box_autoadd_check_update(
+      SseDeserializer deserializer);
 
   @protected
   DownloadItemValue? sse_decode_opt_box_autoadd_download_item_value(
@@ -618,6 +638,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_bool(bool self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_check_update(
+      CheckUpdate self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_download_item_key(
       DownloadItemKey self, SseSerializer serializer);
 
@@ -652,6 +676,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_category_order_map(
       CategoryOrderMap self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_check_update(CheckUpdate self, SseSerializer serializer);
 
   @protected
   void sse_encode_download_item_key(
@@ -766,6 +793,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_check_update(
+      CheckUpdate? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_download_item_value(

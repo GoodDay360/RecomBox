@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:recombox/src/global/app_color.dart';
-import 'package:recombox/src/global/dialogs/install_plugin/install_plugin_dialog.dart';
 import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/routes/select_file/select_file.dart';
 import 'package:recombox/src/routes/select_torrent/select_torrent.dart';
-import 'package:recombox/src/rust/method/plugin_provider.dart';
-import 'package:recombox/src/rust/method/plugin_provider/get_installed_plugins.dart';
 import 'package:recombox/src/rust/method/plugin_provider/get_sources.dart';
-import 'package:recombox/src/rust/method/plugin_provider/install_plugin.dart';
-import 'package:recombox/src/rust/method/plugin_provider/remove_plugin.dart';
 
 class SelectSourceTile extends StatefulWidget {
   const SelectSourceTile({

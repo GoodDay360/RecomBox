@@ -5,7 +5,6 @@ import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/routes/download/widgets/download_tile.dart';
 import 'package:recombox/src/routes/view/view.dart';
 import 'package:recombox/src/rust/method/download_provider/get_all_download.dart';
-import 'package:recombox/src/rust/method/metadata_provider/search_content.dart';
 import 'package:recombox/src/rust/method/metadata_provider/view_content.dart';
 import 'dart:io';
 

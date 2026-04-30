@@ -25,6 +25,7 @@ sealed class Settings with _$Settings {
   const factory Settings({
     required int port,
     required Paths paths,
+    required String version,
   }) = _Settings;
 
   factory Settings.fromJson(Map<String, dynamic> json) =>

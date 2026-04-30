@@ -3,18 +3,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/routes/favorite/widgets/favorite_content_card.dart';
-import 'package:recombox/src/routes/home/widgets/content_section.dart';
 import 'package:recombox/src/rust/method/favorite.dart';
 import 'package:recombox/src/rust/method/favorite/get_all_category.dart';
 import 'package:recombox/src/rust/method/favorite/get_all_item_by_category_id.dart';
 import 'package:recombox/src/rust/method/favorite/get_category_order.dart';
-import 'package:recombox/src/rust/method/metadata_provider/featured_content.dart';
-import 'package:recombox/src/rust/method/metadata_provider/trending_content.dart';
 import 'package:recombox/src/global/widgets/navigation_bar/navigation_bar_horizontal.dart';
 import 'dart:async';
 import 'dart:io';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'dart:math';
 
 // -> Local Widgets
 import 'package:recombox/src/global/widgets/navigation_bar/navigation_bar_vertical.dart';

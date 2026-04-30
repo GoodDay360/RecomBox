@@ -3,12 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/helpers/format_bytes.dart';
 import 'package:recombox/src/global/types.dart';
-import 'package:recombox/src/routes/view/view.dart';
 import 'package:recombox/src/rust/method/download_provider.dart';
 import 'package:recombox/src/rust/method/download_provider/get_all_download.dart';
 import 'package:recombox/src/rust/method/download_provider/get_download_status.dart';
 import 'package:recombox/src/rust/method/download_provider/set_download_status.dart';
-import 'package:recombox/src/rust/method/metadata_provider/search_content.dart';
 import 'dart:async';
 
 class DownloadTile extends StatefulWidget {
