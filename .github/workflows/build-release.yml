@@ -135,19 +135,29 @@ jobs:
           mkdir -p dist
           NAME="${{ steps.meta.outputs.app_name }}"
           
-          # Android
-          [ -f artifacts/build-android/app-release.apk ] && cp artifacts/build-android/app-release.apk dist/$NAME-android-universal.apk
-          [ -f artifacts/build-android/app-armeabi-v7a-release.apk ] && cp artifacts/build-android/app-armeabi-v7a-release.apk dist/$NAME-android-arm.apk
-          [ -f artifacts/build-android/app-arm64-v8a-release.apk ] && cp artifacts/build-android/app-arm64-v8a-release.apk dist/$NAME-android-aarch64.apk
-          [ -f artifacts/build-android/app-x86_64-release.apk ] && cp artifacts/build-android/app-x86_64-release.apk dist/$NAME-android-x86_64.apk
+          # Android - Search recursively for the APKs
+          find artifacts -name "app-release.apk" -exec cp {} dist/$NAME-android-universal.apk \;
+          find artifacts -name "app-armeabi-v7a-release.apk" -exec cp {} dist/$NAME-android-arm.apk \;
+          find artifacts -name "app-arm64-v8a-release.apk" -exec cp {} dist/$NAME-android-aarch64.apk \;
+          find artifacts -name "app-x86_64-release.apk" -exec cp {} dist/$NAME-android-x86_64.apk \;
           
-          # Windows
-          find artifacts/build-windows -name "*.msix" -exec cp {} dist/$NAME-windows-x86_64.msix \;
+          # Windows - Search recursively for the MSIX
+          find artifacts -name "*.msix" -exec cp {} dist/$NAME-windows-x86_64.msix \;
           
-          # Desktop & Mobile Bundles
-          tar -czf dist/$NAME-linux-x86_64.tar.gz -C artifacts/build-linux .
-          tar -czf dist/$NAME-macos-aarch64.tar.gz -C artifacts/build-macos .
-          tar -czf dist/$NAME-ios-aarch64.tar.gz -C artifacts/build-ios .
+          # Linux - We expect the bundle files
+          # Note: Adjusting paths to find where download-artifact actually put them
+          LINUX_PATH=$(find artifacts -type d -name "bundle" | head -n 1)
+          if [ -d "$LINUX_PATH" ]; then
+            tar -czf dist/$NAME-linux-x86_64.tar.gz -C "$LINUX_PATH" .
+          fi
+
+          # macOS & iOS
+          # Using similar logic to find the app bundles
+          MAC_PATH=$(find artifacts -type d -name "*.app" | grep "macos" | head -n 1)
+          [ -d "$MAC_PATH" ] && tar -czf dist/$NAME-macos-aarch64.tar.gz -C "$(dirname "$MAC_PATH")" .
+          
+          IOS_PATH=$(find artifacts -type d -name "*.app" | grep "iphoneos" | head -n 1)
+          [ -d "$IOS_PATH" ] && tar -czf dist/$NAME-ios-aarch64.tar.gz -C "$(dirname "$IOS_PATH")" .
 
       - name: Create latest.json
         shell: bash

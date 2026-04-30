@@ -90,14 +90,14 @@ async fn spawn_session() -> anyhow::Result<()>{
                 .join(key.id.to_string())
                 .join(encoded_torent_source);
                 
-            let new_torrent_handle = TorrentHandle {
+            let torrent_handle_builder = TorrentHandle {
                 torrent_handle_mode: TorrentHandleMode::Download,
                 torrent_source: download_info.torrent_source.clone(),
                 file_id: download_info.file_id,
                 output_dir: output_dir,
             };
 
-            let (torrent_handle, _) = new_torrent_handle.load().await
+            let (torrent_handle, _) = torrent_handle_builder.clone().load().await
                 .map_err(|e| anyhow::Error::msg(e.to_string()))?;
 
             let exist_progress_watcher = match DOWNLOAD_PROGRESS_WATCHER_WORKER.get(&download_item_key) {
@@ -106,19 +106,12 @@ async fn spawn_session() -> anyhow::Result<()>{
             };
 
             if !exist_progress_watcher && !current_download_status.paused && !current_download_status.done {
-                let key_clone = key.clone();
-
                 DOWNLOAD_PROGRESS_WATCHER_WORKER.insert(download_item_key.clone(), String::from(""));
-
                 tokio::spawn(async move {
                     match spawn_progress_watcher(
+                        torrent_handle_builder,
                         torrent_handle.clone(), 
-                        DownloadItemKey { 
-                            source: key_clone.source.clone(), 
-                            id: key_clone.id.clone(), 
-                            season_index: value_info.season_index, 
-                            episode_index: value_info.episode_index
-                        },
+                        &download_item_key,
                         download_info
                     ).await {
                         Ok(_) => {}
@@ -141,14 +134,15 @@ async fn spawn_session() -> anyhow::Result<()>{
 
 
 async fn spawn_progress_watcher(
+    torrent_handle_builder: TorrentHandle,
     torrent_handle: Arc<ManagedTorrent>,
-    download_item_key: DownloadItemKey,
+    download_item_key: &DownloadItemKey,
     mut download_item_value: DownloadItemValue
 ) -> anyhow::Result<()>{
     
     loop {
         tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
-        
+
         let download_info = match get_download(&download_item_key).await.map_err(|e| anyhow::Error::msg(e.to_string()))?{
             Some(info) => info,
             None => {
@@ -198,7 +192,11 @@ async fn spawn_progress_watcher(
                 true
             ).await.map_err(|e| anyhow::Error::msg(e.to_string()))?;
 
+            
+
             if downloaded == total || current_download_status.paused{
+                torrent_handle_builder.clone().pause_files(download_item_value.file_id).await
+                    .map_err(|e| anyhow::Error::msg(e.to_string()))?;
                 break;
             }
         
