@@ -48,7 +48,6 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
-      # --- Rust Caching (User Specified: rust/target) ---
       - name: Cache rustup toolchains
         uses: actions/cache@v4
         with:
@@ -70,21 +69,11 @@ jobs:
         if: matrix.target == 'linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y \
-            clang \
-            cmake \
-            ninja-build \
-            pkg-config \
-            libgtk-3-dev \
-            liblzma-dev \
-            libstdc++6 \
-            libmpv-dev \
-            mpv
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++6 libmpv-dev mpv
 
       - name: Install Flutter Pub Dependencies
         run: flutter pub get
 
-      # --- Build Process ---
       - name: Build Android (Unsigned)
         if: matrix.target == 'android'
         run: |
@@ -132,11 +121,31 @@ jobs:
         with:
           path: artifacts
 
-      - name: Get Version from pubspec.yaml
+      - name: Get Version
         id: pkg
         run: |
           VERSION=$(grep 'version: ' pubspec.yaml | sed 's/version: //' | cut -d '+' -f 1)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Prepare and Rename Assets
+        run: |
+          mkdir -p dist
+          
+          # Android Renaming
+          [ -f artifacts/build-android/app-release.apk ] && cp artifacts/build-android/app-release.apk dist/recombox-android-universal.apk
+          [ -f artifacts/build-android/app-armeabi-v7a-release.apk ] && cp artifacts/build-android/app-armeabi-v7a-release.apk dist/recombox-android-armv7.apk
+          [ -f artifacts/build-android/app-arm64-v8a-release.apk ] && cp artifacts/build-android/app-arm64-v8a-release.apk dist/recombox-android-arm64.apk
+          [ -f artifacts/build-android/app-x86_64-release.apk ] && cp artifacts/build-android/app-x86_64-release.apk dist/recombox-android-x64.apk
+          
+          # Windows Renaming
+          find artifacts/build-windows -name "*.msix" -exec cp {} dist/recombox-windows-x64.msix \;
+          
+          # Linux & macOS (Zipped)
+          tar -czf dist/recombox-linux-x64.tar.gz -C artifacts/build-linux .
+          tar -czf dist/recombox-macos-universal.tar.gz -C artifacts/build-macos .
+          
+          # iOS (App folder zipped as it is unsigned)
+          tar -czf dist/recombox-ios-unsigned.tar.gz -C artifacts/build-ios .
 
       - name: Create latest.json
         shell: bash
@@ -145,11 +154,11 @@ jobs:
           
           jq -n \
             --arg version "${{ steps.pkg.outputs.version }}" \
-            --arg win "$BASE_URL/RecomBox.msix" \
-            --arg apk "$BASE_URL/app-release.apk" \
-            --arg arm "$BASE_URL/app-armeabi-v7a-release.apk" \
-            --arg arm64 "$BASE_URL/app-arm64-v8a-release.apk" \
-            --arg x64 "$BASE_URL/app-x86_64-release.apk" \
+            --arg win "$BASE_URL/recombox-windows-x64.msix" \
+            --arg apk "$BASE_URL/recombox-android-universal.apk" \
+            --arg arm "$BASE_URL/recombox-android-armv7.apk" \
+            --arg arm64 "$BASE_URL/recombox-android-arm64.apk" \
+            --arg x64 "$BASE_URL/recombox-android-x64.apk" \
             '{
               version: $version,
               release: {
@@ -162,16 +171,8 @@ jobs:
                 }
               }
             }' > latest.json
-
-      - name: Prepare Assets
-        run: |
-          mkdir -p dist
+          
           cp latest.json dist/
-          find artifacts/ -name "*.apk" -exec cp {} dist/ \;
-          find artifacts/ -name "*.msix" -exec cp {} dist/ \;
-          # Zip desktop bundles
-          tar -czf dist/linux-release.tar.gz -C artifacts/build-linux .
-          tar -czf dist/macos-release.tar.gz -C artifacts/build-macos .
 
       - name: Upload to Release
         uses: svenstaro/upload-release-action@v2
@@ -182,5 +183,4 @@ jobs:
           tag: v${{ steps.pkg.outputs.version }}
           overwrite: true
           release_name: "Release v${{ steps.pkg.outputs.version }}"
-          body: "Automated build for RecomBox v${{ steps.pkg.outputs.version }}"
-          draft: true # Safe Draft Mode
+          draft: true
