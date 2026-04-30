@@ -50,7 +50,7 @@ An open-source cross-platform torrent streaming app for Anime, Movies, and TV wi
 - ☁️ **Google Drive Back Up** to sync your favorites and watch history across all your devices.
 - ⬇️ **Download** for offline watching.
 - 🔍 **Advanced search** for quick content discovery.
-- 🧩 **Plugins**: add and update external torren provider without update entire app.
+- 🧩 **Plugins**: add and update external torrent provider without update entire app.
 
 <!--
 
