@@ -75,7 +75,7 @@ cat <<EOF | sudo tee "/usr/share/applications/${BINARY_NAME}.desktop" > /dev/nul
 [Desktop Entry]
 Type=Application
 Name=$APP_NAME
-Comment=Stream movies and videos via torrent
+Comment=Open-source cross-platform torrent streaming app for Anime, Movies, and TV with cross-device watch progress tracking
 Exec=$BIN_LINK
 Icon=$INSTALL_DIR/icon.png
 Terminal=false
