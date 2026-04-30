@@ -35,7 +35,7 @@
 
 # Download
 [![Download](https://img.shields.io/badge/Download-GitHub-blue?style=for-the-badge&logo=github)](https://github.com/RecomBox/RecomBox/releases/latest)
-## Linux
+### Linux
 Rerun this command when there is an update.
 ```
 curl -sSL https://raw.githubusercontent.com/RecomBox/RecomBox/main/install.sh | bash
@@ -50,7 +50,7 @@ An open-source cross-platform torrent streaming app for Anime, Movies, and TV wi
 - ☁️ **Google Drive Back Up** to sync your favorites and watch history across all your devices.
 - ⬇️ **Download** for offline watching.
 - 🔍 **Advanced search** for quick content discovery.
-- 🧩 **Plugins**: add and update external torren provider without update entire app.
+- 🧩 **Plugins**: add and update external torrent provider without update entire app.
 
 <!--
 

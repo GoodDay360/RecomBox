@@ -314,27 +314,32 @@ class _FavoriteState extends State<FavoriteScreen> {
                       Expanded(
                         child: Container(
                           padding: EdgeInsets.all(15),
-                          child: GridView.builder(
-                            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                              maxCrossAxisExtent: 320,
-                              mainAxisExtent: 320,
-                              crossAxisSpacing: 10,
-                              mainAxisSpacing: 10,
-                              childAspectRatio: 1, 
-                            ),
-                            itemCount: filteredFavoriteItemInfoList.length,
-                            itemBuilder: (context, index) {
-                              return FavoriteContentCard(
-                                key: ValueKey(filteredFavoriteItemInfoList[index].id),
-                                addTitle: (String title) {
-                                  addTitle(index, title);
-                                },
-                                source: SourceExtension.fromString(filteredFavoriteItemInfoList[index].source), 
-                                id: filteredFavoriteItemInfoList[index].id,
-                              );
-                            },
-                          )
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              int crossAxisCount = (constraints.maxWidth / 155).floor();
 
+                              return GridView.builder(
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: crossAxisCount > 0 ? crossAxisCount : 1,
+                                  mainAxisExtent: 320,
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 10,
+                                  childAspectRatio: 1, 
+                                ),
+                                itemCount: filteredFavoriteItemInfoList.length,
+                                itemBuilder: (context, index) {
+                                  return FavoriteContentCard(
+                                    key: ValueKey(filteredFavoriteItemInfoList[index].id),
+                                    addTitle: (String title) {
+                                      addTitle(index, title);
+                                    },
+                                    source: SourceExtension.fromString(filteredFavoriteItemInfoList[index].source), 
+                                    id: filteredFavoriteItemInfoList[index].id,
+                                  );
+                                },
+                              );
+                            }
+                          )
                         ),
                       )
                     
