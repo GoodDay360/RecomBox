@@ -48,7 +48,7 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
-      # --- Rust Caching ---
+      # --- Rust Caching (rust/target) ---
       - name: Cache rustup toolchains
         uses: actions/cache@v4
         with:
@@ -75,14 +75,13 @@ jobs:
       - name: Install Flutter Pub Dependencies
         run: flutter pub get
 
-      # --- Build Process ---
       - name: Build Android
         if: matrix.target == 'android'
         run: |
           flutter build apk --release --no-tree-shake-icons
           flutter build apk --release --split-per-abi --no-tree-shake-icons
 
-      - name: Build iOS
+      - name: Build iOS (Unsigned)
         if: matrix.target == 'ios'
         run: flutter build ios --release --no-codesign --no-tree-shake-icons
 
@@ -126,7 +125,6 @@ jobs:
       - name: Get App Metadata
         id: meta
         run: |
-          # Extract name and version from pubspec.yaml
           APP_NAME=$(grep '^name: ' pubspec.yaml | sed 's/name: //' | xargs)
           VERSION=$(grep '^version: ' pubspec.yaml | sed 's/version: //' | cut -d '+' -f 1 | xargs)
           echo "app_name=$APP_NAME" >> $GITHUB_OUTPUT
@@ -139,17 +137,17 @@ jobs:
           
           # Android
           [ -f artifacts/build-android/app-release.apk ] && cp artifacts/build-android/app-release.apk dist/$NAME-android-universal.apk
-          [ -f artifacts/build-android/app-armeabi-v7a-release.apk ] && cp artifacts/build-android/app-armeabi-v7a-release.apk dist/$NAME-android-armv7.apk
-          [ -f artifacts/build-android/app-arm64-v8a-release.apk ] && cp artifacts/build-android/app-arm64-v8a-release.apk dist/$NAME-android-arm64.apk
-          [ -f artifacts/build-android/app-x86_64-release.apk ] && cp artifacts/build-android/app-x86_64-release.apk dist/$NAME-android-x64.apk
+          [ -f artifacts/build-android/app-armeabi-v7a-release.apk ] && cp artifacts/build-android/app-armeabi-v7a-release.apk dist/$NAME-android-arm.apk
+          [ -f artifacts/build-android/app-arm64-v8a-release.apk ] && cp artifacts/build-android/app-arm64-v8a-release.apk dist/$NAME-android-aarch64.apk
+          [ -f artifacts/build-android/app-x86_64-release.apk ] && cp artifacts/build-android/app-x86_64-release.apk dist/$NAME-android-x86_64.apk
           
           # Windows
-          find artifacts/build-windows -name "*.msix" -exec cp {} dist/$NAME-windows-x64.msix \;
+          find artifacts/build-windows -name "*.msix" -exec cp {} dist/$NAME-windows-x86_64.msix \;
           
-          # Desktop Bundles
-          tar -czf dist/$NAME-linux-x64.tar.gz -C artifacts/build-linux .
-          tar -czf dist/$NAME-macos-universal.tar.gz -C artifacts/build-macos .
-          tar -czf dist/$NAME-ios-unsigned.tar.gz -C artifacts/build-ios .
+          # Desktop & Mobile Bundles
+          tar -czf dist/$NAME-linux-x86_64.tar.gz -C artifacts/build-linux .
+          tar -czf dist/$NAME-macos-aarch64.tar.gz -C artifacts/build-macos .
+          tar -czf dist/$NAME-ios-aarch64.tar.gz -C artifacts/build-ios .
 
       - name: Create latest.json
         shell: bash
@@ -160,21 +158,27 @@ jobs:
           jq -n \
             --arg version "${{ steps.meta.outputs.version }}" \
             --arg name "$NAME" \
-            --arg win "$BASE_URL/$NAME-windows-x64.msix" \
-            --arg apk "$BASE_URL/$NAME-android-universal.apk" \
-            --arg arm "$BASE_URL/$NAME-android-armv7.apk" \
-            --arg arm64 "$BASE_URL/$NAME-android-arm64.apk" \
-            --arg x64 "$BASE_URL/$NAME-android-x64.apk" \
+            --arg win_x64 "$BASE_URL/$NAME-windows-x86_64.msix" \
+            --arg lin_x64 "$BASE_URL/$NAME-linux-x86_64.tar.gz" \
+            --arg mac_arm "$BASE_URL/$NAME-macos-aarch64.tar.gz" \
+            --arg ios_arm "$BASE_URL/$NAME-ios-aarch64.tar.gz" \
+            --arg and_univ "$BASE_URL/$NAME-android-universal.apk" \
+            --arg and_arm "$BASE_URL/$NAME-android-arm.apk" \
+            --arg and_arm64 "$BASE_URL/$NAME-android-aarch64.apk" \
+            --arg and_x64 "$BASE_URL/$NAME-android-x86_64.apk" \
             '{
               version: $version,
               name: $name,
               release: {
-                windows: { x64: $win },
+                windows: { x86_64: $win_x64 },
+                linux: { x86_64: $lin_x64 },
+                macos: { aarch64: $mac_arm },
+                ios: { aarch64: $ios_arm },
                 android: { 
-                  universal: $apk,
-                  arm32: $arm,
-                  arm64: $arm64,
-                  x64: $x64
+                  universal: $and_univ,
+                  arm: $and_arm,
+                  aarch64: $and_arm64,
+                  x86_64: $and_x64
                 }
               }
             }' > latest.json
