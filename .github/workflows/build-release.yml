@@ -98,20 +98,22 @@ jobs:
         run: |
           flutter build windows --release
           
-          # Extract metadata from pubspec.yaml
-          APP_NAME=$(grep '^name: ' pubspec.yaml | sed 's/name: //' | xargs)
-          VERSION=$(grep '^version: ' pubspec.yaml | sed 's/version: //' | cut -d '+' -f 1 | xargs)
-          
-          # Extract the custom upgrade_code you added to pubspec.yaml
-          UPGRADE_CODE=$(grep 'upgrade_code:' pubspec.yaml | sed 's/upgrade_code: //' | xargs)
+          # Cleanly extract metadata and remove carriage returns (\r)
+          APP_NAME=$(grep '^name: ' pubspec.yaml | sed 's/name: //' | xargs | tr -d '\r')
+          VERSION=$(grep '^version: ' pubspec.yaml | sed 's/version: //' | cut -d '+' -f 1 | xargs | tr -d '\r')
+          UPGRADE_CODE=$(grep 'upgrade_code:' pubspec.yaml | sed 's/upgrade_code: //' | xargs | tr -d '\r')
+          ICON_PATH="windows/runner/resources/app_icon.ico"
           
           mkdir -p dist
-          npx msi-packager build/windows/x64/release/runner dist/$APP_NAME-windows-x86_64.msi \
+          
+          # Use quotes for all arguments to handle spaces and ensure flags are recognized
+          npx msi-packager "build/windows/x64/release/runner" "dist/$APP_NAME-windows-x86_64.msi" \
             --name "$APP_NAME" \
             --version "$VERSION" \
             --manufacturer "$APP_NAME" \
             --executable "$APP_NAME.exe" \
-            --upgrade-code "$UPGRADE_CODE"
+            --upgrade-code "$UPGRADE_CODE" \
+            --icon "$ICON_PATH"
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -140,8 +142,8 @@ jobs:
       - name: Get App Metadata
         id: meta
         run: |
-          APP_NAME=$(grep '^name: ' pubspec.yaml | sed 's/name: //' | xargs)
-          VERSION=$(grep '^version: ' pubspec.yaml | sed 's/version: //' | cut -d '+' -f 1 | xargs)
+          APP_NAME=$(grep '^name: ' pubspec.yaml | sed 's/name: //' | xargs | tr -d '\r')
+          VERSION=$(grep '^version: ' pubspec.yaml | sed 's/version: //' | cut -d '+' -f 1 | xargs | tr -d '\r')
           echo "app_name=$APP_NAME" >> $GITHUB_OUTPUT
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
