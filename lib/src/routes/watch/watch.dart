@@ -193,7 +193,6 @@ class _WatchState extends State<WatchScreen> {
 
       var useLocal = false;
       torrentHandleMode = TorrentHandleMode.watch;
-
       
       if (currentDownloadStatus != null && downloadInfo != null){
         if (!currentDownloadStatus.paused){
@@ -201,7 +200,6 @@ class _WatchState extends State<WatchScreen> {
         }
 
         if (currentDownloadStatus.done){
-          torrentHandleMode = TorrentHandleMode.download;
           final downloadItemInfo = await getDownload(downloadItemKey: DownloadItemKey(
             source: args!.source.name, 
             id: args!.viewID, 
@@ -209,6 +207,7 @@ class _WatchState extends State<WatchScreen> {
             episodeIndex: args!.episode
           ));
           if (downloadItemInfo != null){
+            torrentHandleMode = TorrentHandleMode.download;
             final filePath = path.join(
               settings.paths.appSupportDir,
               "download",
