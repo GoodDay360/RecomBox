@@ -36,6 +36,7 @@
 # Download
 [![Download](https://img.shields.io/badge/Download-GitHub-blue?style=for-the-badge&logo=github)](https://github.com/RecomBox/RecomBox/releases/latest)
 ## Linux
+Rerun this command when there is an update.
 ```
 curl -sSL https://raw.githubusercontent.com/RecomBox/RecomBox/main/install.sh | bash
 ```
