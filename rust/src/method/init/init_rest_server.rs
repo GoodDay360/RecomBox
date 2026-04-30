@@ -1,8 +1,5 @@
 use actix_web::{
-    get,
-    web,
     App,
-    HttpRequest,
     HttpResponse,
     HttpServer,
 };

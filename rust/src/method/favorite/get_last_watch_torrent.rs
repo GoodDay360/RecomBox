@@ -1,5 +1,4 @@
-use redb::{ReadableDatabase, ReadableTable};
-use std::collections::HashMap;
+use redb::{ReadableDatabase};
 use serde_json::{from_slice, to_vec};
 
 

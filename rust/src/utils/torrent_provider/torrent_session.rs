@@ -1,8 +1,7 @@
 use librqbit::{Session, SessionOptions, dht::{PersistentDhtConfig}};
 use std::{path::PathBuf, sync::{Arc, RwLock}};
-use std::env;
 
-use crate::utils::settings::{self, Settings};
+use crate::utils::settings::Settings;
 
 
 static TORRENT_SESSION: RwLock<Option<Arc<Session>>> = RwLock::new(None);

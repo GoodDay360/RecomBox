@@ -1,10 +1,8 @@
 use actix_web::{
     get,
     web,
-    App,
     HttpRequest,
     HttpResponse,
-    HttpServer,
 };
 use std::io::SeekFrom;
 use tokio::io::AsyncSeekExt;
@@ -12,7 +10,7 @@ use tokio_util::io::ReaderStream;
 use std::path::PathBuf;
 use tokio;
 use serde::{Deserialize, Serialize};
-use urlencoding::{encode, decode};
+use urlencoding::encode;
 use once_cell::sync::Lazy;
 use tokio::runtime::Runtime;
 use num_cpus;

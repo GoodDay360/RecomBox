@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use std::path::PathBuf;
 
 use recombox_plugin_provider::manage_plugin::{
@@ -7,8 +6,6 @@ use recombox_plugin_provider::manage_plugin::{
 };
 
 use recombox_plugin_provider::global_types::Source;
-use serde::{Serialize, Deserialize};
-use flutter_rust_bridge::frb;
 
 use crate::utils::settings::Settings;
 

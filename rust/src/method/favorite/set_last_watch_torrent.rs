@@ -1,8 +1,6 @@
-use redb::{ReadableTable};
-use snowid::SnowID;
-use serde_json::{to_vec, to_string};
+use serde_json::to_vec;
 
-use super::{get_db, CATEGORY_ORDER_TABLE, LAST_WATCH_TORRENT_TABLE, LastWatchTorrentInfo};
+use super::{get_db, LAST_WATCH_TORRENT_TABLE, LastWatchTorrentInfo};
 
 
 pub async fn set_last_watch_torrent(

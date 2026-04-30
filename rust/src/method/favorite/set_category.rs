@@ -47,7 +47,7 @@ pub async fn set_category(category_id: u64, source: &str, id: &str) -> Result<()
     write_txn.commit()
         .map_err(|e| e.to_string())?;
     
-    let is_in_fav = is_in_category(source, id).await?;
+    let _is_in_fav = is_in_category(source, id).await?;
 
     return Ok(());
 }

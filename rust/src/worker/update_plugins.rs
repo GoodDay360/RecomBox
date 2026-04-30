@@ -1,7 +1,6 @@
 use anyhow;
 use recombox_plugin_provider::manage_plugin::get_plugin_info;
-use redb::{TableDefinition, ReadableDatabase, ReadableTable};
-use std::num::NonZeroU32;
+use redb::{TableDefinition, ReadableDatabase};
 use std::sync::{RwLock, Arc};
 use once_cell::sync::Lazy;
 use std::fs;

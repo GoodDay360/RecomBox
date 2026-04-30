@@ -1,6 +1,6 @@
 use redb::{ReadableDatabase, ReadableTable};
 use serde_json::from_slice;
-use std::{collections::HashMap, ops::{Deref, DerefMut}};
+use std::collections::HashMap;
 use flutter_rust_bridge::frb;
 use serde::{Deserialize, Serialize};
 
@@ -37,7 +37,7 @@ pub async fn get_all_download() -> Result<HashMap<AllDownloadItemKey,Vec<AllDown
 
     for entry in table.iter().map_err(|e| e.to_string())? {
         
-        let (key_bytes, value_bytes) = entry.map_err(|e| e.to_string())?;
+        let (key_bytes, _value_bytes) = entry.map_err(|e| e.to_string())?;
 
         // Decode key array back into struct
         let key_parts: Vec<String> = from_slice(key_bytes.value())

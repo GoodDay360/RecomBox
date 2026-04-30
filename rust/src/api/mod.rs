@@ -1,6 +1,6 @@
 pub mod stream_video;
 
-use actix_web::{get, web, HttpResponse, Responder};
+use actix_web::web;
 
 
 pub fn routes(cfg: &mut web::ServiceConfig) {

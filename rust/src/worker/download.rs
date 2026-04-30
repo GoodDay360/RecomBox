@@ -1,18 +1,10 @@
 use anyhow;
 use dashmap::DashMap;
 use librqbit::ManagedTorrent;
-use recombox_plugin_provider::manage_plugin::get_plugin_info;
-use redb::{TableDefinition, ReadableDatabase, ReadableTable};
-use std::num::NonZeroU32;
-use std::sync::{RwLock, Arc};
+use std::sync::Arc;
 use once_cell::sync::Lazy;
-use std::fs;
-use redb::Database;
 use std::path::PathBuf;
-use chrono::{Utc, DateTime};
-use recombox_metadata_provider::global_types::Source;
 use tokio;
-use semver;
 use base64::{engine::general_purpose, Engine as _};
 use sha2::{Sha256, Digest};
 use urlencoding::encode;
@@ -20,7 +12,7 @@ use urlencoding::encode;
 use crate::method::download_provider::get_download_status::get_download_status;
 use crate::method::download_provider::set_download_status::set_download_status;
 use crate::method::download_provider::set_download::set_download;
-use crate::method::download_provider::{DownloadItemKey, DownloadItemValue, DownloadStatus, set_download};
+use crate::method::download_provider::{DownloadItemKey, DownloadItemValue, DownloadStatus};
 use crate::utils::torrent_provider::torrent_handle::{TorrentHandle, TorrentHandleMode};
 use crate::method::download_provider::{
     get_all_download::get_all_download,
