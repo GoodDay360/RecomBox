@@ -31,7 +31,6 @@ done
 
 # 2. Workspace Setup
 TEMP_DIR=$(mktemp -d)
-# Automatically cleans up TEMP_DIR even if script fails or is interrupted
 trap 'rm -rf "$TEMP_DIR"' EXIT 
 cd "$TEMP_DIR"
 
@@ -46,12 +45,10 @@ if ! file "$LOCAL_TAR" | grep -q "gzip"; then
     error_exit "Downloaded file is not a valid gzip archive. Verify your release upload on GitHub."
 fi
 
-# Deployment
+# 5. Deployment
 echo "📂 Extracting to $INSTALL_DIR..."
 sudo mkdir -p "$INSTALL_DIR"
-# Clear old files to ensure a clean update/reinstall
 sudo rm -rf "${INSTALL_DIR:?}"/* 
-# --strip-components=1 handles the case where files are wrapped in a subfolder inside the tar
 sudo tar -xzf "$LOCAL_TAR" -C "$INSTALL_DIR" --strip-components=1 || error_exit "Extraction failed."
 
 # 6. Specific Binary Verification
@@ -69,6 +66,9 @@ echo "🎨 Setting up menu shortcut..."
 if ! sudo curl -Lf "$ICON_URL" -o "$INSTALL_DIR/icon.png"; then
     echo "⚠️  Warning: Icon download failed, but the app was installed."
 fi
+
+# FIX: Create the applications directory if it doesn't exist
+sudo mkdir -p /usr/local/share/applications/
 
 sudo bash -c "cat > /usr/local/share/applications/${BINARY_NAME}.desktop" <<EOF
 [Desktop Entry]
