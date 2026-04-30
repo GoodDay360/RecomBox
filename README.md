@@ -25,7 +25,7 @@
 
 
 # Download
-[![Download](https://img.shields.io/badge/Download-GitHub-blue?style=for-the-badge&logo=github)](https://github.com/GoodDay360/HyperionBox/releases/latest)
+[![Download](https://img.shields.io/badge/Download-GitHub-blue?style=for-the-badge&logo=github)](https://github.com/RecomBox/RecomBox/releases/latest)
 
 # What's RecomBox?
 An open-source cross-platform torrent streaming app for Anime, Movies, and TV with cross-device watch progress tracking. 
@@ -72,32 +72,31 @@ An open-source cross-platform torrent streaming app for Anime, Movies, and TV wi
 
 ## Prerequisites
 
-This project is built with [Tauri](https://v2.tauri.app/start/prerequisites/).  
+This project is built with [Flutter](https://flutter.dev/) and [Rust](https://rust-lang.org/).  
+For plugin it built with [Typescript](https://www.typescriptlang.org/).  
 Make sure you have installed all required prerequisites for your operating system.
-
-## Package Manager & Frameworks
-
-I use [Bun](https://bun.sh/) for package management. While Bun doesn’t directly affect how the app runs (since Tauri handles rendering), I prefer it for convenience. You’re free to use another package manager, but please avoid committing changes that are only needed for your local setup.  
-
-The application itself is developed with **SolidJS** for the frontend and  css reset from **Bootstrap**, all running inside Tauri.
 
 ## Setup
 
 Install the dependencies:
 
 ```bash
-bun install
+flutter pub get
 ```
 
 ### Start a development
-
-```bash
-bun tauri dev
+Start flutter from vscode or from terminal:
 ```
+flutter run
+```
+
 ### Production
 
 Build the application for production:
 
 ```bash
-bun tauri build
+flutter build {os}
+
+# use 'flutter build -h' to list available build.
+
 ```
