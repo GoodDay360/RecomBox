@@ -66,34 +66,14 @@ jobs:
             flutter build windows --release
           fi
 
-      - name: Package Windows MSI (Native WiX)
+      - name: Package Windows EXE (NSIS)
         if: matrix.target == 'windows'
         shell: pwsh
         run: |
-          # 1. Dynamically find WiX path
-          $wixBin = Get-ChildItem -Path "C:\Program Files (x86)\WiX Toolset*" -Filter "bin" -Recurse | Select-Object -First 1
-          if ($wixBin) {
-              $env:PATH += ";$($wixBin.FullName)"
-              Write-Host "Using WiX from: $($wixBin.FullName)"
-          } else {
-              Write-Error "WiX Toolset not found."
-              exit 1
-          }
-
-          # 2. Extract metadata
           $appName = (Select-String -Pattern "^name: " -Path pubspec.yaml).ToString().Split(":")[1].Trim()
-          $version = (Select-String -Pattern "^version: " -Path pubspec.yaml).ToString().Split(":")[1].Split("+")[0].Trim()
-          $upgradeCode = (Select-String -Pattern "upgrade_code: " -Path pubspec.yaml).ToString().Split(":")[1].Trim()
-          $buildDir = "build/windows/x64/release/runner"
-          
+          $buildDir = (Resolve-Path "build/windows/x64/release/runner").Path
           mkdir -p dist
-
-          # 3. Harvest DLLs and Assets
-          heat dir "$buildDir" -cg AppFiles -gg -scom -sreg -sfrag -srd -dr INSTALLFOLDER -out "harvest.wxs"
-
-          # 4. Compile and Link
-          candle windows.wxs harvest.wxs -dAppName="$appName" -dAppVersion="$version" -dUpgradeCode="$upgradeCode" -dBuildDir="$buildDir"
-          light -ext WixUIExtension -out "dist/$appName-windows-x86_64.msi" windows.wixobj harvest.wixobj
+          makensis /DAPP_NAME="$appName" "/DBUILD_DIR=$buildDir" windows.nsi
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -104,7 +84,7 @@ jobs:
             build/ios/iphoneos/*.app
             build/linux/x64/release/bundle/*
             build/macos/Build/Products/Release/*.app
-            dist/*.msi
+            dist/*.exe
           if-no-files-found: warn
 
   release:
@@ -131,17 +111,12 @@ jobs:
         run: |
           mkdir -p dist
           NAME="${{ steps.meta.outputs.app_name }}"
-          
-          # MSI
-          find artifacts -name "*.msi" -exec cp {} dist/ \;
-          
-          # Android
+          find artifacts -name "*.exe" -exec cp {} dist/ \;
           find artifacts -name "app-release.apk" -exec cp {} dist/$NAME-android-universal.apk \;
           find artifacts -name "app-armeabi-v7a-release.apk" -exec cp {} dist/$NAME-android-arm.apk \;
           find artifacts -name "app-arm64-v8a-release.apk" -exec cp {} dist/$NAME-android-aarch64.apk \;
           find artifacts -name "app-x86_64-release.apk" -exec cp {} dist/$NAME-android-x86_64.apk \;
           
-          # iOS
           IOS_APP_PATH=$(find artifacts -type d -name "*.app" | grep "iphoneos" | head -n 1)
           if [ -d "$IOS_APP_PATH" ]; then
             mkdir -p Payload
@@ -150,7 +125,6 @@ jobs:
             rm -rf Payload
           fi
 
-          # macOS
           MAC_APP_PATH=$(find artifacts -type d -name "*.app" | grep "macos" | head -n 1)
           if [ -d "$MAC_APP_PATH" ]; then
             sudo apt-get update && sudo apt-get install -y genisoimage
@@ -160,7 +134,6 @@ jobs:
             rm -rf mac_dmg_folder
           fi
 
-          # Linux
           LINUX_PATH=$(find artifacts -type d -name "bundle" | head -n 1)
           if [ -d "$LINUX_PATH" ]; then
             tar -czf dist/$NAME-linux-x86_64.tar.gz -C "$LINUX_PATH" .
@@ -173,7 +146,7 @@ jobs:
           jq -n \
             --arg version "${{ steps.meta.outputs.version }}" \
             --arg name "$NAME" \
-            --arg win_x64 "$BASE_URL/$NAME-windows-x86_64.msi" \
+            --arg win_x64 "$BASE_URL/$NAME-windows-x86_64.exe" \
             --arg lin_x64 "$BASE_URL/$NAME-linux-x86_64.tar.gz" \
             --arg mac_arm "$BASE_URL/$NAME-macos-aarch64.dmg" \
             --arg ios_arm "$BASE_URL/$NAME-ios-aarch64.ipa" \
