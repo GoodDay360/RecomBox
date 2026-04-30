@@ -48,7 +48,6 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
-      # --- Rust Caching (rust/target) ---
       - name: Cache rustup toolchains
         uses: actions/cache@v4
         with:
@@ -97,7 +96,6 @@ jobs:
         if: matrix.target == 'windows'
         run: |
           flutter build windows --release
-          # FIX: Added flag to prevent interactive certificate prompt crash
           dart run msix:create --install-certificate false
 
       - name: Upload Artifacts
@@ -109,7 +107,10 @@ jobs:
             build/ios/iphoneos/*.app
             build/linux/x64/release/bundle/*
             build/macos/Build/Products/Release/*.app
-            build/windows/runner/Release/*.msix
+            build/windows/**/*.msix
+          # This is the key: it ignores the missing Android/iOS files 
+          # on Windows and just uploads whatever it finds.
+          if-no-files-found: warn
 
   release:
     needs: build
@@ -145,7 +146,7 @@ jobs:
           # Windows
           find artifacts -name "*.msix" -exec cp {} dist/$NAME-windows-x86_64.msix \;
           
-          # iOS -> IPA (Payload structure)
+          # iOS -> IPA
           IOS_APP_PATH=$(find artifacts -type d -name "*.app" | grep "iphoneos" | head -n 1)
           if [ -d "$IOS_APP_PATH" ]; then
             mkdir -p Payload
@@ -154,7 +155,7 @@ jobs:
             rm -rf Payload
           fi
 
-          # macOS -> DMG (Using genisoimage on Linux)
+          # macOS -> DMG
           MAC_APP_PATH=$(find artifacts -type d -name "*.app" | grep "macos" | head -n 1)
           if [ -d "$MAC_APP_PATH" ]; then
             sudo apt-get update && sudo apt-get install -y genisoimage
