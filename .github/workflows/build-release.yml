@@ -66,6 +66,10 @@ jobs:
             flutter build windows --release
           fi
 
+      - name: Install NSIS
+        if: matrix.target == 'windows'
+        run: choco install nsis -y
+
       - name: Package Windows EXE (NSIS)
         if: matrix.target == 'windows'
         shell: pwsh
@@ -73,7 +77,7 @@ jobs:
           # 1. Extract metadata
           $appName = (Select-String -Pattern "^name: " -Path pubspec.yaml).ToString().Split(":")[1].Trim()
           
-          # 2. Search for the build directory to handle case/path variations
+          # 2. Search for the build directory
           $buildDir = ""
           $pathsToTry = @(
             "build/windows/x64/runner/Release",
@@ -94,10 +98,13 @@ jobs:
           }
           
           Write-Host "Found build directory at: $buildDir"
-          mkdir -p dist
+          
+          # Ensure dist directory exists
+          if (!(Test-Path "dist")) { New-Item -ItemType Directory -Path "dist" }
 
           # 3. Compile NSIS Installer
-          makensis /DAPP_NAME="$appName" "/DBUILD_DIR=$buildDir" windows.nsi
+          # Using & call operator to ensure the command executes correctly
+          & makensis /DAPP_NAME="$appName" "/DBUILD_DIR=$buildDir" windows.nsi
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -135,12 +142,17 @@ jobs:
         run: |
           mkdir -p dist
           NAME="${{ steps.meta.outputs.app_name }}"
+          
+          # Windows
           find artifacts -name "*.exe" -exec cp {} dist/ \;
+          
+          # Android
           find artifacts -name "app-release.apk" -exec cp {} dist/$NAME-android-universal.apk \;
           find artifacts -name "app-armeabi-v7a-release.apk" -exec cp {} dist/$NAME-android-arm.apk \;
           find artifacts -name "app-arm64-v8a-release.apk" -exec cp {} dist/$NAME-android-aarch64.apk \;
           find artifacts -name "app-x86_64-release.apk" -exec cp {} dist/$NAME-android-x86_64.apk \;
           
+          # iOS (Wrap .app into .ipa)
           IOS_APP_PATH=$(find artifacts -type d -name "*.app" | grep "iphoneos" | head -n 1)
           if [ -d "$IOS_APP_PATH" ]; then
             mkdir -p Payload
@@ -149,6 +161,7 @@ jobs:
             rm -rf Payload
           fi
 
+          # macOS (Create DMG)
           MAC_APP_PATH=$(find artifacts -type d -name "*.app" | grep "macos" | head -n 1)
           if [ -d "$MAC_APP_PATH" ]; then
             sudo apt-get update && sudo apt-get install -y genisoimage
@@ -158,6 +171,7 @@ jobs:
             rm -rf mac_dmg_folder
           fi
 
+          # Linux (Tarball)
           LINUX_PATH=$(find artifacts -type d -name "bundle" | head -n 1)
           if [ -d "$LINUX_PATH" ]; then
             tar -czf dist/$NAME-linux-x86_64.tar.gz -C "$LINUX_PATH" .
