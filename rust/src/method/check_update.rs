@@ -46,7 +46,7 @@ impl CheckUpdate {
         let current_version = Version::parse(&Settings::get()?.version)?;
 
         let latest_version = Version::parse(raw_latest_version)?;
-        if latest_version < current_version {
+        if latest_version > current_version {
             if ["linux", "ios"].contains(&OS){
                 return Ok(Some(CheckUpdate{
                     latest_version: raw_latest_version.to_string(),
