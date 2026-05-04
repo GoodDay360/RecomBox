@@ -1,6 +1,7 @@
 <!--
 [<img src="https://github.com/GoodDay360/HyperionBox/blob/main/public/1500x500-banner.png?raw=true">](/)
 -->
+
 <div>
     <a href="https://discord.gg/TkArvnVvNG">
         <img src="https://dcbadge.limes.pink/api/server/TkArvnVvNG?style=flat" />
@@ -31,6 +32,9 @@
    <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=RecomBox/RecomBox&type=date&legend=top-left" />
  </picture>
 </a>
+
+# Tech Stack
+![Flutter](https://img.shields.io/badge/flutter-%2320232a?style=for-the-badge&logo=flutter&logoColor=%2361DAFB) ![Rust](https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white) ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white) 
 
 
 # Download
@@ -83,10 +87,6 @@ An open-source cross-platform torrent streaming app for Anime, Movies, and TV wi
 # How to use?
 [Watch this video on YouTube](https://youtu.be/M32efmieHIg)
 -->
-
-### Tech Stack
-![Flutter](https://img.shields.io/badge/flutter-%2320232a?style=for-the-badge&logo=flutter&logoColor=%2361DAFB) ![Rust](https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white) ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white) 
-
 
 
 # 📸 Screenshot
