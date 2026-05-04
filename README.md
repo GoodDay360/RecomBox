@@ -59,8 +59,6 @@
   </tr>
 </table>
 
-\\
-
 
 ### Linux
 Rerun this command when there is an update.
