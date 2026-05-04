@@ -34,12 +34,38 @@
 
 
 # Download
-[![Download](https://img.shields.io/badge/Download-GitHub-blue?style=for-the-badge&logo=github)](https://github.com/RecomBox/RecomBox/releases/latest)
+<table>
+  <tr>
+    <td>
+      <a href="https://github.com/RecomBox/RecomBox/releases/latest/download/recombox-windows-x86_64.exe">
+        <img src="https://cdn.intheloop.io/wp-content/uploads/2020/08/windows-button.png" alt="Download for Windows" width="250" height="80">
+      </a>
+    </td>
+    <td>
+      <a href="https://github.com/RecomBox/RecomBox/releases/latest/download/recombox-android-universal.apk">
+        <img src="https://fakebrains.com/wp-content/uploads/2021/04/Android-App-Download.png" alt="Download for Android" width="250" height="80">
+      </a>
+    </td>
+    <td>
+      <a href="https://github.com/RecomBox/RecomBox/releases/latest/download/recombox-ios-aarch64.ipa">
+        <img src="https://vboxxcloud.com/assets/img/download-ios-app-test.png" alt="Download for IOS" width="250" height="80">
+      </a>
+    </td>
+    <td>
+      <a href="https://github.com/RecomBox/RecomBox/releases/latest/download/recombox-macos-aarch64.dmg">
+        <img src="https://www.bluesound.com/cdn/shop/files/Download_for_MAC_Badge_Black_Colour_English_600x200_afa07640-840b-497f-a99c-ea5a7bd22237.webp?v=1775798000" alt="Download for MacOS" width="250" height="80">
+      </a>
+    </td>
+  </tr>
+</table>
+
+
 ### Linux
 Rerun this command when there is an update.
 ```
 curl -sSL https://raw.githubusercontent.com/RecomBox/RecomBox/main/install.sh | bash
 ```
+[![More Download](https://img.shields.io/badge/More-Download-blue?style=for-the-badge&logo=github)](https://github.com/RecomBox/RecomBox/releases/latest)
 
 # What's RecomBox?
 An open-source cross-platform torrent streaming app for Anime, Movies, and TV with cross-device watch progress tracking. 
