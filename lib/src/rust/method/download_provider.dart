@@ -5,8 +5,11 @@
 
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
+part 'download_provider.freezed.dart';
+part 'download_provider.g.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_receiver_is_total_eq`, `assert_receiver_is_total_eq`, `clone`, `clone`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `hash`, `hash`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_receiver_is_total_eq`, `assert_receiver_is_total_eq`, `assert_receiver_is_total_eq`, `clone`, `clone`, `clone`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `hash`, `hash`
 
 Future<ArcDatabase> getDb() =>
     RustLib.instance.api.crateMethodDownloadProviderGetDb();
@@ -76,33 +79,15 @@ class DownloadItemValue {
           mimeType == other.mimeType;
 }
 
-class DownloadStatus {
-  final BigInt progressSize;
-  final BigInt totalSize;
-  final bool paused;
-  final bool done;
+@freezed
+sealed class DownloadStatus with _$DownloadStatus {
+  const factory DownloadStatus({
+    required BigInt progressSize,
+    required BigInt totalSize,
+    required bool paused,
+    required bool done,
+  }) = _DownloadStatus;
 
-  const DownloadStatus({
-    required this.progressSize,
-    required this.totalSize,
-    required this.paused,
-    required this.done,
-  });
-
-  @override
-  int get hashCode =>
-      progressSize.hashCode ^
-      totalSize.hashCode ^
-      paused.hashCode ^
-      done.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is DownloadStatus &&
-          runtimeType == other.runtimeType &&
-          progressSize == other.progressSize &&
-          totalSize == other.totalSize &&
-          paused == other.paused &&
-          done == other.done;
+  factory DownloadStatus.fromJson(Map<String, dynamic> json) =>
+      _$DownloadStatusFromJson(json);
 }

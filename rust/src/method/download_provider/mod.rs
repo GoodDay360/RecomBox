@@ -12,8 +12,9 @@ use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use std::sync::{RwLock, Arc};
 use once_cell::sync::Lazy;
-use std::fs;
+use std::{fs};
 use std::cmp::{Eq, PartialEq};
+use flutter_rust_bridge::frb;
 
 use crate::utils::settings::Settings;
 
@@ -43,8 +44,8 @@ pub struct DownloadItemValue{
 }
 
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[frb(json_serializable)]
+#[derive(Debug, Serialize, Deserialize, Clone, Eq, PartialEq, Copy)]
 pub struct DownloadStatus{
     pub progress_size: u64,
     pub total_size: u64,
