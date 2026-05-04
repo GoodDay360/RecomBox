@@ -61,7 +61,7 @@
 
 
 ### Linux
-Rerun this command when there is an update.
+Also rerun this command when there is an update.
 ```
 curl -sSL https://raw.githubusercontent.com/RecomBox/RecomBox/main/install.sh | bash
 ```
