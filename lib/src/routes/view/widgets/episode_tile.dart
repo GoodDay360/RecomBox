@@ -114,19 +114,44 @@ class _EpisodeTileState extends State<EpisodeTile> {
             height: 100,
             child: Row(
               children: [
-                Ink.image(
-                  width: 150,
-                  height: 100,
-                  image: failLoadThumbnail
-                    ? const AssetImage('assets/episode_thumbnail_placeholder.jpg')
-                    : NetworkImage(widget.episodeInfo.thumbnailUrl),
-                  fit: BoxFit.cover,
-                  onImageError: (_,__){
-                    setState(() {
-                      failLoadThumbnail = true;
-                    });
-                  },
+                Stack(
+                  children: [
+                    Ink.image(
+                      width: 150,
+                      height: 100,
+                      image: failLoadThumbnail
+                        ? const AssetImage('assets/episode_thumbnail_placeholder.jpg')
+                        : NetworkImage(widget.episodeInfo.thumbnailUrl),
+                      fit: BoxFit.cover,
+                      onImageError: (_,__){
+                        setState(() {
+                          failLoadThumbnail = true;
+                        });
+                      },
+                    ),
+
+                    if (watchPosition > BigInt.from(0))
+                      Container(
+                        width: 150,
+                        height: 100,
+                        padding: EdgeInsets.all(2.5),
+                        alignment: Alignment.bottomCenter,
+                        child: Text(
+                          Duration(milliseconds: watchPosition.toInt()).toString().split('.').first.padLeft(8, "0"),
+                          style: TextStyle(
+                            color: appColors.textPrimary,
+                            fontSize: 16,
+                            fontWeight: FontWeight.normal,
+                            backgroundColor: Colors.black.withAlpha(125)
+                          ),
+                          maxLines: 3,
+                          textAlign: TextAlign.start,
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      )
+                  ],
                 ),
+                
                 Expanded(
                   child: Container(
                     padding: EdgeInsets.all(10),
@@ -141,22 +166,11 @@ class _EpisodeTileState extends State<EpisodeTile> {
                             fontSize: 16,
                             fontWeight: FontWeight.normal,
                           ),
-                          maxLines: 2,
+                          maxLines: 3,
                           textAlign: TextAlign.start,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        if (watchPosition > BigInt.from(0))
-                          Text(
-                            "Last watched: ${Duration(milliseconds: watchPosition.toInt()).toString().split('.').first.padLeft(8, "0")}",
-                            style: TextStyle(
-                              color: appColors.textPrimary,
-                              fontSize: 16,
-                              fontWeight: FontWeight.normal,
-                            ),
-                            maxLines: 3,
-                            textAlign: TextAlign.start,
-                            overflow: TextOverflow.ellipsis,
-                          )
+                        
                       ],
                     )
                   )
