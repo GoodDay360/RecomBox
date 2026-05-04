@@ -38,26 +38,28 @@
   <tr>
     <td>
       <a href="https://github.com/RecomBox/RecomBox/releases/latest/download/recombox-windows-x86_64.exe">
-        <img src="https://cdn.intheloop.io/wp-content/uploads/2020/08/windows-button.png" alt="Download for Windows" width="250" height="80">
+        <img src="https://github.com/user-attachments/assets/165cac3c-3732-46b3-998b-7667dd1f0918" alt="Download for Windows" width="250" height="80">
       </a>
     </td>
     <td>
       <a href="https://github.com/RecomBox/RecomBox/releases/latest/download/recombox-android-universal.apk">
-        <img src="https://fakebrains.com/wp-content/uploads/2021/04/Android-App-Download.png" alt="Download for Android" width="250" height="80">
+        <img src="https://github.com/user-attachments/assets/09318bdd-3fda-4f91-a4dd-40b2bed4b2fc" alt="Download for Android" width="250" height="80">
       </a>
     </td>
     <td>
       <a href="https://github.com/RecomBox/RecomBox/releases/latest/download/recombox-ios-aarch64.ipa">
-        <img src="https://vboxxcloud.com/assets/img/download-ios-app-test.png" alt="Download for IOS" width="250" height="80">
+        <img src="https://github.com/user-attachments/assets/9a6c1f38-53e7-46e3-8c4f-3715591c3bd8" alt="Download for IOS" width="250" height="80">
       </a>
     </td>
     <td>
       <a href="https://github.com/RecomBox/RecomBox/releases/latest/download/recombox-macos-aarch64.dmg">
-        <img src="https://www.bluesound.com/cdn/shop/files/Download_for_MAC_Badge_Black_Colour_English_600x200_afa07640-840b-497f-a99c-ea5a7bd22237.webp?v=1775798000" alt="Download for MacOS" width="250" height="80">
+        <img src="https://github.com/user-attachments/assets/bdc45f91-367b-4505-a0a2-4dd5cd02e59c" alt="Download for MacOS" width="250" height="80">
       </a>
     </td>
   </tr>
 </table>
+
+\\
 
 
 ### Linux
