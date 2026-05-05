@@ -69,7 +69,13 @@ Also rerun this command when there is an update.
 ```
 curl -sSL https://raw.githubusercontent.com/RecomBox/RecomBox/main/install.sh | bash
 ```
+### iOS Altstore Repo
+```
+https://raw.githubusercontent.com/RecomBox/RecomBox/refs/heads/main/altstore.json
+```
 [![More Download](https://img.shields.io/badge/More-Download-blue?style=for-the-badge&logo=github)](https://github.com/RecomBox/RecomBox/releases/latest)
+
+
 
 # What's RecomBox?
 An open-source cross-platform torrent streaming app for Anime, Movies, and TV with cross-device watch progress tracking. 
