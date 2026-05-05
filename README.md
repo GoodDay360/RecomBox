@@ -78,7 +78,7 @@ https://raw.githubusercontent.com/RecomBox/RecomBox/refs/heads/main/altstore.jso
 
 
 # What's RecomBox?
-An open-source cross-platform torrent streaming app for Anime, Movies, and TV with cross-device watch progress tracking. 
+An open-source cross-platform torrent streaming app for Anime, Movies, and TV.
 
 # ✨ Features
 - **Stream Torrent** seamlessly from various sources without full download.
