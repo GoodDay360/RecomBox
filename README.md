@@ -101,6 +101,9 @@ An open-source cross-platform torrent streaming app for Anime, Movies, and TV wi
 ### Search
 <img width="1920" height="1080" alt="Screenshot (553)" src="https://github.com/user-attachments/assets/c4d57d17-370f-4d23-ab1c-1900eb446128" />
 
+### Plugin
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/d3ba4ef0-c709-4445-ae6a-9d226a771a48" />
+
 ### Download
 <img width="1920" height="1080" alt="Screenshot (554)" src="https://github.com/user-attachments/assets/a6b7a1cb-68c7-4498-bef4-0345308b341d" />
 
