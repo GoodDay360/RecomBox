@@ -77,7 +77,6 @@ An open-source cross-platform torrent streaming app for Anime, Movies, and TV wi
 # ✨ Features
 - 🎬 **Stream Torrent** seamlessly from various sources.
 - 📌 **Track your watch progress** and pick up where you left off.
-- ☁️ **Google Drive Back Up** to sync your favorites and watch history across all your devices.
 - ⬇️ **Download** for offline watching.
 - 🔍 **Advanced search** for quick content discovery.
 - 🧩 **Plugins**: add and update external torrent provider without update entire app.
@@ -86,6 +85,9 @@ An open-source cross-platform torrent streaming app for Anime, Movies, and TV wi
 
 # How to use?
 [Watch this video on YouTube](https://youtu.be/M32efmieHIg)
+-->
+<!--
+- ☁️ **Google Drive Back Up** to sync your favorites and watch history across all your devices.
 -->
 
 
