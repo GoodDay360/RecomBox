@@ -75,11 +75,11 @@ curl -sSL https://raw.githubusercontent.com/RecomBox/RecomBox/main/install.sh | 
 An open-source cross-platform torrent streaming app for Anime, Movies, and TV with cross-device watch progress tracking. 
 
 # ✨ Features
-- 🎬 **Stream Torrent** seamlessly from various sources without full download.
-- 📌 **Track your watch progress** and pick up where you left off.
-- ⬇️ **Download** for offline watching.
-- 🔍 **Advanced search** for quick content discovery.
-- 🧩 **Plugins**: add and update external torrent provider without update entire app.
+- **Stream Torrent** seamlessly from various sources without full download.
+- **Track your watch progress** and pick up where you left off.
+- **Download** for offline watching.
+- **Advanced search** for quick content discovery.
+- **Plugins**: add and update external torrent provider without update entire app.
 
 <!--
 
