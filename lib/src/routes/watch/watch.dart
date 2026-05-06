@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:recombox/src/global/app_color.dart';
+import 'package:recombox/src/global/navigate_watch.dart';
 import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/routes/select_file/select_file.dart';
 import 'package:recombox/src/routes/select_plugin/select_plugin.dart';
@@ -411,160 +412,283 @@ class _WatchState extends State<WatchScreen> {
     }
   }
 
+  Future<void> seekPosition(int seconds) async {
+
+    final currentPosition = player.state.position;
+    
+    final newPosition = currentPosition + Duration(seconds: seconds);
+    
+    await player.seek(newPosition);
+  }
+
+  void onWatchNext() async {
+    final ctx = context;
+    final viewContentInfoResult = await ViewContentInfo.get_(
+      source: args!.source.name,
+      id: args!.viewID,
+      fromCache: true
+    );
+
+    final episodeList = viewContentInfoResult.episodes;
+
+    bool availableNext = false;
+
+    int nextSeasonIndex = args!.season.toInt();
+    int nextEpisodeIndex = args!.episode.toInt() + 1;
+
+    if (nextEpisodeIndex >= episodeList[nextEpisodeIndex].length){
+      nextEpisodeIndex = 0;
+      nextSeasonIndex++;
+      if (nextSeasonIndex >= episodeList.length){
+        availableNext = false;
+      }else{
+        availableNext = true;
+      }
+    }else{
+      availableNext = true;
+    }
+
+    await onNavigateCleanUp();
+
+    if (availableNext && ctx.mounted){
+      navigateWatch(NavigateWatchArgs(
+        context: ctx, 
+        source: args!.source, 
+        viewID: args!.viewID, 
+        externalID: args!.externalID, 
+        title: args!.title, 
+        titleSecondary: args!.titleSecondary, 
+        seasonIndex: BigInt.from(nextSeasonIndex), 
+        episodeIndex: BigInt.from(nextEpisodeIndex)
+      ));
+    }
+    
+  }
+
+  void onWatchPrevious() async {
+    final ctx = context;
+
+    bool availableNext = false;
+
+    int nextSeasonIndex = args!.season.toInt();
+    int nextEpisodeIndex = args!.episode.toInt() - 1;
+
+    if (nextEpisodeIndex < 0){
+      nextEpisodeIndex = 0;
+      nextSeasonIndex--;
+      if (nextSeasonIndex < 0){
+        availableNext = false;
+      }else{
+        availableNext = true;
+      }
+    }else{
+      availableNext = true;
+    }
+
+    await onNavigateCleanUp();
+    if (availableNext && ctx.mounted){
+      
+      navigateWatch(NavigateWatchArgs(
+        context: ctx, 
+        source: args!.source, 
+        viewID: args!.viewID, 
+        externalID: args!.externalID, 
+        title: args!.title, 
+        titleSecondary: args!.titleSecondary, 
+        seasonIndex: BigInt.from(nextSeasonIndex), 
+        episodeIndex: BigInt.from(nextEpisodeIndex)
+      ));
+    }
+    
+  }
+
   @override
   Widget build(BuildContext context) {
-    // // Listen to audio tracks
-    // player.stream.tracks.listen((tracks) {
-    //   for (final a in tracks.audio) {
-    //     debugPrint('Audio track: ${a.id} ${a.language} ${a.codec}');
-    //   }
-    // });
 
-    // player.stream.tracks.listen((tracks) {
-    //   // Print all subtitle tracks
-    //   for (final subtitle in tracks.subtitle) {
-    //     debugPrint('Subtitle: id=${subtitle.id}, title=${subtitle.title}, language=${subtitle.language}');
-    //   }
-    // });
-
-  List<Widget> topButtonBar = [
-    IconButton(
-      mouseCursor: SystemMouseCursors.click,
-      iconSize: 32,
-      color: appColors.secondary,
-      onPressed: ()async{
-        if (context.mounted){
-          final ctx = context;
-          await onNavigateCleanUp();
-
-          if (!ctx.mounted) return;
-          Navigator.pushNamedAndRemoveUntil(
-            ctx,
-            "/view", 
-            (route) => false,
-            arguments: ViewScreenArguments(
-              source: args!.source, 
-              id: args!.viewID
-            )
-          );
-        }
-
-      },
-      icon: Icon(
-        Icons.arrow_back_rounded,
+    List<Widget> topButtonBar = [
+      IconButton(
+        mouseCursor: SystemMouseCursors.click,
+        iconSize: 32,
         color: appColors.secondary,
-      ),
-    ),
-    const Spacer(),
+        onPressed: ()async{
+          if (context.mounted){
+            final ctx = context;
+            await onNavigateCleanUp();
 
-    IconButton(
-      mouseCursor: SystemMouseCursors.click,
-      iconSize: 32,
-      color: appColors.secondary,
-      onPressed: (){
-        if (context.mounted){
-          showDialog(
-            context: context, 
-            builder: (_)=>SubtitleTrackControlDialog(
-              player: player 
-            )
-          );
-        }
-      } ,
-      icon: Icon(Icons.subtitles_rounded)
-    ),
+            if (!ctx.mounted) return;
+            Navigator.pushNamedAndRemoveUntil(
+              ctx,
+              "/view", 
+              (route) => false,
+              arguments: ViewScreenArguments(
+                source: args!.source, 
+                id: args!.viewID
+              )
+            );
+          }
 
-    const SizedBox(width: 10),
-    
-    IconButton(
-      mouseCursor: SystemMouseCursors.click,
-      iconSize: 32,
-      color: appColors.secondary,
-      onPressed: (){
-        if (context.mounted){
-          showDialog(
-            context: context, 
-            builder: (_)=>AudioTrackControlDialog(
-              player: player 
-            )
-          );
-        }
-      } ,
-      icon: Icon(Icons.audio_file_rounded)
-    ),
-
-    const SizedBox(width: 10),
-
-    Theme(
-      data: Theme.of(context).copyWith(
-        popupMenuTheme: PopupMenuThemeData(
-          color: appColors.tertiary,
-          textStyle: GoogleFonts.nunito(
-            fontSize: 18,
-            color: appColors.textPrimary,
-            fontWeight: FontWeight(600)
-          ),
+        },
+        icon: Icon(
+          Icons.arrow_back_rounded,
+          color: appColors.secondary,
         ),
       ),
-      child: PopupMenuButton<int>(
-        icon: MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child: Icon(
-            Icons.more_vert_rounded,
-            color: appColors.secondary,
+      const Spacer(),
+
+      IconButton(
+        mouseCursor: SystemMouseCursors.click,
+        iconSize: 32,
+        color: appColors.secondary,
+        onPressed: (){
+          if (context.mounted){
+            showDialog(
+              context: context, 
+              builder: (_)=>SubtitleTrackControlDialog(
+                player: player 
+              )
+            );
+          }
+        } ,
+        icon: Icon(Icons.subtitles_rounded)
+      ),
+
+      const SizedBox(width: 10),
+      
+      IconButton(
+        mouseCursor: SystemMouseCursors.click,
+        iconSize: 32,
+        color: appColors.secondary,
+        onPressed: (){
+          if (context.mounted){
+            showDialog(
+              context: context, 
+              builder: (_)=>AudioTrackControlDialog(
+                player: player 
+              )
+            );
+          }
+        } ,
+        icon: Icon(Icons.audio_file_rounded)
+      ),
+
+      const SizedBox(width: 10),
+
+      Theme(
+        data: Theme.of(context).copyWith(
+          popupMenuTheme: PopupMenuThemeData(
+            color: appColors.tertiary,
+            textStyle: GoogleFonts.nunito(
+              fontSize: 18,
+              color: appColors.textPrimary,
+              fontWeight: FontWeight(600)
+            ),
           ),
         ),
-        tooltip: "Show options",
-        itemBuilder: (BuildContext context) => [
-          PopupMenuItem<int>(
-            onTap: () => onSelectOption(0),
-            child: MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: Text(
-                'Change Plugin',
-                style: GoogleFonts.nunito(
-                  fontSize: 18,
-                  color: appColors.textPrimary,
-                  fontWeight: FontWeight(600)
+        child: PopupMenuButton<int>(
+          icon: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: Icon(
+              Icons.more_vert_rounded,
+              color: appColors.secondary,
+            ),
+          ),
+          tooltip: "Show options",
+          itemBuilder: (BuildContext context) => [
+            PopupMenuItem<int>(
+              onTap: () => onSelectOption(0),
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: Text(
+                  'Change Plugin',
+                  style: GoogleFonts.nunito(
+                    fontSize: 18,
+                    color: appColors.textPrimary,
+                    fontWeight: FontWeight(600)
+                  ),
                 ),
-              ),
-            )
-            
-          ),
-        ],
-        
+              )
+              
+            ),
+          ],
+          
+        ),
+      )
+
+
+    ];
+
+    List<Widget> bottomButtonBar = [
+      if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ...[
+        MaterialDesktopVolumeButton(),
+        const SizedBox(width: 10),
+      ],
+      
+      MaterialPositionIndicator(),
+
+      const Spacer(),
+
+      IconButton(
+        mouseCursor: SystemMouseCursors.click,
+        iconSize: 32,
+        color: appColors.secondary,
+        onPressed: onToggleFitBox,
+        icon: Icon(Icons.fit_screen_outlined)
       ),
-    )
+      const SizedBox(width: 10),
 
+      MaterialFullscreenButton(),
+      
+      
+    
+    ];
 
-  ];
+    List<Widget> primaryButtonBar = [
 
-  List<Widget> bottomButtonBar = [
-    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ...[
+      IconButton(
+        mouseCursor: SystemMouseCursors.click,
+        iconSize: 32,
+        color: appColors.secondary,
+        onPressed: onWatchPrevious,
+        icon: Icon(Icons.skip_previous_rounded)
+      ),
+      const SizedBox(width: 10),
+      
+
+      const Spacer(),
+      IconButton(
+        mouseCursor: SystemMouseCursors.click,
+        iconSize: 32,
+        color: appColors.secondary,
+        onPressed: ()=> seekPosition(-10),
+        icon: Icon(Icons.replay_10_rounded),
+      ),
+      const Spacer(),
+
+      
       MaterialPlayOrPauseButton(),
+      const Spacer(),
+    
+      IconButton(
+        mouseCursor: SystemMouseCursors.click,
+        iconSize: 32,
+        color: appColors.secondary,
+        onPressed: ()=> seekPosition(10),
+        icon: Icon(Icons.forward_10_rounded),
+      ),
+
+      const Spacer(),
+
+      IconButton(
+        mouseCursor: SystemMouseCursors.click,
+        iconSize: 32,
+        color: appColors.secondary,
+        onPressed: onWatchNext,
+        icon: Icon(Icons.skip_next_rounded)
+      ),
       const SizedBox(width: 10),
-      MaterialDesktopVolumeButton(),
-      const SizedBox(width: 10),
-    ],
-    
-    MaterialPositionIndicator(),
-
-    const Spacer(),
-
-    IconButton(
-      mouseCursor: SystemMouseCursors.click,
-      iconSize: 32,
-      color: appColors.secondary,
-      onPressed: onToggleFitBox,
-      icon: Icon(Icons.fit_screen_outlined)
-    ),
-    const SizedBox(width: 10),
-
-    MaterialFullscreenButton(),
-    
-    
-  
-  ];
+      
+      
+    ];
 
     return PopScope(
       canPop: false,
@@ -585,12 +709,14 @@ class _WatchState extends State<WatchScreen> {
                         fullscreen: MaterialDesktopVideoControlsThemeData(
                           padding: const EdgeInsets.all(25),
                           topButtonBar: topButtonBar,
+                          primaryButtonBar: primaryButtonBar,
                           bottomButtonBar: bottomButtonBar,
 
                         ),
                         normal: MaterialDesktopVideoControlsThemeData(
                           padding: const EdgeInsets.all(25),
                           topButtonBar: topButtonBar,
+                          primaryButtonBar: primaryButtonBar,
                           bottomButtonBar: bottomButtonBar,
                           
                         ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:recombox/src/global/dialogs/favorite/set_category_dialog.dart';
 import 'package:recombox/src/global/app_color.dart';
+import 'package:recombox/src/global/navigate_watch.dart';
 import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/routes/select_file/select_file.dart';
 import 'package:recombox/src/routes/select_plugin/select_plugin.dart';
@@ -227,100 +228,6 @@ class _ViewState extends State<ViewScreen> with RouteAware {
 
   }
 
-  Future<void> onNavigateWatch(BigInt seasonIndex, BigInt episodeIndex) async{
-    final ctx = context;
-    // -> Get downloaded
-    try{
-      final downloadInfo = await getDownload(downloadItemKey: DownloadItemKey(
-        source: args.source.name, 
-        id: args.id, 
-        seasonIndex: seasonIndex, 
-        episodeIndex: episodeIndex
-      ));
-
-      if (downloadInfo != null){
-        WatchScreenArguments watchScreenArgs = WatchScreenArguments(
-          selectFileMode: SelectFileMode.watch,
-          source: args.source, 
-          viewID: args.id, 
-          externalID: viewContentInfoResult!.externalId, 
-          title: viewContentInfoResult!.title, 
-          titleSecondary: viewContentInfoResult!.titleSecondary, 
-          torrentSource: downloadInfo.torrentSource, 
-          mimeType: downloadInfo.mimeType, 
-          fileID: downloadInfo.fileId, 
-          season: seasonIndex,
-          episode: episodeIndex
-        );
-        if (ctx.mounted){
-          Navigator.pushNamed(
-            ctx,
-            '/watch',
-            arguments: watchScreenArgs,
-          );
-        }
-        return;
-      }
-    }catch(e){
-      debugPrint(e.toString());
-    }
-    // <-
-
-    try{
-      LastWatchTorrentInfo? lastWatchTorrentInfo = await getLastWatchTorrent(
-        source: args.source.name, 
-        id: args.id, 
-        seasonIndex: seasonIndex, 
-        episodeIndex: episodeIndex
-      );
-      debugPrint(lastWatchTorrentInfo.toString());
-      if (lastWatchTorrentInfo != null){
-        WatchScreenArguments watchScreenArgs = WatchScreenArguments(
-          selectFileMode: SelectFileMode.watch,
-          source: args.source, 
-          viewID: args.id, 
-          externalID: viewContentInfoResult!.externalId, 
-          title: viewContentInfoResult!.title, 
-          titleSecondary: viewContentInfoResult!.titleSecondary, 
-          torrentSource: lastWatchTorrentInfo.torrentSource, 
-          mimeType: lastWatchTorrentInfo.mimeType, 
-          fileID: lastWatchTorrentInfo.fileId, 
-          season: seasonIndex,
-          episode: episodeIndex
-        );
-        if (ctx.mounted){
-          Navigator.pushNamed(
-            ctx,
-            '/watch',
-            arguments: watchScreenArgs,
-          );
-        }
-        return;
-      }
-    }catch(e){
-      debugPrint(e.toString());
-    }
-    
-    SelectPluginScreenArguments selectPluginArgs = SelectPluginScreenArguments(
-      selectFileMode:  SelectFileMode.watch,
-      source: args.source,
-      id: args.id,
-      externalID: viewContentInfoResult!.externalId,
-      title: viewContentInfoResult!.title,
-      titleSecondary: viewContentInfoResult!.titleSecondary,
-      season: seasonIndex,
-      episode: episodeIndex
-    );
-
-    if (ctx.mounted){
-      Navigator.pushNamed(
-        ctx,
-        '/select_plugin',
-        arguments: selectPluginArgs,
-      );
-    }
-
-  }
 
   Future<void> onNavigateDownload(BigInt seasonIndex, BigInt episodeIndex) async {
     final ctx = context;
@@ -545,10 +452,16 @@ class _ViewState extends State<ViewScreen> with RouteAware {
                           ElevatedButton.icon(
                             icon: Icon(Icons.play_arrow),
                             onPressed: () {
-                              onNavigateWatch(
-                                viewContentInfoResult!.lastWatchSeasonIndex??BigInt.from(0), 
-                                viewContentInfoResult!.lastWatchEpisodeIndex??BigInt.from(0)
-                              );
+                              navigateWatch(NavigateWatchArgs(
+                                context: context, 
+                                source: args.source, 
+                                viewID: args.id, 
+                                externalID: viewContentInfoResult!.externalId, 
+                                title: viewContentInfoResult!.title, 
+                                titleSecondary: viewContentInfoResult!.titleSecondary, 
+                                seasonIndex: viewContentInfoResult!.lastWatchSeasonIndex??BigInt.from(0), 
+                                episodeIndex: viewContentInfoResult!.lastWatchEpisodeIndex??BigInt.from(0)
+                              ));
                             },
                             label: Text(
                               (((viewContentInfoResult?.lastWatchSeasonIndex??BigInt.from(0)) > BigInt.from(0)) || ((viewContentInfoResult?.lastWatchEpisodeIndex??BigInt.from(0)) > BigInt.from(0)))
@@ -980,10 +893,12 @@ class _ViewState extends State<ViewScreen> with RouteAware {
                                         child: EpisodeTile(
                                           source: args.source,
                                           viewID: args.id,
+                                          externalID: viewContentInfoResult!.externalId,
+                                          title: viewContentInfoResult!.title,
+                                          titleSecondary: viewContentInfoResult!.titleSecondary,
                                           season: BigInt.from(currentSeasonIndex),
                                           episode: BigInt.from(index),
                                           episodeInfo: filteredEpisodes[index],
-                                          onNavigateWatch: ()=>onNavigateWatch(BigInt.from(currentSeasonIndex), BigInt.from(index)),
                                           onNavigateDownload: ()=>onNavigateDownload(BigInt.from(currentSeasonIndex), BigInt.from(index))
                                         )
                                       );
