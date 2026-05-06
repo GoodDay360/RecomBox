@@ -7,11 +7,7 @@ import '../../frb_generated.dart';
 import '../download_provider.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-Future<PinBoxFutureOutputResultOptionDownloadItemValueStringAsyncRecursion>
-    getDownload({required DownloadItemKey downloadItemKey}) =>
-        RustLib.instance.api.crateMethodDownloadProviderGetDownloadGetDownload(
-            downloadItemKey: downloadItemKey);
-
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<:: Pin < Box < Future < Output = Result < Option < DownloadItemValue > , String > > + 'async_recursion + Send > >>>
-abstract class PinBoxFutureOutputResultOptionDownloadItemValueStringAsyncRecursion
-    implements RustOpaqueInterface {}
+Future<DownloadItemValue?> getDownload(
+        {required DownloadItemKey downloadItemKey}) =>
+    RustLib.instance.api.crateMethodDownloadProviderGetDownloadGetDownload(
+        downloadItemKey: downloadItemKey);

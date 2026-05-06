@@ -26,7 +26,6 @@
 
 // Section: imports
 
-use crate::method::download_provider::get_download::*;
 use crate::method::download_provider::*;
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
 use flutter_rust_bridge::for_generated::{transform_result_dco, Lifetimeable, Lockable};
@@ -462,7 +461,7 @@ fn wire__crate__method__download_provider__get_download__get_download_impl(
     rust_vec_len_: i32,
     data_len_: i32,
 ) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
             debug_name: "get_download",
             port: Some(port_),
@@ -481,15 +480,18 @@ fn wire__crate__method__download_provider__get_download__get_download_impl(
             let api_download_item_key =
                 <crate::method::download_provider::DownloadItemKey>::sse_decode(&mut deserializer);
             deserializer.end();
-            move |context| {
-                transform_result_sse::<_, ()>((move || {
-                    let output_ok = Result::<_, ()>::Ok(
-                        crate::method::download_provider::get_download::get_download(
-                            &api_download_item_key,
-                        ),
-                    )?;
-                    Ok(output_ok)
-                })())
+            move |context| async move {
+                transform_result_sse::<_, String>(
+                    (move || async move {
+                        let output_ok =
+                            crate::method::download_provider::get_download::get_download(
+                                &api_download_item_key,
+                            )
+                            .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
             }
         },
     )
@@ -1531,17 +1533,6 @@ let api_episode_index = <u64>::sse_decode(&mut deserializer);deserializer.end();
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
     flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc<Database>>
 );
-flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
-    flutter_rust_bridge::for_generated::RustAutoOpaqueInner<
-        ::Pin<
-            Box<
-                Future<Output = Result<Option<DownloadItemValue>, String>>
-                    + 'async_recursion
-                    + Send,
-            >,
-        >,
-    >
-);
 
 // Section: dart2rust
 
@@ -1558,28 +1549,6 @@ impl SseDecode for Arc<Database> {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <RustOpaqueMoi<
             flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc<Database>>,
-        >>::sse_decode(deserializer);
-        return flutter_rust_bridge::for_generated::rust_auto_opaque_decode_owned(inner);
-    }
-}
-
-impl SseDecode
-    for ::Pin<
-        Box<Future<Output = Result<Option<DownloadItemValue>, String>> + 'async_recursion + Send>,
-    >
-{
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut inner = <RustOpaqueMoi<
-            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<
-                ::Pin<
-                    Box<
-                        Future<Output = Result<Option<DownloadItemValue>, String>>
-                            + 'async_recursion
-                            + Send,
-                    >,
-                >,
-            >,
         >>::sse_decode(deserializer);
         return flutter_rust_bridge::for_generated::rust_auto_opaque_decode_owned(inner);
     }
@@ -1635,26 +1604,6 @@ impl SseDecode for std::collections::HashMap<u64, u64> {
 
 impl SseDecode
     for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc<Database>>>
-{
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut inner = <usize>::sse_decode(deserializer);
-        return decode_rust_opaque_moi(inner);
-    }
-}
-
-impl SseDecode
-    for RustOpaqueMoi<
-        flutter_rust_bridge::for_generated::RustAutoOpaqueInner<
-            ::Pin<
-                Box<
-                    Future<Output = Result<Option<DownloadItemValue>, String>>
-                        + 'async_recursion
-                        + Send,
-                >,
-            >,
-        >,
-    >
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -2165,6 +2114,19 @@ impl SseDecode for Option<crate::method::check_update::CheckUpdate> {
     }
 }
 
+impl SseDecode for Option<crate::method::download_provider::DownloadItemValue> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(
+                <crate::method::download_provider::DownloadItemValue>::sse_decode(deserializer),
+            );
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for Option<crate::method::download_provider::DownloadStatus> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -2600,67 +2562,6 @@ impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for FrbWrapper<
 
 impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<Arc<Database>>> for Arc<Database> {
     fn into_into_dart(self) -> FrbWrapper<Arc<Database>> {
-        self.into()
-    }
-}
-
-// Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart
-    for FrbWrapper<
-        ::Pin<
-            Box<
-                Future<Output = Result<Option<DownloadItemValue>, String>>
-                    + 'async_recursion
-                    + Send,
-            >,
-        >,
-    >
-{
-    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self.0)
-            .into_dart()
-    }
-}
-impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for FrbWrapper<
-        ::Pin<
-            Box<
-                Future<Output = Result<Option<DownloadItemValue>, String>>
-                    + 'async_recursion
-                    + Send,
-            >,
-        >,
-    >
-{
-}
-
-impl
-    flutter_rust_bridge::IntoIntoDart<
-        FrbWrapper<
-            ::Pin<
-                Box<
-                    Future<Output = Result<Option<DownloadItemValue>, String>>
-                        + 'async_recursion
-                        + Send,
-                >,
-            >,
-        >,
-    >
-    for ::Pin<
-        Box<Future<Output = Result<Option<DownloadItemValue>, String>> + 'async_recursion + Send>,
-    >
-{
-    fn into_into_dart(
-        self,
-    ) -> FrbWrapper<
-        ::Pin<
-            Box<
-                Future<Output = Result<Option<DownloadItemValue>, String>>
-                    + 'async_recursion
-                    + Send,
-            >,
-        >,
-    > {
         self.into()
     }
 }
@@ -3314,30 +3215,6 @@ impl SseEncode for Arc<Database> {
 }
 
 impl SseEncode
-    for ::Pin<
-        Box<Future<Output = Result<Option<DownloadItemValue>, String>> + 'async_recursion + Send>,
-    >
-{
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <RustOpaqueMoi<
-            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<
-                ::Pin<
-                    Box<
-                        Future<Output = Result<Option<DownloadItemValue>, String>>
-                            + 'async_recursion
-                            + Send,
-                    >,
-                >,
-            >,
-        >>::sse_encode(
-            flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self),
-            serializer,
-        );
-    }
-}
-
-impl SseEncode
     for std::collections::HashMap<
         String,
         crate::method::plugin_provider::get_installed_plugins::InstalledPluginInfo,
@@ -3383,27 +3260,6 @@ impl SseEncode for std::collections::HashMap<u64, u64> {
 
 impl SseEncode
     for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc<Database>>>
-{
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        let (ptr, size) = self.sse_encode_raw();
-        <usize>::sse_encode(ptr, serializer);
-        <i32>::sse_encode(size, serializer);
-    }
-}
-
-impl SseEncode
-    for RustOpaqueMoi<
-        flutter_rust_bridge::for_generated::RustAutoOpaqueInner<
-            ::Pin<
-                Box<
-                    Future<Output = Result<Option<DownloadItemValue>, String>>
-                        + 'async_recursion
-                        + Send,
-                >,
-            >,
-        >,
-    >
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -3799,6 +3655,16 @@ impl SseEncode for Option<crate::method::check_update::CheckUpdate> {
     }
 }
 
+impl SseEncode for Option<crate::method::download_provider::DownloadItemValue> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::method::download_provider::DownloadItemValue>::sse_encode(value, serializer);
+        }
+    }
+}
+
 impl SseEncode for Option<crate::method::download_provider::DownloadStatus> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -4080,7 +3946,6 @@ mod io {
     // Section: imports
 
     use super::*;
-    use crate::method::download_provider::get_download::*;
     use crate::method::download_provider::*;
     use flutter_rust_bridge::for_generated::byteorder::{
         NativeEndian, ReadBytesExt, WriteBytesExt,
@@ -4105,40 +3970,6 @@ mod io {
     ) {
         MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc < Database >>>::decrement_strong_count(ptr as _);
     }
-
-    #[unsafe(no_mangle)]
-    pub extern "C" fn frbgen_recombox_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPinBoxFutureOutputResultOptionDownloadItemValueStringasync_recursionSend(
-        ptr: *const std::ffi::c_void,
-    ) {
-        MoiArc::<
-            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<
-                ::Pin<
-                    Box<
-                        Future<Output = Result<Option<DownloadItemValue>, String>>
-                            + 'async_recursion
-                            + Send,
-                    >,
-                >,
-            >,
-        >::increment_strong_count(ptr as _);
-    }
-
-    #[unsafe(no_mangle)]
-    pub extern "C" fn frbgen_recombox_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPinBoxFutureOutputResultOptionDownloadItemValueStringasync_recursionSend(
-        ptr: *const std::ffi::c_void,
-    ) {
-        MoiArc::<
-            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<
-                ::Pin<
-                    Box<
-                        Future<Output = Result<Option<DownloadItemValue>, String>>
-                            + 'async_recursion
-                            + Send,
-                    >,
-                >,
-            >,
-        >::decrement_strong_count(ptr as _);
-    }
 }
 #[cfg(not(target_family = "wasm"))]
 pub use io::*;
@@ -4152,7 +3983,6 @@ mod web {
     // Section: imports
 
     use super::*;
-    use crate::method::download_provider::get_download::*;
     use crate::method::download_provider::*;
     use flutter_rust_bridge::for_generated::byteorder::{
         NativeEndian, ReadBytesExt, WriteBytesExt,
@@ -4178,40 +4008,6 @@ mod web {
         ptr: *const std::ffi::c_void,
     ) {
         MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc < Database >>>::decrement_strong_count(ptr as _);
-    }
-
-    #[wasm_bindgen]
-    pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPinBoxFutureOutputResultOptionDownloadItemValueStringasync_recursionSend(
-        ptr: *const std::ffi::c_void,
-    ) {
-        MoiArc::<
-            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<
-                ::Pin<
-                    Box<
-                        Future<Output = Result<Option<DownloadItemValue>, String>>
-                            + 'async_recursion
-                            + Send,
-                    >,
-                >,
-            >,
-        >::increment_strong_count(ptr as _);
-    }
-
-    #[wasm_bindgen]
-    pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPinBoxFutureOutputResultOptionDownloadItemValueStringasync_recursionSend(
-        ptr: *const std::ffi::c_void,
-    ) {
-        MoiArc::<
-            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<
-                ::Pin<
-                    Box<
-                        Future<Output = Result<Option<DownloadItemValue>, String>>
-                            + 'async_recursion
-                            + Send,
-                    >,
-                >,
-            >,
-        >::decrement_strong_count(ptr as _);
     }
 }
 #[cfg(target_family = "wasm")]
