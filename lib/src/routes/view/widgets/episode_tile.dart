@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recombox/src/global/app_color.dart';
+import 'package:recombox/src/global/navigate_watch.dart';
 import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/rust/method/download_provider.dart';
 import 'package:recombox/src/rust/method/download_provider/get_download.dart';
@@ -13,20 +14,25 @@ class EpisodeTile extends StatefulWidget {
     super.key,
     required this.source,
     required this.viewID,
+    required this.externalID,
+    required this.title,
+    required this.titleSecondary,
     required this.season,
     required this.episode,
     required this.episodeInfo,
-    required this.onNavigateWatch,
     required this.onNavigateDownload
   });
 
   final Source source;
   final String viewID;
+  final String externalID;
+  final String title;
+  final String titleSecondary;
   final BigInt season;
   final BigInt episode;
   final EpisodeInfo episodeInfo;
 
-  final Function() onNavigateWatch;
+
   final Function() onNavigateDownload;
 
 
@@ -107,7 +113,18 @@ class _EpisodeTileState extends State<EpisodeTile> {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: widget.onNavigateWatch,
+        onTap: (){
+          navigateWatch(NavigateWatchArgs(
+            context: context, 
+            source: widget.source, 
+            viewID: widget.viewID, 
+            externalID: widget.externalID, 
+            title: widget.title, 
+            titleSecondary: widget.titleSecondary, 
+            seasonIndex: widget.season, 
+            episodeIndex: widget.episode
+          ));
+        },
         mouseCursor: SystemMouseCursors.click,
         child: SizedBox(
             width: double.infinity,
