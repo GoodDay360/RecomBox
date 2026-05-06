@@ -66,12 +66,21 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       get rust_arc_decrement_strong_count_ArcDatabasePtr => wire
           ._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcDatabasePtr;
 
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_PinBoxFutureOutputResultOptionDownloadItemValueStringAsyncRecursionPtr =>
+          wire._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPinBoxFutureOutputResultOptionDownloadItemValueStringasync_recursionSendPtr;
+
   @protected
   AnyhowException dco_decode_AnyhowException(dynamic raw);
 
   @protected
   ArcDatabase
       dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcDatabase(
+          dynamic raw);
+
+  @protected
+  PinBoxFutureOutputResultOptionDownloadItemValueStringAsyncRecursion
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPinBoxFutureOutputResultOptionDownloadItemValueStringasync_recursionSend(
           dynamic raw);
 
   @protected
@@ -92,6 +101,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   ArcDatabase
       dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcDatabase(
+          dynamic raw);
+
+  @protected
+  PinBoxFutureOutputResultOptionDownloadItemValueStringAsyncRecursion
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPinBoxFutureOutputResultOptionDownloadItemValueStringasync_recursionSend(
           dynamic raw);
 
   @protected
@@ -247,10 +261,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   CheckUpdate? dco_decode_opt_box_autoadd_check_update(dynamic raw);
 
   @protected
-  DownloadItemValue? dco_decode_opt_box_autoadd_download_item_value(
-      dynamic raw);
-
-  @protected
   DownloadStatus? dco_decode_opt_box_autoadd_download_status(dynamic raw);
 
   @protected
@@ -341,6 +351,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
+  PinBoxFutureOutputResultOptionDownloadItemValueStringAsyncRecursion
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPinBoxFutureOutputResultOptionDownloadItemValueStringasync_recursionSend(
+          SseDeserializer deserializer);
+
+  @protected
   Map<String, InstalledPluginInfo>
       sse_decode_Map_String_installed_plugin_info_None(
           SseDeserializer deserializer);
@@ -361,6 +376,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   ArcDatabase
       sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcDatabase(
+          SseDeserializer deserializer);
+
+  @protected
+  PinBoxFutureOutputResultOptionDownloadItemValueStringAsyncRecursion
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPinBoxFutureOutputResultOptionDownloadItemValueStringasync_recursionSend(
           SseDeserializer deserializer);
 
   @protected
@@ -536,10 +556,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  DownloadItemValue? sse_decode_opt_box_autoadd_download_item_value(
-      SseDeserializer deserializer);
-
-  @protected
   DownloadStatus? sse_decode_opt_box_autoadd_download_status(
       SseDeserializer deserializer);
 
@@ -636,6 +652,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           ArcDatabase self, SseSerializer serializer);
 
   @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPinBoxFutureOutputResultOptionDownloadItemValueStringasync_recursionSend(
+          PinBoxFutureOutputResultOptionDownloadItemValueStringAsyncRecursion
+              self,
+          SseSerializer serializer);
+
+  @protected
   void sse_encode_Map_String_installed_plugin_info_None(
       Map<String, InstalledPluginInfo> self, SseSerializer serializer);
 
@@ -656,6 +679,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void
       sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcDatabase(
           ArcDatabase self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPinBoxFutureOutputResultOptionDownloadItemValueStringasync_recursionSend(
+          PinBoxFutureOutputResultOptionDownloadItemValueStringAsyncRecursion
+              self,
+          SseSerializer serializer);
 
   @protected
   void sse_encode_String(String self, SseSerializer serializer);
@@ -841,10 +871,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       CheckUpdate? self, SseSerializer serializer);
 
   @protected
-  void sse_encode_opt_box_autoadd_download_item_value(
-      DownloadItemValue? self, SseSerializer serializer);
-
-  @protected
   void sse_encode_opt_box_autoadd_download_status(
       DownloadStatus? self, SseSerializer serializer);
 
@@ -981,5 +1007,37 @@ class RustLibWire implements BaseWire {
           'frbgen_recombox_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcDatabase');
   late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcDatabase =
       _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcDatabasePtr
+          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  void
+      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPinBoxFutureOutputResultOptionDownloadItemValueStringasync_recursionSend(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPinBoxFutureOutputResultOptionDownloadItemValueStringasync_recursionSend(
+      ptr,
+    );
+  }
+
+  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPinBoxFutureOutputResultOptionDownloadItemValueStringasync_recursionSendPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+          'frbgen_recombox_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPinBoxFutureOutputResultOptionDownloadItemValueStringasync_recursionSend');
+  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPinBoxFutureOutputResultOptionDownloadItemValueStringasync_recursionSend =
+      _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPinBoxFutureOutputResultOptionDownloadItemValueStringasync_recursionSendPtr
+          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  void
+      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPinBoxFutureOutputResultOptionDownloadItemValueStringasync_recursionSend(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPinBoxFutureOutputResultOptionDownloadItemValueStringasync_recursionSend(
+      ptr,
+    );
+  }
+
+  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPinBoxFutureOutputResultOptionDownloadItemValueStringasync_recursionSendPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+          'frbgen_recombox_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPinBoxFutureOutputResultOptionDownloadItemValueStringasync_recursionSend');
+  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPinBoxFutureOutputResultOptionDownloadItemValueStringasync_recursionSend =
+      _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPinBoxFutureOutputResultOptionDownloadItemValueStringasync_recursionSendPtr
           .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
 }
