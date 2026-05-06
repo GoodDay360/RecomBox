@@ -761,14 +761,15 @@ class _WatchState extends State<WatchScreen> {
                         fullscreen: MaterialVideoControlsThemeData(
                           padding: const EdgeInsets.all(25),
                           topButtonBar: topButtonBar,
+                          primaryButtonBar: primaryButtonBar,
                           bottomButtonBar: bottomButtonBar,
-
+                          
                         ),
                         normal: MaterialVideoControlsThemeData(
                           padding: const EdgeInsets.all(25),
                           topButtonBar: topButtonBar,
+                          primaryButtonBar: primaryButtonBar,
                           bottomButtonBar: bottomButtonBar,
-
                           
                         ),
                         

@@ -5,6 +5,7 @@ import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/types.dart';
 
 import 'package:recombox/src/global/widgets/title_bar.dart';
+import 'package:recombox/src/routes/select_file/dialogs/submit_bulk_download/submit_bulk_download.dart';
 import 'package:recombox/src/routes/select_file/widgets/select_file_tile.dart';
 import 'package:path/path.dart' as path;
 
@@ -40,7 +41,8 @@ class SelectFileScreenArguments {
 
 enum SelectFileMode {
   watch,
-  download
+  download,
+  bulkDownload
 }
 
 
@@ -179,213 +181,249 @@ class _SelectFileState extends State<SelectFileScreen> {
     if (args == null) return Container();
     
     return SafeArea(
-      child: Material(
-        color: Colors.transparent,
-        child: Column(
-          children: [
-            if (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
-              TitleBar(),
-            Expanded(
-              child: Scaffold(
-                  backgroundColor: Colors.transparent,
-                  body: Column(
-                    spacing: 0,
-                    children: [
-                      
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        child: Row(
-                          spacing: 10,
-                          children: [
-                            IconButton(
-                              mouseCursor: SystemMouseCursors.click,
-                              onPressed: (){
-                                Navigator.pop(context);
-                              },
-                              icon: Icon(
-                                Icons.arrow_back_rounded,
-                                color: appColors.secondary,
-                              ),
-                            ),
-                            Text(
-                              'Select File [Mode: ${args!.selectFileMode.name}]',
-                              style: GoogleFonts.nunito(
-                                color: appColors.textPrimary,
-                                fontSize: 28,
-                                fontWeight: FontWeight(600),
-                              ),
-                              textAlign: TextAlign.start,
-                            ),
-                          ],
-                        ),
-                      ),
-                      
-                      
-
-                      if (isLoading) 
-                        Expanded(
-                          flex: 1,
-                          child: Container(
-                            alignment: Alignment.center,
-                            child: SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(
-                                color: appColors.secondary,
-                              
-                              ),
-                            ),
-                          )
-                        ),
-                      if (!isLoading) ...[
+      child: Scaffold(
+        body: Material(
+          color: appColors.primary,
+          child: Column(
+            children: [
+              if (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                TitleBar(),
+              Expanded(
+                child: Scaffold(
+                    backgroundColor: Colors.transparent,
+                    body: Column(
+                      spacing: 0,
+                      children: [
+                        
                         Container(
-                          alignment: Alignment.topLeft,
-                          padding: const EdgeInsets.only(left: 10, right: 10),
-                          child: Text(
-                            "Torrent Name: $torrentName",
-                            style: GoogleFonts.nunito(
-                              color: appColors.textPrimary,
-                              fontSize: 18,
-                              fontWeight: FontWeight.normal,
-                            ),
-                            maxLines: 1,
-                            textAlign: TextAlign.start,
-                            overflow: TextOverflow.ellipsis,
+                          padding: const EdgeInsets.all(10),
+                          child: Row(
+                            spacing: 10,
+                            children: [
+                              IconButton(
+                                mouseCursor: SystemMouseCursors.click,
+                                onPressed: (){
+                                  Navigator.pop(context);
+                                },
+                                icon: Icon(
+                                  Icons.arrow_back_rounded,
+                                  color: appColors.secondary,
+                                ),
+                              ),
+                              Text(
+                                'Select File [Mode: ${args!.selectFileMode.name}]',
+                                style: GoogleFonts.nunito(
+                                  color: appColors.textPrimary,
+                                  fontSize: 28,
+                                  fontWeight: FontWeight(600),
+                                ),
+                                textAlign: TextAlign.start,
+                              ),
+                            ],
                           ),
                         ),
                         
-                        // -> Search Widget
-                        Container(
-                          padding: EdgeInsets.only(left: 10, right: 10),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  width: 1,
-                                  color: appColors.strokePrimary
-                                )
-                              )
-                            ),
-                            width: double.infinity,
-                            height: 60,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: (){
-                                      searchFocus.requestFocus();
-                                    },
-                                    child: Container(
-                                      padding: EdgeInsets.only(left: 10),
-                                      height: double.infinity,
-                                      child: Row(
-                                        spacing: 8,
-                                        children: [
-                                          Icon(
-                                            Icons.search,
-                                            color: appColors.textPrimary,
-                                          ),
-                                          Expanded(
-                                            child: TextField(
-                                              controller: _textEditingController,
-                                              onChanged: (_){
-                                                setState(() {
-                                                  filteredFileList = onFilterSearch();
-                                                });
-                                              },
-                                              onSubmitted: (_){
-                                                setState(() {
-                                                  filteredFileList = onFilterSearch();
-                                                });
-                                              },
-                                              cursorColor: appColors.textPrimary,
-                                              focusNode: searchFocus,
-                                              style: GoogleFonts.nunito(
-                                                fontSize: 24,
-                                                color: appColors.textPrimary,
-                                              ),
-                                              decoration: InputDecoration(
-                                                border: InputBorder.none,
-                                                hintText: "Search",
-                                                hintStyle: TextStyle(
-                                                  color: appColors.textPrimary,
-                                                )
-                                              ),
-                                            )
-                                          ),
-                                        ],
-                                      )
-                                    )
-                                  ),
-                                ),
-                              
-                                IconButton(
-                                  mouseCursor: SystemMouseCursors.click,
-                                  onPressed: initSelectFile,
-                                  icon: Icon(Icons.refresh),
-                                  color: appColors.textPrimary,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        // <-
-                        if (filteredFileList.isNotEmpty)
+                        
+
+                        if (isLoading) 
                           Expanded(
-                            child: ListView.separated(
-                              shrinkWrap: true,
-                              itemCount: filteredFileList.length,
-                              itemBuilder: (context, index) {
-                                return SelectFileTile(
-                                  key: ValueKey(filteredFileList[index].id),
-                                  selectFileMode: args!.selectFileMode,
-                                  source: args!.source, 
-                                  viewID: args!.viewID, 
-                                  externalID: args!.externalID, 
-                                  title: args!.title, 
-                                  titleSecondary: args!.titleSecondary,
-                                  torrentSource: args!.torrentSource,
-                                  fileInfo: filteredFileList[index],
-                                  season: args!.season,
-                                  episode: args!.episode
-                                );
-                              },
-                              separatorBuilder: (context, index) {
-                                return Divider(
-                                  height: 1,
-                                  color: appColors.strokePrimary,
-                                );
-                              },
-                            ),
-                          ),
-                        if (filteredFileList.isEmpty)
-                          Expanded(
+                            flex: 1,
                             child: Container(
                               alignment: Alignment.center,
-                              height: double.infinity,
-                              padding: const EdgeInsets.all(10),
-                              child: Text(
-                                "No file found from torrent.",
-                                style: GoogleFonts.nunito(
-                                  color: appColors.textPrimary,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.normal,
+                              child: SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  color: appColors.secondary,
+                                
                                 ),
-                                textAlign: TextAlign.center,
+                              ),
+                            )
+                          ),
+                        if (!isLoading) ...[
+                          Container(
+                            alignment: Alignment.topLeft,
+                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            child: Text(
+                              "Torrent Name: $torrentName",
+                              style: GoogleFonts.nunito(
+                                color: appColors.textPrimary,
+                                fontSize: 18,
+                                fontWeight: FontWeight.normal,
+                              ),
+                              maxLines: 1,
+                              textAlign: TextAlign.start,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          
+                          // -> Search Widget
+                          Container(
+                            padding: EdgeInsets.only(left: 10, right: 10),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    width: 1,
+                                    color: appColors.strokePrimary
+                                  )
+                                )
+                              ),
+                              width: double.infinity,
+                              height: 60,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: (){
+                                        searchFocus.requestFocus();
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.only(left: 10),
+                                        height: double.infinity,
+                                        child: Row(
+                                          spacing: 8,
+                                          children: [
+                                            Icon(
+                                              Icons.search,
+                                              color: appColors.textPrimary,
+                                            ),
+                                            Expanded(
+                                              child: TextField(
+                                                controller: _textEditingController,
+                                                onChanged: (_){
+                                                  setState(() {
+                                                    filteredFileList = onFilterSearch();
+                                                  });
+                                                },
+                                                onSubmitted: (_){
+                                                  setState(() {
+                                                    filteredFileList = onFilterSearch();
+                                                  });
+                                                },
+                                                cursorColor: appColors.textPrimary,
+                                                focusNode: searchFocus,
+                                                style: GoogleFonts.nunito(
+                                                  fontSize: 24,
+                                                  color: appColors.textPrimary,
+                                                ),
+                                                decoration: InputDecoration(
+                                                  border: InputBorder.none,
+                                                  hintText: "Search",
+                                                  hintStyle: TextStyle(
+                                                    color: appColors.textPrimary,
+                                                  )
+                                                ),
+                                              )
+                                            ),
+                                          ],
+                                        )
+                                      )
+                                    ),
+                                  ),
+                                
+                                  IconButton(
+                                    mouseCursor: SystemMouseCursors.click,
+                                    onPressed: initSelectFile,
+                                    icon: Icon(Icons.refresh),
+                                    color: appColors.textPrimary,
+                                  ),
+                                ],
                               ),
                             ),
-                          )
+                          ),
+                          // <-
+                          if (filteredFileList.isNotEmpty)
+                            Expanded(
+                              child: ListView.separated(
+                                shrinkWrap: true,
+                                itemCount: filteredFileList.length,
+                                itemBuilder: (context, index) {
+                                  return SelectFileTile(
+                                    key: ValueKey(filteredFileList[index].id),
+                                    selectFileMode: args!.selectFileMode,
+                                    source: args!.source, 
+                                    viewID: args!.viewID, 
+                                    externalID: args!.externalID, 
+                                    title: args!.title, 
+                                    titleSecondary: args!.titleSecondary,
+                                    torrentSource: args!.torrentSource,
+                                    fileInfo: filteredFileList[index],
+                                    season: args!.season,
+                                    episode: args!.episode
+                                  );
+                                },
+                                separatorBuilder: (context, index) {
+                                  return Divider(
+                                    height: 1,
+                                    color: appColors.strokePrimary,
+                                  );
+                                },
+                              ),
+                            ),
+                          if (filteredFileList.isEmpty)
+                            Expanded(
+                              child: Container(
+                                alignment: Alignment.center,
+                                height: double.infinity,
+                                padding: const EdgeInsets.all(10),
+                                child: Text(
+                                  "No file found from torrent.",
+                                  style: GoogleFonts.nunito(
+                                    color: appColors.textPrimary,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            )
+                        ],
                       ],
-                    ],
+                    ),
+                    
                   ),
-                  
+                
+                
+              )
+            
+            ],
+          )
+        ),
+        floatingActionButton: 
+          (args!.selectFileMode == SelectFileMode.bulkDownload)
+          ? SizedBox(
+            width: double.infinity,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end, 
+              children: [
+                FloatingActionButton.extended(
+                  mouseCursor: SystemMouseCursors.click,
+                  heroTag: "Bulk Season Download", 
+                  onPressed: () {
+                    showDialog(
+                      context: context, 
+                      barrierDismissible: true,
+                      builder: (_) => SubmitBulkDownload()
+                    );
+                  },
+                  backgroundColor: appColors.accentSecondary,
+                  icon: Icon(
+                    Icons.download_rounded,
+                    color: appColors.textPrimary,
+                  ),
+                  label: Text(
+                    "Submit Bulk Download",
+                    style: GoogleFonts.nunito(
+                      color: appColors.textPrimary,
+                      fontSize: 18,
+                      fontWeight: FontWeight(700),
+                    ),
+                  ),
                 ),
-              
-              
+              ],
             )
-          
-          ],
-        )
+          ): null
       )
     );
   }

@@ -207,7 +207,7 @@ class _SelectSourceState extends State<SelectSourceScreen> {
                         ),
                       ),
                       
-                      if (args!.selectPluginScreenArguments.source != Source.movies)
+                      if ((args!.selectPluginScreenArguments.source != Source.movies ) && (args!.selectPluginScreenArguments.selectFileMode != SelectFileMode.bulkDownload))
                         Container(
                           alignment: Alignment.topLeft,
                           padding: const EdgeInsets.only(left: 10, right: 10),
