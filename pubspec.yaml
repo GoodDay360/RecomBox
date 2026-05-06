@@ -65,6 +65,7 @@ dependencies:
   package_info_plus: ^10.0.0
   crypto: ^3.0.7
   ota_update: ^7.1.0
+  oktoast: ^3.4.0
 
 dev_dependencies:
   flutter_test:

@@ -78,8 +78,7 @@ async fn spawn_session() -> anyhow::Result<()>{
 
             let output_dir = PathBuf::from(settings.paths.app_support_dir.clone())
                 .join("download")
-                .join(key.source.to_string())
-                .join(key.id.to_string())
+                .join("data")
                 .join(encoded_torent_source);
                 
             let torrent_handle_builder = TorrentHandle {

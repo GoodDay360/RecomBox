@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/navigate_watch.dart';
 import 'package:recombox/src/global/types.dart';
@@ -220,8 +221,7 @@ class _WatchState extends State<WatchScreen> {
             final filePath = path.join(
               settings.paths.appSupportDir,
               "download",
-              args!.source.name,
-              args!.viewID,
+              "data",
               downloadItemInfo.filePath
             );
 
@@ -347,7 +347,32 @@ class _WatchState extends State<WatchScreen> {
     if (context.mounted){
       setState(() {
         currentBoxFitIndex = (currentBoxFitIndex + 1) % boxFitList.length;
+        
       });
+      try{
+        showToastWidget(
+          Container(
+            padding: EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              color: appColors.tertiary,
+              borderRadius: BorderRadius.circular(25)
+            ),
+            child: Text(
+              'BoxFit: ${boxFitList[currentBoxFitIndex].name} ${currentBoxFitIndex == 0 ? "(Default)" : ""}',
+              style: GoogleFonts.nunito(
+                color: appColors.textPrimary,
+                fontSize: 16
+              ),
+            ),
+          ),
+          position: ToastPosition.bottom,
+          dismissOtherToast: true,
+          
+        );
+      }catch(e){
+        debugPrint(e.toString());
+      }
+      
     }
     
   }
@@ -504,6 +529,7 @@ class _WatchState extends State<WatchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    
 
     List<Widget> topButtonBar = [
       IconButton(
@@ -711,13 +737,14 @@ class _WatchState extends State<WatchScreen> {
                           topButtonBar: topButtonBar,
                           primaryButtonBar: primaryButtonBar,
                           bottomButtonBar: bottomButtonBar,
-
+                          hideMouseOnControlsRemoval: true,
                         ),
                         normal: MaterialDesktopVideoControlsThemeData(
                           padding: const EdgeInsets.all(25),
                           topButtonBar: topButtonBar,
                           primaryButtonBar: primaryButtonBar,
                           bottomButtonBar: bottomButtonBar,
+                          hideMouseOnControlsRemoval: true,
                           
                         ),
                         
@@ -763,15 +790,3 @@ class _WatchState extends State<WatchScreen> {
     );
   }
 }
-
-
-// itemBuilder: (ctx) => player.state.tracks.audio
-//           .where((track) => track.id != 'auto' && track.id != 'no' && track.codec != null)
-//           .map((track) => PopupMenuItem<AudioTrack>(
-//                 value: track,
-//                 child: Text("Audio: ${track.id} | ${track.language ?? 'Default'}"),
-//               ))
-//           .toList(),
-
-
-    

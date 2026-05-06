@@ -18,9 +18,7 @@ pub async fn set_download_status(
         let mut table = write_txn.open_table(DOWNLOAD_STATUS_TABLE)
             .map_err(|e| e.to_string())?;
 
-        let current_download_status = get_download_status(download_item_key)
-            .await.map_err(|e| e.to_string())?
-            .unwrap_or(DownloadStatus { progress_size: 0, total_size: 1, paused: false, done: false });
+        
 
         let progress_size;
         let total_size;
@@ -29,6 +27,9 @@ pub async fn set_download_status(
             progress_size = download_status.progress_size;
             total_size = download_status.total_size;
         }else{
+            let current_download_status = get_download_status(download_item_key)
+                .await.map_err(|e| e.to_string())?
+                .unwrap_or(DownloadStatus { progress_size: 0, total_size: 1, paused: false, done: false });
             progress_size = current_download_status.progress_size;
             total_size = current_download_status.total_size;
         }
