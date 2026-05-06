@@ -4,6 +4,7 @@ import 'package:mime/mime.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/types.dart';
+import 'package:recombox/src/routes/select_file/dialogs/link_bulk_download/link_bulk_download.dart';
 import 'package:recombox/src/routes/select_file/select_file.dart';
 import 'package:recombox/src/routes/view/view.dart';
 import 'package:recombox/src/routes/watch/watch.dart';
@@ -139,16 +140,28 @@ class _SelectFileTileState extends State<SelectFileTile> {
         );
 
         if (ctx.mounted){
-        Navigator.pushNamedAndRemoveUntil(
-          ctx,
-          '/view',
-          (route) => false,
-          arguments: viewScreenArguments,
-        );
-      }
+          Navigator.pushNamedAndRemoveUntil(
+            ctx,
+            '/view',
+            (route) => false,
+            arguments: viewScreenArguments,
+          );
+        }
       }catch(e){
         debugPrint(e.toString());
       }
+    }else if (widget.selectFileMode == SelectFileMode.bulkDownload){
+      showDialog(
+        context: context, 
+        barrierDismissible: true,
+        builder: (_) => LinkBulkDownload(
+          source: widget.source, 
+          id: widget.viewID,
+          seasonIndex: widget.season,
+          fileInfo: widget.fileInfo,
+          torrentSource: widget.torrentSource,
+        )
+      );
     }
   }
 
@@ -181,6 +194,15 @@ class _SelectFileTileState extends State<SelectFileTile> {
                   
                 )
               ),
+            
+              if (widget.selectFileMode == SelectFileMode.bulkDownload)
+                Container(
+                  padding: EdgeInsets.only(left: 10),
+                  child: Icon(
+                    Icons.add_link_rounded,
+                    color: appColors.textPrimary,
+                  )
+                )
             ]
           )
         )

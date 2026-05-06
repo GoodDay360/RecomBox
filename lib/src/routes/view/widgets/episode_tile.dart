@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recombox/src/global/app_color.dart';
+import 'package:recombox/src/global/bulk_download.dart';
 import 'package:recombox/src/global/navigate_watch.dart';
 import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/rust/method/download_provider.dart';
@@ -20,7 +21,10 @@ class EpisodeTile extends StatefulWidget {
     required this.season,
     required this.episode,
     required this.episodeInfo,
-    required this.onNavigateDownload
+    required this.onNavigateDownload,
+
+    required this.bulkDownloadMode,
+    required this.bulkDownloadSelectAll,
   });
 
   final Source source;
@@ -31,9 +35,13 @@ class EpisodeTile extends StatefulWidget {
   final BigInt season;
   final BigInt episode;
   final EpisodeInfo episodeInfo;
-
-
   final Function() onNavigateDownload;
+
+
+  final bool bulkDownloadMode;
+  final bool bulkDownloadSelectAll;
+
+
 
 
   @override
@@ -45,6 +53,7 @@ class _EpisodeTileState extends State<EpisodeTile> {
   AppColorsScheme appColors = appColorsNotifier.value;
   bool failLoadThumbnail = false;
   bool isInDownload = false;
+  bool selectForBulkDownload = false;
   DownloadStatus downloadStatusResult = DownloadStatus(
     progressSize: BigInt.from(0), 
     totalSize: BigInt.from(0), 
@@ -61,6 +70,11 @@ class _EpisodeTileState extends State<EpisodeTile> {
   }
 
   Future<void> initEpisode() async {
+    bulkDownload = BulkDownload(
+      source: widget.source, 
+      id: widget.viewID, 
+      seasonIndex: widget.season
+    );
     try{
       DownloadItemValue? downloadItemValue = await getDownload(downloadItemKey: DownloadItemKey(
         source: widget.source.name, 
@@ -100,6 +114,20 @@ class _EpisodeTileState extends State<EpisodeTile> {
           setState(() {
             watchPosition = watchState.position ?? BigInt.from(0);
           });
+        }
+      }
+
+      if (!isInDownload){
+        if (context.mounted && widget.bulkDownloadMode && bulkDownload.seasonIndex == widget.season){
+          setState(() {
+            selectForBulkDownload = widget.bulkDownloadSelectAll;
+          });
+
+          if (selectForBulkDownload){
+            bulkDownload.add(widget.episode, BulkDownloadValue());
+          }else{
+            bulkDownload.remove(widget.episode);
+          }
         }
       }
     }catch(e){
@@ -192,7 +220,7 @@ class _EpisodeTileState extends State<EpisodeTile> {
                     )
                   )
                 ),
-                if (!isInDownload)
+                if (!isInDownload && !widget.bulkDownloadMode)
                   IconButton(
                     mouseCursor: SystemMouseCursors.click,
                     onPressed: widget.onNavigateDownload,
@@ -233,8 +261,37 @@ class _EpisodeTileState extends State<EpisodeTile> {
                           size: 32,
                           color: appColors.secondary,
                         ),
-                      )
-                ]
+                      ),
+                ],
+
+                if (!downloadStatusResult.done && !isInDownload && widget.bulkDownloadMode)
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      child: Checkbox(
+                          mouseCursor: SystemMouseCursors.click,
+                          checkColor: appColors.primary,
+                          activeColor: appColors.secondary,
+                          
+                          side: BorderSide(
+                            color: appColors.strokePrimary, 
+                            width: 2,
+                          ),
+                          value: selectForBulkDownload,
+                          onChanged: (bool? value) {
+                            if (value == null) return;
+                            setState(() {
+                              selectForBulkDownload = value;
+                            });
+                            if (value){
+                              bulkDownload.add(widget.episode, BulkDownloadValue());
+                            }else{
+                              bulkDownload.remove(widget.episode);
+                            }
+
+                            debugPrint(bulkDownload.len().toString());
+                          },
+                        )
+                    )
               ],
             ),
           ),
