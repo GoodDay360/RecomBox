@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mime/mime.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/routes/select_file/select_file.dart';
@@ -111,6 +112,25 @@ class _SelectFileTileState extends State<SelectFileTile> {
             filePath: "",
             mimeType: mimeType,
           )
+        );
+        showToastWidget(
+          Container(
+            padding: EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              color: appColors.tertiary,
+              borderRadius: BorderRadius.circular(25)
+            ),
+            child: Text(
+              'Added to download task.',
+              style: GoogleFonts.nunito(
+                color: appColors.textPrimary,
+                fontSize: 16
+              ),
+            ),
+          ),
+          position: ToastPosition.bottom,
+          dismissOtherToast: true,
+          
         );
 
         ViewScreenArguments viewScreenArguments = ViewScreenArguments(
