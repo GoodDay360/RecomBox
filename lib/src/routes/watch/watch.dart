@@ -221,8 +221,7 @@ class _WatchState extends State<WatchScreen> {
             final filePath = path.join(
               settings.paths.appSupportDir,
               "download",
-              args!.source.name,
-              args!.viewID,
+              "data",
               downloadItemInfo.filePath
             );
 

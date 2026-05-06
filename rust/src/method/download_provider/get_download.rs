@@ -1,8 +1,13 @@
 use redb::ReadableDatabase;
 use serde_json::from_slice;
+use std::path::PathBuf;
+use async_recursion::async_recursion;
 
-use super::{get_db, DOWNLOAD_TABLE, DownloadItemValue, DownloadItemKey};
+use crate::{method::download_provider::set_download_status::set_download_status, utils::settings::Settings};
 
+use super::{get_db, DOWNLOAD_TABLE, DownloadItemValue, DownloadItemKey, DownloadStatus};
+
+#[async_recursion]
 pub async fn get_download(
     download_item_key: &DownloadItemKey,
 ) -> Result<Option<DownloadItemValue>, String> {
@@ -40,6 +45,27 @@ pub async fn get_download(
             file_path: decoded[2].clone(),
             mime_type: decoded[3].clone(),
         };
+
+        let settings = Settings::get().map_err(|e| e.to_string())?;
+
+        let file_path = PathBuf::from(&settings.paths.app_support_dir)
+            .join("download")
+            .join("data")
+            .join(&info.file_path);
+
+        if !file_path.exists() {
+            set_download_status(
+                &download_item_key, 
+                &DownloadStatus{
+                    progress_size: 0,
+                    total_size: 1,
+                    paused: false,
+                    done: false
+                }, 
+                true // Apply progress Need to be true, this preven loop back recursion.
+            ).await.map_err(|e| e.to_string())?;
+        }
+
         Ok(Some(info))
     
     } else {

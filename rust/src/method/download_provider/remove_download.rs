@@ -47,8 +47,7 @@ pub async fn remove_download(download_item_key: &DownloadItemKey) -> Result<(), 
 
     let file_path = PathBuf::from(settings.paths.app_support_dir.clone())
         .join("download")
-        .join(download_item_key.source.to_string())
-        .join(download_item_key.id.to_string())
+        .join("data")
         .join(download_info.file_path);
 
     if file_path.exists() {
