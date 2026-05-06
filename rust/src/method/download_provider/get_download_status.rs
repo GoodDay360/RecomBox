@@ -2,7 +2,7 @@ use redb::{ReadableDatabase};
 use serde_json::from_slice;
 use std::path::PathBuf;
 
-use crate::{method::download_provider::get_download::get_download, utils::settings::Settings};
+use crate::{method::download_provider::{get_download::get_download, set_download_status::set_download_status}, utils::settings::Settings};
 
 use super::{get_db, DOWNLOAD_STATUS_TABLE, DownloadItemKey, DownloadStatus};
 
@@ -58,6 +58,12 @@ pub async fn get_download_status(
             state.done = false;
             state.progress_size = 0;
             state.total_size= 1;
+
+            Box::pin(async move {
+                set_download_status(&download_item_key, &state, true).await
+                    .map_err(|e|anyhow::anyhow!(e))?;
+                Ok::<(), anyhow::Error>(())
+            }).await.map_err(|e| e.to_string())?;
         }
 
 
