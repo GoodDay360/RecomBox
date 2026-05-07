@@ -464,11 +464,14 @@ class _WatchState extends State<WatchScreen> {
     if (nextEpisodeIndex >= episodeList[nextSeasonIndex].length){
       nextEpisodeIndex = 0;
       nextSeasonIndex++;
-      if (nextSeasonIndex >= episodeList.length && episodeList[nextSeasonIndex].isEmpty){
+      if (nextSeasonIndex >= episodeList.length){
+        availableNext = false;
+      }else if (episodeList[nextSeasonIndex].isEmpty){
         availableNext = false;
       }else{
         availableNext = true;
       }
+      
     }else{
       availableNext = true;
     }
