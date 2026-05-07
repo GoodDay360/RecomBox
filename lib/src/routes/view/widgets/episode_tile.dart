@@ -70,11 +70,6 @@ class _EpisodeTileState extends State<EpisodeTile> {
   }
 
   Future<void> initEpisode() async {
-    bulkDownload = BulkDownload(
-      source: widget.source, 
-      id: widget.viewID, 
-      seasonIndex: widget.season
-    );
     try{
       DownloadItemValue? downloadItemValue = await getDownload(downloadItemKey: DownloadItemKey(
         source: widget.source.name, 
@@ -118,16 +113,10 @@ class _EpisodeTileState extends State<EpisodeTile> {
       }
 
       if (!isInDownload){
-        if (context.mounted && widget.bulkDownloadMode && bulkDownload.seasonIndex == widget.season){
+        if (context.mounted && widget.bulkDownloadMode && (bulkDownload.seasonIndex == widget.season)){
           setState(() {
             selectForBulkDownload = widget.bulkDownloadSelectAll;
           });
-
-          if (selectForBulkDownload){
-            bulkDownload.add(widget.episode, BulkDownloadValue());
-          }else{
-            bulkDownload.remove(widget.episode);
-          }
         }
       }
     }catch(e){
