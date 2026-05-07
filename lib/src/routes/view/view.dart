@@ -9,6 +9,8 @@ import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/routes/select_file/select_file.dart';
 import 'package:recombox/src/routes/select_plugin/select_plugin.dart';
 import 'package:recombox/src/routes/view/widgets/episode_tile.dart';
+import 'package:recombox/src/rust/method/download_provider.dart';
+import 'package:recombox/src/rust/method/download_provider/get_download.dart';
 import 'package:recombox/src/rust/method/favorite/is_in_category.dart';
 import 'package:recombox/src/rust/method/metadata_provider/view_content.dart';
 import 'dart:io';
@@ -109,6 +111,7 @@ class _ViewState extends State<ViewScreen> with RouteAware {
 
   
   Future<void> initViewContentInfo({bool fromCache=true}) async {
+    
     if (!context.mounted) return;
     countdownTimer?.cancel();
     if (context.mounted){
@@ -118,7 +121,7 @@ class _ViewState extends State<ViewScreen> with RouteAware {
     }
     try{
       var data = await ViewContentInfo.get_(source: args.source.name, id: args.id, fromCache: fromCache);
-      debugPrint(data.toString());
+      
       if (context.mounted){
         
         setState(() {
@@ -144,6 +147,12 @@ class _ViewState extends State<ViewScreen> with RouteAware {
     }
 
     onFavoriteUpdate();
+
+    bulkDownload = BulkDownload(
+      source: args.source,
+      id: args.id,
+      seasonIndex: BigInt.from(currentSeasonIndex),
+    );
     
     if (context.mounted){
       setState(() {
@@ -192,6 +201,12 @@ class _ViewState extends State<ViewScreen> with RouteAware {
   }
 
   void onSeasonChange(int index){
+    bulkDownload = BulkDownload(
+      source: args.source,
+      id: args.id,
+      seasonIndex: BigInt.from(index),
+    );
+
     if (context.mounted){
       setState(() {
         bulkDownloadMode = false;
@@ -199,8 +214,10 @@ class _ViewState extends State<ViewScreen> with RouteAware {
         showFloatingButton = false;
         currentSeasonIndex = index;
       });
+      
     }
   }
+
 
   List<EpisodeInfo> onFilterChange() {
     return viewContentInfoResult!.episodes[currentSeasonIndex].asMap().entries
@@ -274,12 +291,32 @@ class _ViewState extends State<ViewScreen> with RouteAware {
     
   }
 
-  Future<void> selectAllBultDownload() async {
+  Future<void> onSelectAllBulkDownload() async {
     final ctx = context;
     if (ctx.mounted){
       setState(() {
         bulkDownloadSelectAll = !bulkDownloadSelectAll;
       });
+    }
+    
+
+    if (bulkDownloadSelectAll){
+      for (var i = 0; i < viewContentInfoResult!.episodes[currentSeasonIndex].length; i++) {
+        
+        DownloadItemValue? downloadItemValue = await getDownload(downloadItemKey: DownloadItemKey(
+          source: args.source.name, 
+          id: args.id, 
+          seasonIndex: BigInt.from(currentSeasonIndex), 
+          episodeIndex: BigInt.from(i)
+        ));
+        final isInDownload = downloadItemValue != null;
+
+        if (!isInDownload){
+          bulkDownload.add(BigInt.from(i), BulkDownloadValue());
+        }
+      }
+    }else{
+      bulkDownload.removeAll();
     }
   }
 
@@ -971,13 +1008,7 @@ class _ViewState extends State<ViewScreen> with RouteAware {
                                         spacing: 10,
                                         children: [
                                           IconButton(
-                                            onPressed: (){
-                                              if (context.mounted){
-                                                setState(() {
-                                                  bulkDownloadSelectAll = !bulkDownloadSelectAll;
-                                                });
-                                              }
-                                            }, 
+                                            onPressed: onSelectAllBulkDownload, 
                                             icon: Icon(bulkDownloadSelectAll ? Icons.deselect_rounded : Icons.select_all_rounded),
                                             color: appColors.secondary,
                                             iconSize: 32,
@@ -1014,7 +1045,7 @@ class _ViewState extends State<ViewScreen> with RouteAware {
                                         itemBuilder: (current, index) {
                                             return Container(
                                               key: ValueKey('$currentSeasonIndex:$index:$bulkDownloadSelectAll'),
-                                              color: ((viewContentInfoResult?.lastWatchSeasonIndex??BigInt.from(0)) == BigInt.from(currentSeasonIndex)) && ((viewContentInfoResult?.lastWatchEpisodeIndex??BigInt.from(0)) == BigInt.from(index))
+                                              color: ((viewContentInfoResult?.lastWatchSeasonIndex) == BigInt.from(currentSeasonIndex)) && ((viewContentInfoResult?.lastWatchEpisodeIndex) == BigInt.from(index))
                                                 ? appColors.tertiary 
                                                 : Colors.transparent,
                                               child: EpisodeTile(
@@ -1128,6 +1159,7 @@ class _ViewState extends State<ViewScreen> with RouteAware {
                   mouseCursor: SystemMouseCursors.click,
                   heroTag: "Bulk Season Download", 
                   onPressed: () {
+                    
                     if (bulkDownload.len() == 0){
                       showToastWidget(
                         Container(

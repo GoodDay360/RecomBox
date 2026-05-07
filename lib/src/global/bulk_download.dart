@@ -45,6 +45,10 @@ class BulkDownload {
     _bulkDownloadMap.remove(episodeIndex);
   }
 
+  void removeAll(){
+    _bulkDownloadMap.clear();
+  }
+
   void display(){
     debugPrint(_bulkDownloadMap.toString());
   }
