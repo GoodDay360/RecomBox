@@ -331,7 +331,6 @@ class _ViewState extends State<ViewScreen> with RouteAware {
       child: Scaffold(
         body: Container(
           color: appColors.primary,
-          padding: showFloatingButton ? EdgeInsets.only(bottom: 80) : EdgeInsets.zero,
           child: Material(
             color: appColors.primary,
             child: Stack(
@@ -946,8 +945,6 @@ class _ViewState extends State<ViewScreen> with RouteAware {
                                                   )
                                                 )
                                               ),
-                                            
-                                              
                                           ),
 
                                       ),
@@ -1033,7 +1030,7 @@ class _ViewState extends State<ViewScreen> with RouteAware {
                                   Container(
                                     width: double.infinity,
                                     height: MediaQuery.of(context).size.height * 0.6,
-                                    padding: EdgeInsets.all(10),
+                                    padding: EdgeInsets.fromLTRB(10, 10, 10, showFloatingButton ? 80 : 10),
                                     child: Scrollbar(
                                       thickness: 0,
                                       controller: _episodeScrollController,
