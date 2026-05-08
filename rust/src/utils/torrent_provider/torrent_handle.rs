@@ -123,7 +123,7 @@ impl TorrentHandle {
     }
 
 
-    pub async fn pause_files(self, file_id: u64) -> anyhow::Result<(), Box<dyn Error>>{
+    pub async fn pause_file(self, file_id: u64) -> anyhow::Result<(), Box<dyn Error>>{
         let session = TorrentSession::get().await?.clone();
 
         let torrent_handle_map = match self.torrent_handle_mode {
@@ -131,9 +131,13 @@ impl TorrentHandle {
             TorrentHandleMode::Download => &DOWNLOAD_TORRENT_HANDLE_MAP
         };
 
-        let torrent_handle = torrent_handle_map.get(&self.torrent_source)
-            .ok_or("Unable to find torrent handle")?
-            .clone();
+        let torrent_handle = match torrent_handle_map.get(&self.torrent_source) {
+            Some(handle) => handle.clone(),
+            None => {
+                println!("[{}:{}] TORRENT HANDLE NOT FOUND. -> Skip clearning.", file!(), line!());
+                return Ok(());
+            }
+        };
 
         let mut current_files = torrent_handle.only_files().unwrap_or_default();
         
@@ -189,6 +193,7 @@ impl TorrentHandle {
 
         torrent_session.delete(torrent_id, delete_files).await?;
 
+        torrent_handle_map.remove(torrent_source);
 
         return Ok(());
 

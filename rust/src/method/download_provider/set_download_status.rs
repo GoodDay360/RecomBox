@@ -1,5 +1,8 @@
 use serde_json::to_vec;
 use std::path::PathBuf;
+use base64::{engine::general_purpose, Engine as _};
+use sha2::{Sha256, Digest};
+use urlencoding::encode;
 
 
 use super::{get_db, DOWNLOAD_STATUS_TABLE, DownloadItemKey, DownloadStatus, get_download_status::get_download_status};
@@ -9,7 +12,7 @@ use crate::utils::settings::Settings;
 pub async fn set_download_status(
     download_item_key: &DownloadItemKey,
     download_status: &DownloadStatus,
-    apply_progress: bool
+    apply_progress: bool,
 ) -> Result<(), String> {
     let db = get_db()?;
     let write_txn = db.begin_write().map_err(|e| e.to_string())?;
@@ -17,9 +20,6 @@ pub async fn set_download_status(
     {
         let mut table = write_txn.open_table(DOWNLOAD_STATUS_TABLE)
             .map_err(|e| e.to_string())?;
-
-        
-
         let progress_size;
         let total_size;
 
@@ -61,19 +61,22 @@ pub async fn set_download_status(
     if download_status.paused {
         let download_info = get_download(&download_item_key).await?;
 
-        let settings = Settings::get()
-            .map_err(|e| e.to_string())?;
-
-
-        let output_dir = PathBuf::from(settings.paths.app_support_dir.clone())
-            .join("download")
-            .join(download_item_key.source.to_string())
-            .join(download_item_key.id.to_string())
-            .join(format!("S{}", download_item_key.season_index+1))
-            .join(format!("E{}", download_item_key.season_index+1));
-            
-
         if let Some(download_info) = download_info {
+            let settings = Settings::get()
+                .map_err(|e| e.to_string())?;
+
+            let mut hasher = Sha256::new();
+            hasher.update(download_info.torrent_source.as_bytes());
+            let sha_result = hasher.finalize();
+            
+            let encoded_torent_source = encode(&general_purpose::STANDARD.encode(sha_result))
+                    .to_string();
+
+            let output_dir = PathBuf::from(settings.paths.app_support_dir.clone())
+                .join("download")
+                .join("data")
+                .join(encoded_torent_source);
+
             let torrent_handle = TorrentHandle{
                 torrent_handle_mode: TorrentHandleMode::Download,
                 file_id: download_info.file_id,
@@ -81,10 +84,8 @@ pub async fn set_download_status(
                 output_dir: output_dir
             };
             
-            torrent_handle.pause_files(download_info.file_id).await
+            torrent_handle.pause_file(download_info.file_id).await
                 .map_err(|e| e.to_string())?;
-
-
         }
     }
     Ok(())
