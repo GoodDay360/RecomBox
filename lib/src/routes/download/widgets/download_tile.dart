@@ -77,7 +77,7 @@ class _DownloadTileState extends State<DownloadTile> {
         });
       }
     }catch(e){
-      debugPrint(e.toString());
+      debugPrint("initDownloadTile: ${e.toString()}");
     }
 
 
@@ -100,9 +100,10 @@ class _DownloadTileState extends State<DownloadTile> {
           id: widget.allDownloadItemKey.id, 
           seasonIndex: widget.allDownloadItemValue.seasonIndex, 
           episodeIndex: widget.allDownloadItemValue.episodeIndex,
+
         ), 
         downloadStatus: downloadStatusResult,
-        applyProgress: false,
+        applyProgress: false
       );
     }catch(e){
       debugPrint(e.toString());

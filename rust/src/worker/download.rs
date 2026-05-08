@@ -57,7 +57,7 @@ async fn spawn_session() -> anyhow::Result<()>{
                 season_index: value_info.season_index, 
                 episode_index: value_info.episode_index
             };
-            let current_download_status = get_download_status(&download_item_key).await.map_err(|e| anyhow::Error::msg(e.to_string()))?.unwrap_or(
+            let mut current_download_status = get_download_status(&download_item_key).await.map_err(|e| anyhow::Error::msg(e.to_string()))?.unwrap_or(
                 DownloadStatus { progress_size: 0, total_size: 1, paused: false, done: false }
             );
 
@@ -95,6 +95,22 @@ async fn spawn_session() -> anyhow::Result<()>{
                 Some(_) => true,
                 None => false,
             };
+
+            if current_download_status.done{
+                let file_path = PathBuf::from(&settings.paths.app_support_dir)
+                    .join("download")
+                    .join("data")
+                    .join(&download_info.file_path);
+
+                if !file_path.exists() {
+                    current_download_status.done = false;
+                    current_download_status.progress_size = 0;
+                    current_download_status.total_size= 1;
+
+                    set_download_status(&download_item_key, &current_download_status, true).await
+                        .map_err(|e|anyhow::anyhow!(e))?;
+                }
+            }
 
             if !exist_progress_watcher && !current_download_status.paused && !current_download_status.done {
                 DOWNLOAD_PROGRESS_WATCHER_WORKER.insert(download_item_key.clone(), String::from(""));
@@ -172,25 +188,30 @@ async fn spawn_progress_watcher(
             set_download(&download_item_key, &download_item_value).await
                 .map_err(|e| anyhow::Error::msg(e.to_string()))?;
 
-            set_download_status(
-                &download_item_key,
-                &DownloadStatus{
-                    progress_size: downloaded,
-                    total_size: total,
-                    paused: current_download_status.paused,
-                    done: downloaded == total
-                },
-                true
-            ).await.map_err(|e| anyhow::Error::msg(e.to_string()))?;
 
-            
+            if (downloaded > 0) && (total > 0) {
+                set_download_status(
+                    &download_item_key,
+                    &DownloadStatus{
+                        progress_size: downloaded,
+                        total_size: total,
+                        paused: current_download_status.paused,
+                        done: downloaded == total
+                    },
+                    true
+                ).await.map_err(|e| anyhow::Error::msg(e.to_string()))?;
 
-            if downloaded == total || current_download_status.paused{
-                torrent_handle_builder.clone().pause_files(download_item_value.file_id).await
-                    .map_err(|e| anyhow::Error::msg(e.to_string()))?;
+                if downloaded == total {
+                    torrent_handle_builder.clone().pause_file(download_item_value.file_id).await
+                        .map_err(|e| anyhow::Error::msg(e.to_string()))?;
+                    break;
+                }
+            }
+
+            if current_download_status.paused{
                 break;
             }
-        
+            
         }
         
     }

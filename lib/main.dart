@@ -21,6 +21,7 @@ import 'dart:ui';
 
 var logger = Logger();
 
+
 Future<void> main() async {
 	await initApp();
 
