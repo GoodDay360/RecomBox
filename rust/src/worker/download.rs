@@ -27,6 +27,7 @@ const DOWNLOAD_PROGRESS_WATCHER_WORKER: Lazy<DashMap<DownloadItemKey, String>> =
 pub async fn start() -> anyhow::Result<()>{
     tokio::spawn( async move {
         loop {
+            println!("[{}:{}] Starting Task.", file!(), line!());
             match spawn_session().await{
                 Ok(_) => {
                     println!("[{}:{}] Completed a task.", file!(), line!());
@@ -104,6 +105,7 @@ async fn spawn_session() -> anyhow::Result<()>{
 
                 if !file_path.exists() {
                     current_download_status.done = false;
+                    current_download_status.paused = false;
                     current_download_status.progress_size = 0;
                     current_download_status.total_size= 1;
 
@@ -131,7 +133,7 @@ async fn spawn_session() -> anyhow::Result<()>{
                 
             }
             
-
+            println!("PASSED HERE");
 
         }
     }
@@ -206,6 +208,8 @@ async fn spawn_progress_watcher(
                         .map_err(|e| anyhow::Error::msg(e.to_string()))?;
                     break;
                 }
+            }else{
+                println!("[{}:{}] Download progress & total is 0 - Skip writing status..", file!(), line!());
             }
 
             if current_download_status.paused{

@@ -145,7 +145,6 @@ impl TorrentHandle {
 
         if current_files.is_empty() {
             TorrentHandle::free(&self.torrent_handle_mode, &self.torrent_source, false).await?;
-            torrent_handle_map.remove(&self.torrent_source);
             println!("[{}:{}] Pause files success!", file!(), line!());
 
             return Ok(());
@@ -192,7 +191,6 @@ impl TorrentHandle {
         let torrent_id = TorrentIdOrHash::Id(torrent_handle.id());
 
         torrent_session.delete(torrent_id, delete_files).await?;
-
         torrent_handle_map.remove(torrent_source);
 
         return Ok(());
