@@ -132,8 +132,7 @@ async fn spawn_session() -> anyhow::Result<()>{
                 });
                 
             }
-            
-            println!("PASSED HERE");
+
 
         }
     }
