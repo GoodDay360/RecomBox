@@ -37,7 +37,6 @@ pub async fn get_download_status(
     let status_parts: Vec<String> = from_slice(value.value())
         .map_err(|e| e.to_string())?;
 
-    drop(value);
 
     let state = DownloadStatus {
         progress_size: status_parts[0].parse::<u64>().map_err(|e| e.to_string())?,

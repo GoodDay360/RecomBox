@@ -54,14 +54,20 @@ impl TorrentHandle {
     pub async fn load(self) -> anyhow::Result<(Arc<ManagedTorrent>, bool), Box<dyn Error>>{
         let session = TorrentSession::get().await?.clone();
 
-        let torrent_handle_map = match self.torrent_handle_mode {
-            TorrentHandleMode::Watch => &WATCH_TORRENT_HANDLE_MAP,
-            TorrentHandleMode::Download => &DOWNLOAD_TORRENT_HANDLE_MAP
-        };
-        
         let already_exist;
 
-        let torrent_handle = match torrent_handle_map.get(&self.torrent_source) {
+        let owned_handle = {
+            let torrent_handle_map = match self.torrent_handle_mode {
+                TorrentHandleMode::Watch => &WATCH_TORRENT_HANDLE_MAP,
+                TorrentHandleMode::Download => &DOWNLOAD_TORRENT_HANDLE_MAP
+            };
+            match torrent_handle_map.get(&self.torrent_source){
+                Some(handle) => Some(handle.value().clone()),
+                None => None
+            }
+        };
+
+        let torrent_handle = match owned_handle {
             Some(handle) => {
                 let handle = handle.clone();
 
@@ -115,9 +121,13 @@ impl TorrentHandle {
             }
         };
 
-
-        torrent_handle_map.insert(self.torrent_source.clone(), torrent_handle.clone());
-        torrent_handle.wait_until_initialized().await?;
+        {
+            let torrent_handle_map = match self.torrent_handle_mode {
+                TorrentHandleMode::Watch => &WATCH_TORRENT_HANDLE_MAP,
+                TorrentHandleMode::Download => &DOWNLOAD_TORRENT_HANDLE_MAP
+            };
+            torrent_handle_map.insert(self.torrent_source.clone(), torrent_handle.clone());
+        }
         return Ok((torrent_handle.clone(), already_exist));
 
     }
@@ -126,18 +136,26 @@ impl TorrentHandle {
     pub async fn pause_file(self, file_id: u64) -> anyhow::Result<(), Box<dyn Error>>{
         let session = TorrentSession::get().await?.clone();
 
-        let torrent_handle_map = match self.torrent_handle_mode {
-            TorrentHandleMode::Watch => &WATCH_TORRENT_HANDLE_MAP,
-            TorrentHandleMode::Download => &DOWNLOAD_TORRENT_HANDLE_MAP
-        };
+        
 
-        let torrent_handle = match torrent_handle_map.get(&self.torrent_source) {
+        let torrent_handle = match {
+            let torrent_handle_map = match self.torrent_handle_mode {
+                TorrentHandleMode::Watch => &WATCH_TORRENT_HANDLE_MAP,
+                TorrentHandleMode::Download => &DOWNLOAD_TORRENT_HANDLE_MAP
+            };
+            
+            match torrent_handle_map.get(&self.torrent_source){
+                Some(handle) => Some(handle.value().clone()),
+                None => None
+            }
+        } {
             Some(handle) => handle.clone(),
             None => {
                 println!("[{}:{}] TORRENT HANDLE NOT FOUND. -> Skip clearning.", file!(), line!());
                 return Ok(());
             }
         };
+        
 
         let mut current_files = torrent_handle.only_files().unwrap_or_default();
         
@@ -146,7 +164,6 @@ impl TorrentHandle {
         if current_files.is_empty() {
             TorrentHandle::free(&self.torrent_handle_mode, &self.torrent_source, false).await?;
             println!("[{}:{}] Pause files success!", file!(), line!());
-
             return Ok(());
         }
 
@@ -164,7 +181,15 @@ impl TorrentHandle {
             .await?
             .into_handle()
             .ok_or("Unable to convert to handle")?;
-        torrent_handle_map.insert(self.torrent_source.clone(), new_handle.clone());
+        
+        {
+            let torrent_handle_map = match self.torrent_handle_mode {
+                TorrentHandleMode::Watch => &WATCH_TORRENT_HANDLE_MAP,
+                TorrentHandleMode::Download => &DOWNLOAD_TORRENT_HANDLE_MAP
+            };
+            torrent_handle_map.insert(self.torrent_source.clone(), new_handle.clone());
+        }
+        
         new_handle.wait_until_initialized().await?;
 
         println!("[{}:{}] Pause files success!", file!(), line!());
@@ -175,24 +200,39 @@ impl TorrentHandle {
 
 
     pub async fn free(torrent_handle_mode: &TorrentHandleMode, torrent_source: &str, delete_files: bool) -> anyhow::Result<()>{
-        let torrent_handle_map = match torrent_handle_mode {
-            TorrentHandleMode::Watch => &WATCH_TORRENT_HANDLE_MAP,
-            TorrentHandleMode::Download => &DOWNLOAD_TORRENT_HANDLE_MAP
-        };
-        let torrent_handle = match torrent_handle_map.get(torrent_source) {
+        
+        let torrent_handle = match {
+            let torrent_handle_map = match torrent_handle_mode {
+                TorrentHandleMode::Watch => &WATCH_TORRENT_HANDLE_MAP,
+                TorrentHandleMode::Download => &DOWNLOAD_TORRENT_HANDLE_MAP
+            };
+            
+            match torrent_handle_map.get(torrent_source){
+                Some(handle) => Some(handle.value().clone()),
+                None => None
+            }
+        } {
             Some(handle) => handle.clone(),
             None => {
                 println!("[{}:{}] TORRENT HANDLE NOT FOUND. -> Skip clearning.", file!(), line!());
                 return Ok(());
             }
         };
+        
+        
 
         let torrent_session = TorrentSession::get().await?;
         let torrent_id = TorrentIdOrHash::Id(torrent_handle.id());
 
         torrent_session.delete(torrent_id, delete_files).await?;
-        torrent_handle_map.remove(torrent_source);
 
+        {
+            let torrent_handle_map = match torrent_handle_mode {
+                TorrentHandleMode::Watch => &WATCH_TORRENT_HANDLE_MAP,
+                TorrentHandleMode::Download => &DOWNLOAD_TORRENT_HANDLE_MAP
+            };
+            torrent_handle_map.remove(torrent_source);
+        }
         return Ok(());
 
     }

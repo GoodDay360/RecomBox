@@ -27,10 +27,10 @@ const DOWNLOAD_PROGRESS_WATCHER_WORKER: Lazy<DashMap<DownloadItemKey, String>> =
 pub async fn start() -> anyhow::Result<()>{
     tokio::spawn( async move {
         loop {
-            println!("[{}:{}] Starting Task.", file!(), line!());
+            println!("[{}:{}] Starting a download Task.", file!(), line!());
             match spawn_session().await{
                 Ok(_) => {
-                    println!("[{}:{}] Completed a task.", file!(), line!());
+                    println!("[{}:{}] Completed a download task.", file!(), line!());
                 }
                 Err(e) => {
                     eprintln!("[{}:{}] Failed to spawn session: {}", file!(), line!(), e);
@@ -92,10 +92,7 @@ async fn spawn_session() -> anyhow::Result<()>{
             let (torrent_handle, _) = torrent_handle_builder.clone().load().await
                 .map_err(|e| anyhow::Error::msg(e.to_string()))?;
 
-            let exist_progress_watcher = match DOWNLOAD_PROGRESS_WATCHER_WORKER.get(&download_item_key) {
-                Some(_) => true,
-                None => false,
-            };
+            let exist_progress_watcher = DOWNLOAD_PROGRESS_WATCHER_WORKER.contains_key(&download_item_key);
 
             if current_download_status.done{
                 let file_path = PathBuf::from(&settings.paths.app_support_dir)
@@ -125,7 +122,7 @@ async fn spawn_session() -> anyhow::Result<()>{
                     ).await {
                         Ok(_) => {}
                         Err(e) => {
-                            eprintln!("[{}:{}] Failed to spawn session: {}", file!(), line!(), e);
+                            eprintln!("[{}:{}] Failed to spawn progress watcher: {}", file!(), line!(), e);
                         }
                     }
                     DOWNLOAD_PROGRESS_WATCHER_WORKER.remove(&download_item_key);
@@ -150,7 +147,7 @@ async fn spawn_progress_watcher(
     
     loop {
         tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
-
+        torrent_handle.wait_until_initialized().await?;
         let download_info = match get_download(&download_item_key).await.map_err(|e| anyhow::Error::msg(e.to_string()))?{
             Some(info) => info,
             None => {
