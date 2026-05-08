@@ -282,6 +282,7 @@ class _ViewState extends State<ViewScreen> with RouteAware {
         if (ctx.mounted){
           setState(() {
             bulkDownloadMode = true;
+            onSelectAllBulkDownload(false);
             showFloatingButton = true;
           });
         }
@@ -291,11 +292,11 @@ class _ViewState extends State<ViewScreen> with RouteAware {
     
   }
 
-  Future<void> onSelectAllBulkDownload() async {
+  Future<void> onSelectAllBulkDownload(bool state) async {
     final ctx = context;
     if (ctx.mounted){
       setState(() {
-        bulkDownloadSelectAll = !bulkDownloadSelectAll;
+        bulkDownloadSelectAll = state;
       });
     }
     
@@ -1005,7 +1006,7 @@ class _ViewState extends State<ViewScreen> with RouteAware {
                                         spacing: 10,
                                         children: [
                                           IconButton(
-                                            onPressed: onSelectAllBulkDownload, 
+                                            onPressed: ()=>onSelectAllBulkDownload(!bulkDownloadSelectAll), 
                                             icon: Icon(bulkDownloadSelectAll ? Icons.deselect_rounded : Icons.select_all_rounded),
                                             color: appColors.secondary,
                                             iconSize: 32,
