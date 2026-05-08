@@ -56,6 +56,14 @@ class _SelectPluginTileState extends State<SelectPluginTile> {
               Image.network(
                 widget.pluginInfo.pluginIconUrl,
                 width: 50,
+                errorBuilder: (context, error, stackTrace) {
+                  // This widget is displayed if the image fails to load
+                  return const Icon(
+                    Icons.broken_image, 
+                    size: 50, 
+                    color: Colors.grey,
+                  );
+                },
               ),
               Expanded(
                 child: Container(
