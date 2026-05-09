@@ -68,7 +68,9 @@ pub async fn new(req: HttpRequest, query: web::Query<InputPayload>) -> Result<Ht
     })
         .await
         .map_err(|e| actix_web::error::ErrorInternalServerError(e.to_string()))?;
-
+    
+    torrent_handle.wait_until_initialized().await
+        .map_err(|e| actix_web::error::ErrorInternalServerError(e.to_string()))?;
     
     let mut stream = torrent_handle
         .stream(query.file_id)
