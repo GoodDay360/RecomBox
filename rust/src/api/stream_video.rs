@@ -14,6 +14,7 @@ use urlencoding::encode;
 use once_cell::sync::Lazy;
 use tokio::runtime::Runtime;
 use num_cpus;
+use librqbit::TorrentStatsState;
 
 use crate::utils::torrent_provider::torrent_handle::{TorrentHandle, TorrentHandleMode};
 use crate::utils::settings::Settings;
@@ -69,8 +70,13 @@ pub async fn new(req: HttpRequest, query: web::Query<InputPayload>) -> Result<Ht
         .await
         .map_err(|e| actix_web::error::ErrorInternalServerError(e.to_string()))?;
     
-    torrent_handle.wait_until_initialized().await
-        .map_err(|e| actix_web::error::ErrorInternalServerError(e.to_string()))?;
+
+    match torrent_handle.stats().state {
+        TorrentStatsState::Initializing => {
+            return Err(actix_web::error::ErrorInternalServerError("Torrent is initializing"));
+        }
+        _ => {}
+    }
     
     let mut stream = torrent_handle
         .stream(query.file_id)
