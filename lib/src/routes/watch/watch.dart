@@ -92,6 +92,7 @@ class _WatchState extends State<WatchScreen> {
   );
 
   StreamSubscription? _positionSubscription;
+  StreamSubscription? _errorSubscription;
 
   final List<BoxFit> boxFitList = [
     BoxFit.contain,
@@ -105,8 +106,21 @@ class _WatchState extends State<WatchScreen> {
   
 
   @override
+
   void initState() {
     super.initState();
+    _errorSubscription = player.stream.error.listen((error) {
+      debugPrint("Player error: ${error.toString()} - Retrying again after 3s...");
+      final index = player.state.playlist.index;
+      if (index >= 0) {
+        Future.delayed(const Duration(seconds: 3), () {
+          if (context.mounted){
+            player.open(player.state.playlist.medias[index]);
+          }
+        });
+      }
+    });
+
     // Defer until after build context is ready
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final rawArgs = ModalRoute.of(context)?.settings.arguments;
@@ -139,8 +153,10 @@ class _WatchState extends State<WatchScreen> {
 
   @override
   void dispose() {
-    player.dispose();
+    _errorSubscription?.cancel();
     _positionSubscription?.cancel();
+    player.dispose();
+    
     try{
       if (torrentHandleMode == TorrentHandleMode.watch) {
         freeTorrentHandle(
@@ -239,7 +255,6 @@ class _WatchState extends State<WatchScreen> {
       
       
       
-
       if (!useLocal){
         final uri = Uri(
           scheme: 'http',
@@ -530,9 +545,10 @@ class _WatchState extends State<WatchScreen> {
     
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
-    
 
     List<Widget> topButtonBar = [
       IconButton(

@@ -146,45 +146,60 @@ class DownloadState extends State<DownloadScreen> {
                   children: [
                     if (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
                       TitleBar(),
-                      if (allDownloadMap.isNotEmpty)
-                        Expanded(
-                          child: Container(
-                            height: double.infinity,
-                            width: double.infinity,
-                            padding: EdgeInsets.all(15),
-                            child: ListView.separated(
-                                itemCount: allDownloadMap.keys.length,
-                                itemBuilder: (context, index){
-                                  return DownloadCard(
-                                    key: ValueKey(allDownloadMap.keys.toList()[index]),
-                                    allDownloadItemKey: allDownloadMap.keys.toList()[index],
-                                    allDownloadItemValueList: allDownloadMap.values.toList()[index],
-                                    onRemoveDownload: onRemoveDownload,
-                                  );
-                                }, 
-                                separatorBuilder: (_,__){
-                                  return  SizedBox(height: 10,);
-                                }, 
-                              ),
-                            
+                      if (!isLoading) ...[
+                        if (allDownloadMap.isNotEmpty)
+                          Expanded(
+                            child: Container(
+                              height: double.infinity,
+                              width: double.infinity,
+                              padding: EdgeInsets.all(15),
+                              child: ListView.separated(
+                                  itemCount: allDownloadMap.keys.length,
+                                  itemBuilder: (context, index){
+                                    return DownloadCard(
+                                      key: ValueKey(allDownloadMap.keys.toList()[index]),
+                                      allDownloadItemKey: allDownloadMap.keys.toList()[index],
+                                      allDownloadItemValueList: allDownloadMap.values.toList()[index],
+                                      onRemoveDownload: onRemoveDownload,
+                                    );
+                                  }, 
+                                  separatorBuilder: (_,__){
+                                    return  SizedBox(height: 10,);
+                                  }, 
+                                ),
+                              
+                            )
+                          ),
+                        if (allDownloadMap.isEmpty)
+                          Expanded(
+                            child: Container(
+                              padding: EdgeInsets.all(15),
+                              alignment: Alignment.center,
+                              child: Text(
+                                "No download found",
+                                style: GoogleFonts.nunito(
+                                  fontSize: 24,
+                                  color: appColors.textPrimary,
+                                  fontWeight: FontWeight(700)
+                                ),
+                                textAlign: TextAlign.center,
+                              )
+                            ),
                           )
-                        ),
-                      if (allDownloadMap.isEmpty)
+                      ],
+
+                      if (isLoading) 
                         Expanded(
                           child: Container(
-                            padding: EdgeInsets.all(15),
                             alignment: Alignment.center,
-                            child: Text(
-                              "No download found",
-                              style: GoogleFonts.nunito(
-                                fontSize: 24,
-                                color: appColors.textPrimary,
-                                fontWeight: FontWeight(700)
-                              ),
-                              textAlign: TextAlign.center,
+                            child: CircularProgressIndicator(
+                              color: appColors.secondary,
                             )
                           ),
                         )
+                        
+
+                  
                   ],
                 ),
                 bottomNavigationBar: (MediaQuery.of(context).size.width < 600)

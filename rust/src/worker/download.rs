@@ -8,6 +8,8 @@ use tokio;
 use base64::{engine::general_purpose, Engine as _};
 use sha2::{Sha256, Digest};
 use urlencoding::encode;
+use librqbit::TorrentStatsState;
+
 
 use crate::method::download_provider::get_download_status::get_download_status;
 use crate::method::download_provider::set_download_status::set_download_status;
@@ -147,7 +149,13 @@ async fn spawn_progress_watcher(
     
     loop {
         tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
-        torrent_handle.wait_until_initialized().await?;
+        match torrent_handle.stats().state {
+            TorrentStatsState::Initializing => {
+                break;
+            }
+            _ => {}
+        }
+        
         let download_info = match get_download(&download_item_key).await.map_err(|e| anyhow::Error::msg(e.to_string()))?{
             Some(info) => info,
             None => {
@@ -212,6 +220,8 @@ async fn spawn_progress_watcher(
                 break;
             }
             
+        }else{
+            break;
         }
         
     }
