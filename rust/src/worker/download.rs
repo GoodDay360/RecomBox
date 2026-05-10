@@ -220,6 +220,8 @@ async fn spawn_progress_watcher(
                 break;
             }
             
+        }else{
+            break;
         }
         
     }
