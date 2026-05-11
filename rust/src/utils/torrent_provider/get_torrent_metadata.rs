@@ -1,6 +1,10 @@
 use librqbit::*;
 
 use std::{error::Error};
+
+
+use crate::utils::torrent_provider::serialize_torrent_source;
+
 use super::torrent_session::TorrentSession;
 
 
@@ -11,9 +15,10 @@ pub async fn new(torrent_source: &str) -> Result<TorrentMetaV1Info<ByteBufOwned>
     options.overwrite = true;
     options.list_only = true;
 
+
     let add_torrent_res = session
         .add_torrent(
-            AddTorrent::from_url(torrent_source),
+            serialize_torrent_source::new(torrent_source, false).await?,
             Some(options),
         )
         .await?;

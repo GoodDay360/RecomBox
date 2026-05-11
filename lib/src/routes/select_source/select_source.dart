@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:recombox/src/global/app_color.dart';
+import 'package:recombox/src/global/dialogs/submit_bulk_download/submit_bulk_download.dart';
 import 'package:recombox/src/global/types.dart';
 
 import 'package:recombox/src/global/widgets/title_bar.dart';
@@ -102,16 +103,22 @@ class _SelectSourceState extends State<SelectSourceScreen> {
         page: BigInt.from(1)
       );
 
-      setState(() {
-        sourceInfoList = getSourceInfoResult;
-      });
+      if (context.mounted){
+        setState(() {
+          sourceInfoList = getSourceInfoResult;
+        });
+      }
+      
 
     }catch(e){
       debugPrint(e.toString());
     }finally{
-      setState(() {
-        isLoading = false;
-      });
+      if (context.mounted){
+        setState(() {
+          isLoading = false;
+        });
+      }
+      
     }
 
   }
@@ -359,7 +366,40 @@ class _SelectSourceState extends State<SelectSourceScreen> {
                       ],
                     ],
                   ),
-                  
+                  floatingActionButton: 
+                    (args!.selectPluginScreenArguments.selectFileMode == SelectFileMode.bulkDownload)
+                    ? SizedBox(
+                      width: double.infinity,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end, 
+                        children: [
+                          FloatingActionButton.extended(
+                            mouseCursor: SystemMouseCursors.click,
+                            heroTag: "Bulk Season Download", 
+                            onPressed: () {
+                              showDialog(
+                                context: context, 
+                                barrierDismissible: true,
+                                builder: (_) => SubmitBulkDownload()
+                              );
+                            },
+                            backgroundColor: appColors.accentSecondary,
+                            icon: Icon(
+                              Icons.download_rounded,
+                              color: appColors.textPrimary,
+                            ),
+                            label: Text(
+                              "Submit Bulk Download",
+                              style: GoogleFonts.nunito(
+                                color: appColors.textPrimary,
+                                fontSize: 18,
+                                fontWeight: FontWeight(700),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    ): null
                 ),
               
               

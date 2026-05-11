@@ -124,7 +124,7 @@ An open-source cross-platform torrent streaming app for Anime, Movies, and TV.
 ## Prerequisites
 
 This project is built with [Flutter](https://flutter.dev/) and [Rust](https://rust-lang.org/).  
-For plugin it built with [Typescript](https://www.typescriptlang.org/).  
+For [plugin](https://github.com/RecomBox/recombox_plugin_template) it built with [Typescript](https://www.typescriptlang.org/).  
 Make sure you have installed all required prerequisites for your operating system.
 
 ## Setup
