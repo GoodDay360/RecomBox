@@ -5,7 +5,7 @@ import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/types.dart';
 
 import 'package:recombox/src/global/widgets/title_bar.dart';
-import 'package:recombox/src/routes/select_file/dialogs/submit_bulk_download/submit_bulk_download.dart';
+import 'package:recombox/src/global/dialogs/submit_bulk_download/submit_bulk_download.dart';
 import 'package:recombox/src/routes/select_file/widgets/select_file_tile.dart';
 import 'package:path/path.dart' as path;
 
@@ -118,6 +118,7 @@ class _SelectFileState extends State<SelectFileScreen> {
       TorrentMetadata getTorrentInfoResult = await getTorrentMetadata(
         torrentSource: args!.torrentSource
       );
+
       List<FileInfo> fileListResult = getTorrentInfoResult.files.where((f){
         if (f.path == null) return false;
 

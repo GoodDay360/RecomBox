@@ -11,6 +11,7 @@ use serde::{Deserialize, Serialize};
 
 
 use super::torrent_session::TorrentSession;
+use super::serialize_torrent_source;
 
 
 static WATCH_TORRENT_HANDLE_MAP: LazyLock<DashMap<String, Arc<ManagedTorrent>>> = LazyLock::new(DashMap::new);
@@ -86,7 +87,7 @@ impl TorrentHandle {
 
                     let new_handle = session
                         .add_torrent(
-                            AddTorrent::from_url(self.torrent_source.as_str()),
+                            serialize_torrent_source::new(self.torrent_source.as_str(), true).await?,
                             Some(options),
                         )
                         .await?
@@ -110,7 +111,7 @@ impl TorrentHandle {
                 
                 let new_handle = session
                     .add_torrent(
-                        AddTorrent::from_url(self.torrent_source.as_str()),
+                        serialize_torrent_source::new(self.torrent_source.as_str(), true).await?,
                         Some(options),
                     )
                     .await
@@ -175,7 +176,7 @@ impl TorrentHandle {
         TorrentHandle::free(&self.torrent_handle_mode, &self.torrent_source, false).await?;
         let new_handle = session
             .add_torrent(
-                AddTorrent::from_url(self.torrent_source.as_str()),
+                serialize_torrent_source::new(self.torrent_source.as_str(), true).await?,
                 Some(options),
             )
             .await?

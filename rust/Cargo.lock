@@ -3236,6 +3236,7 @@ dependencies = [
  "dashmap 6.1.0",
  "flutter_rust_bridge",
  "futures",
+ "hex",
  "librqbit",
  "num_cpus",
  "once_cell",

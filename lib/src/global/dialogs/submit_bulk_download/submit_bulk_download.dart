@@ -14,10 +14,8 @@ import 'dart:math';
 class SubmitBulkDownload extends StatefulWidget {
   const SubmitBulkDownload({
     super.key,
-    this.onChange,
   });
 
-  final VoidCallback? onChange;
 
   @override
   State<SubmitBulkDownload> createState() => _SubmitBulkDownloadState();
@@ -93,7 +91,7 @@ class _SubmitBulkDownloadState extends State<SubmitBulkDownload> {
       bool unlinkFound = false;
       BigInt unlinkEpisodeIndex = BigInt.from(0);
       var result = bulkDownload.get();
-      result = Map.fromEntries(result.entries.toList()..sort((a, b) => a.key.compareTo(b.key)));
+      result = Map.fromEntries(result.entries.toList()..sort((a, b) => b.key.compareTo(a.key)));
       result.forEach((episodeIndex, value) {
         if ((value.linkedFileID == null) || (value.linkedFileName == null) || (value.linkedTorrentUrl == null) || (value.linkedMimeType == null)){
           unlinkFound = true;
@@ -149,7 +147,6 @@ class _SubmitBulkDownloadState extends State<SubmitBulkDownload> {
     setState(() {
       isLoading = false;
     });
-    widget.onChange?.call();
 
   }
 
