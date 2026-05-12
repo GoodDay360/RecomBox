@@ -1,10 +1,10 @@
 {
     "name": "RecomBox",
-    "identifier": "io.github.recombox",
+    "identifier": "io.github.RecomBox",
     "apps": [
         {
             "name": "RecomBox",
-            "bundleIdentifier": "io.github.recombox.RecomBox",
+            "bundleIdentifier": "io.github.RecomBox.RecomBox",
             "developerName": "RecomBox",
             "subtitle": "Open-source cross-platform torrent streaming app.",
             "localizedDescription": "Open-source cross-platform torrent streaming app for Anime, Movies, and TV.",
