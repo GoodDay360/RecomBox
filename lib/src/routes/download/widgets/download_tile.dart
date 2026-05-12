@@ -128,7 +128,7 @@ class _DownloadTileState extends State<DownloadTile> {
                   
                   constraints: BoxConstraints(maxWidth: 100),
                   child: Text(
-                    SourceExtension.fromString(widget.allDownloadItemKey.source) == Source.movies ? "Full" : "S${(widget.allDownloadItemValue.seasonIndex + BigInt.from(1)).toString().padLeft(2, '0')}E${(widget.allDownloadItemValue.episodeIndex + BigInt.from(1)).toString().padLeft(2, '0')}",
+                    SourceExtension.fromString(widget.allDownloadItemKey.source) == Source.movies ? "Full" : "${SourceExtension.fromString(widget.allDownloadItemKey.source) == Source.anime ? "" : "S${(widget.allDownloadItemValue.seasonIndex + BigInt.from(1)).toString().padLeft(2, '0')}"}E${(widget.allDownloadItemValue.episodeIndex + BigInt.from(1)).toString().padLeft(2, '0')}",
                     style: GoogleFonts.nunito(
                       color: appColors.textPrimary,
                       fontSize: 18
