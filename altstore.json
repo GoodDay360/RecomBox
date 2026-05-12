@@ -1,21 +1,22 @@
 {
     "name": "RecomBox",
-    "identifier": "io.github.RecomBox",
-    "subtitle": "Stream your favorite content.",
-    "description": "Official repository for RecomBox, an open-source torrent streaming application.",
+    "identifier": "io.github.recombox",
     "apps": [
         {
             "name": "RecomBox",
-            "bundleIdentifier": "io.github.RecomBox.RecomBox",
+            "bundleIdentifier": "io.github.recombox.RecomBox",
             "developerName": "RecomBox",
-            "subtitle": "Cross-platform torrent streaming",
-            "version": "1.1.8",
-            "versionDate": "2026-05-04T12:00:00Z",
-            "versionDescription": "Open-source cross-platform torrent streaming app for Anime, Movies, and TV with cross-device watch progress tracking",
-            "downloadURL": "https://github.com/RecomBox/RecomBox/releases/latest/download/recombox-ios-aarch64.ipa",
-            "iconURL": "https://raw.githubusercontent.com/RecomBox/RecomBox/main/assets/icon/icon.png",
-            "screenshotURLs": [],
-            "size": 31457280
+            "subtitle": "Open-source cross-platform torrent streaming app.",
+            "localizedDescription": "Open-source cross-platform torrent streaming app for Anime, Movies, and TV.",
+            "iconURL": "https://github.com/RecomBox/RecomBox/blob/main/assets/icon/icon.png?raw=true",
+            "versions": [
+                {
+                "version": "1.1.8",
+                "date": "2026-05-12T15:30:00+07:00",
+                "size": 31457280,
+                "downloadURL": "https://github.com/your-user/RecomBox/releases/download/v1.0.1/RecomBox.ipa"
+                }
+            ]
         }
     ]
 }
