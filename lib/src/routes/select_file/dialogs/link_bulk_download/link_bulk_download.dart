@@ -212,7 +212,7 @@ class _LinkBulkDownloadState extends State<LinkBulkDownload> {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    "S${((bulkDownload.seasonIndex??BigInt.from(0))+BigInt.from(1)).toString().padLeft(2, "0")}E${(bulkDownloadMap.keys.toList()[index]+BigInt.from(1)).toString().padLeft(2, "0")}", 
+                                    "${bulkDownload.source == Source.anime ? "" : "S${((bulkDownload.seasonIndex??BigInt.from(0))+BigInt.from(1)).toString().padLeft(2, "0")}"}E${(bulkDownloadMap.keys.toList()[index]+BigInt.from(1)).toString().padLeft(2, "0")}", 
                                     style: GoogleFonts.nunito(
                                       color: appColors.textPrimary,
                                       fontSize: 18,

@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/global/bulk_download.dart';
+import 'package:recombox/src/global/types.dart';
 import 'package:recombox/src/routes/view/view.dart';
 import 'dart:math';
 
@@ -57,7 +58,7 @@ class _SubmitBulkDownloadState extends State<SubmitBulkDownload> {
       result = Map.fromEntries(result.entries.toList()..sort((a, b) => a.key.compareTo(b.key)));
 
       result.forEach((episodeIndex, value) {
-        final episodeKey = "S${(bulkDownload.seasonIndex!+BigInt.from(1)).toString().padLeft(2,'0')}E${(episodeIndex+BigInt.from(1)).toString().padLeft(2,'0')}";
+        final episodeKey = "${bulkDownload.source == Source.anime ? "" : "S${(bulkDownload.seasonIndex!+BigInt.from(1)).toString().padLeft(2,'0')}"}E${(episodeIndex+BigInt.from(1)).toString().padLeft(2,'0')}";
 
         newTreeNode.addAll([
           TreeNode<BulkDownloadValue>(key: episodeKey, data: value)..expansionNotifier.value = true,
@@ -128,7 +129,7 @@ class _SubmitBulkDownloadState extends State<SubmitBulkDownload> {
               borderRadius: BorderRadius.circular(25)
             ),
             child: Text(
-              'Missing link for S${(bulkDownload.seasonIndex!+BigInt.from(1)).toString().padLeft(2,'0')}E${(unlinkEpisodeIndex+BigInt.from(1)).toString().padLeft(2,'0')}',
+              'Missing link for ${bulkDownload.source == Source.anime ? "" : "S${(bulkDownload.seasonIndex!+BigInt.from(1)).toString().padLeft(2,'0')}"}E${(unlinkEpisodeIndex+BigInt.from(1)).toString().padLeft(2,'0')}',
               style: GoogleFonts.nunito(
                 color: appColors.textPrimary,
                 fontSize: 16

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:recombox/src/global/bulk_download.dart';
@@ -492,24 +493,48 @@ class _ViewState extends State<ViewScreen> with RouteAware {
                             ),
                           ),
 
-                          SizedBox(
-                            width: double.infinity,
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              padding: EdgeInsets.all(12),
-                              child: Text(
-                                viewContentInfoResult!.title,
-                                style: GoogleFonts.nunito(
-                                  fontSize: 38,
-                                  fontWeight: FontWeight(800),
-                                  color: appColors.textPrimary,
-                                  decoration: TextDecoration.none,
+                          InkWell(
+                            onTap: (){
+                              Clipboard.setData(ClipboardData(text: viewContentInfoResult!.title));
+                              showToastWidget(
+                                Container(
+                                  padding: EdgeInsets.all(15),
+                                  decoration: BoxDecoration(
+                                    color: appColors.tertiary,
+                                    borderRadius: BorderRadius.circular(25)
+                                  ),
+                                  child: Text(
+                                    "Title copied to clipboard",
+                                    style: GoogleFonts.nunito(
+                                      color: appColors.textPrimary,
+                                      fontSize: 16
+                                    ),
+                                  ),
                                 ),
-                                maxLines: 1,
-                                textAlign: TextAlign.start,
+                                position: ToastPosition.bottom,
+                                dismissOtherToast: true,
+                              );
+                            },
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                padding: EdgeInsets.all(12),
+                                child: Text(
+                                  viewContentInfoResult!.title,
+                                  style: GoogleFonts.nunito(
+                                    fontSize: 38,
+                                    fontWeight: FontWeight(800),
+                                    color: appColors.textPrimary,
+                                    decoration: TextDecoration.none,
+                                  ),
+                                  maxLines: 1,
+                                  textAlign: TextAlign.start,
+                                ),
                               ),
                             ),
                           ),
+
                           // -> Button Container
                           Container(
                             width: double.infinity,
@@ -691,25 +716,120 @@ class _ViewState extends State<ViewScreen> with RouteAware {
                             )
                           ),
                           // <-
+
+                          // -> Title Secondary
+                          if (viewContentInfoResult!.description.isNotEmpty)
+                            InkWell(
+                              onTap: (){
+                                Clipboard.setData(ClipboardData(text: viewContentInfoResult!.titleSecondary));
+                                showToastWidget(
+                                  Container(
+                                    padding: EdgeInsets.all(15),
+                                    decoration: BoxDecoration(
+                                      color: appColors.tertiary,
+                                      borderRadius: BorderRadius.circular(25)
+                                    ),
+                                    child: Text(
+                                      "Title secondary copied to clipboard",
+                                      style: GoogleFonts.nunito(
+                                        color: appColors.textPrimary,
+                                        fontSize: 16
+                                      ),
+                                    ),
+                                  ),
+                                  position: ToastPosition.bottom,
+                                  dismissOtherToast: true,
+                                );
+                              },
+                              child: Container(
+                                padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+                                width: double.infinity,
+                                child: Text(
+                                  "Title Secondary: ${viewContentInfoResult!.titleSecondary}",
+                                  style: GoogleFonts.nunito(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.normal,
+                                    color: appColors.textPrimary,
+                                    decoration: TextDecoration.none,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            
+                          // <-
                           
                           // -> Description
                           if (viewContentInfoResult!.description.isNotEmpty)
-                            Container(
-                              padding: EdgeInsets.only(left: 10, right: 10),
-                              width: double.infinity,
-                              child: Text(
-                                viewContentInfoResult!.description,
-                                style: GoogleFonts.nunito(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.normal,
-                                  color: appColors.textPrimary,
-                                  decoration: TextDecoration.none,
+                            InkWell(
+                              onTap: (){
+                                showModalBottomSheet<void>(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  builder: (BuildContext context) {
+                                    return Container(
+                                      height: MediaQuery.of(context).size.height * 0.5,
+                                      decoration: BoxDecoration(
+                                        color: appColors.tertiary,
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(5),
+                                          topRight: Radius.circular(5)
+                                        ),
+                                        border: BoxBorder.all(
+                                          color: appColors.primary,
+                                          width: 1
+                                        )
+                                      ),
+                                      padding: EdgeInsets.all(15),
+                                        child: SingleChildScrollView(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            spacing: 10,
+                                            children: <Widget>[
+                                              Text(
+                                                "Description:",
+                                                style: GoogleFonts.nunito(
+                                                  fontSize: 28,
+                                                  fontWeight: FontWeight(800),
+                                                  color: appColors.textPrimary,
+                                                  decoration: TextDecoration.none,
+                                                ),
+                                              ),
+                                              Text(
+                                                viewContentInfoResult!.description,
+                                                style: GoogleFonts.nunito(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.normal,
+                                                  color: appColors.textPrimary,
+                                                  decoration: TextDecoration.none,
+                                                ),
+                                              ),
+                                            ],
+                                        ),
+                                      )
+                                    );
+                                  },
+                                );
+                              },
+                              child: Container(
+                                padding: EdgeInsets.only(left: 10, right: 10),
+                                width: double.infinity,
+                                child: Text(
+                                  viewContentInfoResult!.description,
+                                  style: GoogleFonts.nunito(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.normal,
+                                    color: appColors.textPrimary,
+                                    decoration: TextDecoration.none,
+                                  ),
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.start,
                                 ),
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.start,
                               ),
                             ),
+                            
                           // <-
                           if (viewContentInfoResult!.description.isNotEmpty)
                             SizedBox(
@@ -879,7 +999,6 @@ class _ViewState extends State<ViewScreen> with RouteAware {
                           IndexedStack(
                             index: currentTabIndex,
                             children: [
-                            
                               // -> Episodes
                               Column(
                                 children: [

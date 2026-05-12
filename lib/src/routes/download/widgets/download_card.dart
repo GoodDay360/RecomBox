@@ -113,20 +113,21 @@ class _DownloadCardState extends State<DownloadCard> {
                     ),
                   ),
 
-                  Container(
-                    padding: EdgeInsets.only(left: 15, top: 15, right: 15),
-                    child: Text(
-                      viewContentInfoResult?.title??"",
-                      style: GoogleFonts.nunito(
-                        color: appColors.textPrimary,
-                        fontSize: 28,
-                        fontWeight: FontWeight(800)
-                      ),
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.only(left: 15, top: 15, right: 15),
+                      child: Text(
+                        viewContentInfoResult?.title??"",
+                        style: GoogleFonts.nunito(
+                          color: appColors.textPrimary,
+                          fontSize: 28,
+                          fontWeight: FontWeight(800)
+                        ),
+                        maxLines: 4,
+                        overflow: TextOverflow.ellipsis,
+                      )
                     )
                   )
-                  
                 ],
               ),
             ),
