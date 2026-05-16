@@ -20,7 +20,6 @@ Future<void> onUpdate(
   try{
     debugPrint(downloadUrl);
     if (Platform.isAndroid){
-      debugPrint(downloadUrl);
       setIsDownloading(true);
       OtaUpdate()
         .execute(
@@ -28,7 +27,6 @@ Future<void> onUpdate(
         ).listen(
           (OtaEvent event) {
             if (event.status == OtaStatus.DOWNLOADING) {
-              debugPrint(event.value.toString());
               setIsDownloading(true);
               setDownloadProgress(double.parse(event.value??"0")/100);
             } else if (event.status == OtaStatus.INSTALLING) {

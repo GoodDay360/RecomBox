@@ -10,8 +10,10 @@ use serde::{Deserialize, Serialize};
 
 
 
+
 use super::torrent_session::TorrentSession;
 use super::serialize_torrent_source;
+
 
 
 static WATCH_TORRENT_HANDLE_MAP: LazyLock<DashMap<String, Arc<ManagedTorrent>>> = LazyLock::new(DashMap::new);
@@ -226,7 +228,6 @@ impl TorrentHandle {
         let torrent_id = TorrentIdOrHash::Id(torrent_handle.id());
 
         torrent_session.delete(torrent_id, delete_files).await?;
-
         {
             let torrent_handle_map = match torrent_handle_mode {
                 TorrentHandleMode::Watch => &WATCH_TORRENT_HANDLE_MAP,

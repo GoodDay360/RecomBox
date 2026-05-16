@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:recombox/src/global/app_color.dart';
-import 'package:recombox/src/routes/setting/widgets/storage.dart';
+import 'package:recombox/src/routes/settings/widgets/storage.dart';
 import 'package:recombox/src/global/widgets/navigation_bar/navigation_bar_horizontal.dart';
 import 'package:recombox/src/global/widgets/navigation_bar/navigation_bar_vertical.dart';
 import 'dart:io';
@@ -10,14 +10,14 @@ import 'package:recombox/src/global/widgets/title_bar.dart';
 
 
 
-class SettingScreen extends StatefulWidget {
-  const SettingScreen({super.key});
+class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({super.key});
 
   @override
-  State<SettingScreen> createState() => SettingState();
+  State<SettingsScreen> createState() => SettingsState();
 }
 
-class SettingState extends State<SettingScreen> {
+class SettingsState extends State<SettingsScreen> {
   AppColorsScheme appColors = appColorsNotifier.value;
 
   final List<Map<String, dynamic>> settingItems = [

@@ -94,11 +94,11 @@ class _StorageState extends State<Storage> {
   Future<void> onImportFavorite() async {
     FilePickerResult? result = await FilePicker.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['redb'], // restrict to .redb files
+      allowedExtensions: ['redb'],
     );
 
     if (result != null) {
-      final dir = Directory(settings!.paths.appSupportDir);
+      final dir = Directory(path.join(settings!.paths.appSupportDir, "favorite"));
 
       if (!await dir.exists()) {
         await dir.create(recursive: true);
@@ -107,7 +107,7 @@ class _StorageState extends State<Storage> {
       String inputFilePath = result.files.single.path!;
       final inputFile = File(inputFilePath);
 
-      final outputFile = path.join(settings!.paths.appSupportDir, "favorite", "favorite.redb");
+      final outputFile = path.join(dir.path, "favorite.redb");
       await inputFile.copy(outputFile);
     }
   }
@@ -132,7 +132,7 @@ class _StorageState extends State<Storage> {
     );
 
     if (result != null) {
-      final dir = Directory(settings!.paths.appSupportDir);
+      final dir = Directory(path.join(settings!.paths.appSupportDir, "state"));
 
       if (!await dir.exists()) {
         await dir.create(recursive: true);
@@ -141,7 +141,7 @@ class _StorageState extends State<Storage> {
       String inputFilePath = result.files.single.path!;
       final inputFile = File(inputFilePath);
 
-      final outputFile = path.join(settings!.paths.appSupportDir, "state", "watch_state.redb");
+      final outputFile = path.join(dir.path, "watch_state.redb");
       await inputFile.copy(outputFile);
     }
   }

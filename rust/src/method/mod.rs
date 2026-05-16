@@ -13,4 +13,5 @@ pub mod favorite;
 pub mod settings;
 pub mod check_update;
 pub mod watch_state;
+pub mod current_watch;
 
