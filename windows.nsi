@@ -23,7 +23,11 @@ RequestExecutionLevel admin
 !insertmacro MUI_LANGUAGE "English"
 
 Section "MainSection" SEC01
+    AppMutex "RecomBox_Unique_Mutex_String"
+
     SetOutPath "$INSTDIR"
+
+    nsExec::ExecToStack 'taskkill /F /IM "${APP_NAME}.exe"'
     
     # Grabs all flutter build files recursively
     File /r "${BUILD_DIR}\*"
@@ -48,6 +52,8 @@ Section "MainSection" SEC01
 SectionEnd
 
 Section "Uninstall"
+    nsExec::ExecToStack 'taskkill /F /IM "${APP_NAME}.exe"'
+    
     Delete "$DESKTOP\RecomBox.lnk"
     RMDir /r "$SMPROGRAMS\RecomBox"
     RMDir /r "$INSTDIR"
