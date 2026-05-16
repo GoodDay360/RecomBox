@@ -23,7 +23,6 @@ RequestExecutionLevel admin
 !insertmacro MUI_LANGUAGE "English"
 
 Section "MainSection" SEC01
-    AppMutex "RecomBox_Unique_Mutex_String"
 
     SetOutPath "$INSTDIR"
 
