@@ -22,6 +22,9 @@ RequestExecutionLevel admin
 
 !insertmacro MUI_LANGUAGE "English"
 
+!define MUI_FINISHPAGE_RUN "$INSTDIR\${APP_NAME}.exe"
+!define MUI_FINISHPAGE_RUN_TEXT "Launch RecomBox"
+
 Section "MainSection" SEC01
 
     SetOutPath "$INSTDIR"
@@ -45,8 +48,9 @@ Section "MainSection" SEC01
 
     WriteUninstaller "$INSTDIR\uninstall.exe"
 
-    IfSilent 0 +2
-      Exec '"$INSTDIR\${APP_NAME}.exe"'
+    IfSilent +2 0
+        Exec '"$INSTDIR\${APP_NAME}.exe"'
+
 
 SectionEnd
 
