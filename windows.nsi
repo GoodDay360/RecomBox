@@ -4,6 +4,9 @@
 Name "RecomBox"
 OutFile "dist\${APP_NAME}-windows-x86_64.exe"
 InstallDir "$PROGRAMFILES64\RecomBox"
+
+InstallDirRegKey HKLM "Software\RecomBox" "Install_Dir"
+
 RequestExecutionLevel admin
 
 # Use the app icon
@@ -35,7 +38,13 @@ Section "MainSection" SEC01
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RecomBox" "UninstallString" "$INSTDIR\uninstall.exe"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RecomBox" "DisplayIcon" "$INSTDIR\${APP_NAME}.exe"
     
+    WriteRegStr HKLM "Software\RecomBox" "Install_Dir" "$INSTDIR"
+
     WriteUninstaller "$INSTDIR\uninstall.exe"
+
+    IfSilent 0 +2
+      Exec '"$INSTDIR\${APP_NAME}.exe"'
+
 SectionEnd
 
 Section "Uninstall"
@@ -43,4 +52,7 @@ Section "Uninstall"
     RMDir /r "$SMPROGRAMS\RecomBox"
     RMDir /r "$INSTDIR"
     DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RecomBox"
+
+    DeleteRegKey HKLM "Software\RecomBox"
+
 SectionEnd
