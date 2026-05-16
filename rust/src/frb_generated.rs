@@ -39,7 +39,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.12.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 107508089;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 389617867;
 
 // Section: executor
 
@@ -584,7 +584,7 @@ fn wire__crate__method__plugin_provider__get_plugin_list__get_plugin_list_impl(
         },
     )
 }
-fn wire__crate__method__get_settings__get_settings_impl(
+fn wire__crate__method__settings__get_settings__get_settings_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -609,7 +609,7 @@ fn wire__crate__method__get_settings__get_settings_impl(
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, String>((move || {
-                    let output_ok = crate::method::get_settings::get_settings()?;
+                    let output_ok = crate::method::settings::get_settings::get_settings()?;
                     Ok(output_ok)
                 })())
             }
@@ -1293,6 +1293,40 @@ let api_last_watch_torrent_info = <crate::method::favorite::LastWatchTorrentInfo
                          let output_ok = crate::method::favorite::set_last_watch_torrent::set_last_watch_torrent(&api_source, &api_id, api_season_index, api_episode_index, api_last_watch_torrent_info).await?;   Ok(output_ok)
                     })().await)
                 } })
+}
+fn wire__crate__method__settings__set_settings__set_settings_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "set_settings",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_settings = <crate::utils::settings::Settings>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, String>((move || {
+                    let output_ok =
+                        crate::method::settings::set_settings::set_settings(api_settings)?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
 }
 fn wire__crate__method__watch_state__set_watch_state__set_watch_state_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
@@ -2191,10 +2225,12 @@ impl SseDecode for Option<crate::method::watch_state::WatchStateValue> {
 impl SseDecode for crate::utils::settings::Paths {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_appConfigDir = <String>::sse_decode(deserializer);
         let mut var_appSupportDir = <String>::sse_decode(deserializer);
         let mut var_appCacheDir = <String>::sse_decode(deserializer);
         let mut var_tempDir = <String>::sse_decode(deserializer);
         return crate::utils::settings::Paths {
+            app_config_dir: var_appConfigDir,
             app_support_dir: var_appSupportDir,
             app_cache_dir: var_appCacheDir,
             temp_dir: var_tempDir,
@@ -2508,7 +2544,7 @@ fn pde_ffi_dispatcher_primary_impl(
 16 => wire__crate__method__plugin_provider__get_installed_plugins__get_installed_plugins_impl(port, ptr, rust_vec_len, data_len),
 17 => wire__crate__method__favorite__get_last_watch_torrent__get_last_watch_torrent_impl(port, ptr, rust_vec_len, data_len),
 18 => wire__crate__method__plugin_provider__get_plugin_list__get_plugin_list_impl(port, ptr, rust_vec_len, data_len),
-19 => wire__crate__method__get_settings__get_settings_impl(port, ptr, rust_vec_len, data_len),
+19 => wire__crate__method__settings__get_settings__get_settings_impl(port, ptr, rust_vec_len, data_len),
 20 => wire__crate__method__plugin_provider__get_sources__get_sources_impl(port, ptr, rust_vec_len, data_len),
 21 => wire__crate__method__torrent_provider__get_torrent_metadata__get_torrent_metadata_impl(port, ptr, rust_vec_len, data_len),
 22 => wire__crate__method__plugin_provider__get_torrents__get_torrents_impl(port, ptr, rust_vec_len, data_len),
@@ -2527,12 +2563,13 @@ fn pde_ffi_dispatcher_primary_impl(
 35 => wire__crate__method__download_provider__set_download__set_download_impl(port, ptr, rust_vec_len, data_len),
 36 => wire__crate__method__download_provider__set_download_status__set_download_status_impl(port, ptr, rust_vec_len, data_len),
 37 => wire__crate__method__favorite__set_last_watch_torrent__set_last_watch_torrent_impl(port, ptr, rust_vec_len, data_len),
-38 => wire__crate__method__watch_state__set_watch_state__set_watch_state_impl(port, ptr, rust_vec_len, data_len),
-39 => wire__crate__method__favorite__swap_category_order__swap_category_order_impl(port, ptr, rust_vec_len, data_len),
-40 => wire__crate__method__metadata_provider__trending_content__trending_content_impl(port, ptr, rust_vec_len, data_len),
-41 => wire__crate__method__favorite__unset_category__unset_category_impl(port, ptr, rust_vec_len, data_len),
-42 => wire__crate__method__metadata_provider__view_content__view_content_info_get_impl(port, ptr, rust_vec_len, data_len),
-43 => wire__crate__method__metadata_provider__view_content__view_content_info_update_last_watch_impl(port, ptr, rust_vec_len, data_len),
+38 => wire__crate__method__settings__set_settings__set_settings_impl(port, ptr, rust_vec_len, data_len),
+39 => wire__crate__method__watch_state__set_watch_state__set_watch_state_impl(port, ptr, rust_vec_len, data_len),
+40 => wire__crate__method__favorite__swap_category_order__swap_category_order_impl(port, ptr, rust_vec_len, data_len),
+41 => wire__crate__method__metadata_provider__trending_content__trending_content_impl(port, ptr, rust_vec_len, data_len),
+42 => wire__crate__method__favorite__unset_category__unset_category_impl(port, ptr, rust_vec_len, data_len),
+43 => wire__crate__method__metadata_provider__view_content__view_content_info_get_impl(port, ptr, rust_vec_len, data_len),
+44 => wire__crate__method__metadata_provider__view_content__view_content_info_update_last_watch_impl(port, ptr, rust_vec_len, data_len),
                         _ => unreachable!(),
                     }
 }
@@ -2903,6 +2940,7 @@ impl flutter_rust_bridge::IntoIntoDart<crate::method::favorite::LastWatchTorrent
 impl flutter_rust_bridge::IntoDart for crate::utils::settings::Paths {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
+            self.app_config_dir.into_into_dart().into_dart(),
             self.app_support_dir.into_into_dart().into_dart(),
             self.app_cache_dir.into_into_dart().into_dart(),
             self.temp_dir.into_into_dart().into_dart(),
@@ -3718,6 +3756,7 @@ impl SseEncode for Option<crate::method::watch_state::WatchStateValue> {
 impl SseEncode for crate::utils::settings::Paths {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.app_config_dir, serializer);
         <String>::sse_encode(self.app_support_dir, serializer);
         <String>::sse_encode(self.app_cache_dir, serializer);
         <String>::sse_encode(self.temp_dir, serializer);

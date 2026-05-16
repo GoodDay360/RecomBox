@@ -10,7 +10,7 @@ pub mod metadata_provider;
 pub mod plugin_provider;
 pub mod download_provider;
 pub mod favorite;
-pub mod get_settings;
+pub mod settings;
 pub mod check_update;
 pub mod watch_state;
 

@@ -60,11 +60,11 @@ impl ViewContentInfo{
 			return Ok(cache_dir);
 		}else{
 			
-			let temp_dir = PathBuf::from(settings.paths.temp_dir.clone())
+			let app_cache_dir = PathBuf::from(settings.paths.app_cache_dir.clone())
 				.join("view_content_info")
 				.join(source.to_string())
 				.join(id.to_string());
-			return Ok(temp_dir);
+			return Ok(app_cache_dir);
 
 		}
 

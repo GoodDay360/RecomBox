@@ -15,7 +15,7 @@ import 'package:recombox/src/routes/watch/dialogs/subtitle_track_control%20.dart
 import 'package:recombox/src/rust/method/download_provider.dart';
 import 'package:recombox/src/rust/method/download_provider/get_download.dart';
 import 'package:recombox/src/rust/method/download_provider/get_download_status.dart';
-import 'package:recombox/src/rust/method/get_settings.dart';
+import 'package:recombox/src/rust/method/settings/get_settings.dart';
 import 'package:recombox/src/rust/method/metadata_provider/featured_content.dart';
 import 'package:recombox/src/rust/method/metadata_provider/trending_content.dart';
 import 'dart:async';

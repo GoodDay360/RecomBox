@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:recombox/src/global/app_color.dart';
-import 'package:recombox/src/global/types.dart';
-import 'package:recombox/src/routes/download/widgets/download_card.dart';
-import 'package:recombox/src/rust/method/download_provider.dart';
-import 'package:recombox/src/rust/method/download_provider/get_all_download.dart';
-import 'package:recombox/src/rust/method/download_provider/remove_download.dart';
+import 'package:recombox/src/routes/setting/widgets/storage.dart';
 import 'package:recombox/src/global/widgets/navigation_bar/navigation_bar_horizontal.dart';
 import 'package:recombox/src/global/widgets/navigation_bar/navigation_bar_vertical.dart';
 import 'dart:io';
-import 'dart:async';
 
 import 'package:recombox/src/global/widgets/title_bar.dart';
 
@@ -27,9 +21,11 @@ class SettingState extends State<SettingScreen> {
   AppColorsScheme appColors = appColorsNotifier.value;
 
   final List<Map<String, dynamic>> settingItems = [
-    {'icon': Icons.style_rounded, 'label': "Appearance"},
-    {'icon': Icons.storage_rounded, 'label': "Storage"}
+    // {'icon': Icons.style_rounded, 'label': "Appearance"},
+    {'icon': Icons.storage_rounded, 'label': "Storage", 'widget': Storage()}
   ];
+
+  int showWidgetIndex = 0;
   
   @override
   void initState() {
@@ -68,44 +64,58 @@ class SettingState extends State<SettingScreen> {
                       child: ListView.separated(
                         itemCount: settingItems.length,
                         itemBuilder: (context, index) {
-                          return InkWell(
-                            mouseCursor: SystemMouseCursors.click,
-                            onTap: () {
-                              
-                            },
-                            child: Container(
-                              width: double.infinity,
-                              padding: EdgeInsets.only(bottom: 15, top: 15, left: 10, right: 10),
-                              decoration: BoxDecoration(
-                                color: Colors.transparent,
+                          return Column(
+                            children: [
+                              InkWell(
+                                mouseCursor: SystemMouseCursors.click,
+                                onTap: () {
+                                  if (context.mounted){
+                                    setState(() {
+                                      showWidgetIndex = showWidgetIndex == index ? -1 : index;
+                                    });
+                                  }
+                                },
+                                child: Container(
+                                  width: double.infinity,
+                                  padding: EdgeInsets.only(bottom: 15, top: 15, left: 10, right: 10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.transparent,
+                                  ),
+                                  child: Row(
+                                    spacing: 10,
+                                    children: [
+                                      Icon(
+                                        settingItems[index]['icon'], 
+                                        color: appColors.secondary,
+                                        size: 24,
+                                      ),
+                                      Text(
+                                        settingItems[index]['label'],
+                                        style: GoogleFonts.nunito(
+                                          color: appColors.textPrimary,
+                                          fontSize: 24,
+                                          fontWeight: FontWeight(700)
+                                        ),
+                                      ),
+
+                                      const Spacer(),
+
+                                      Icon(
+                                        showWidgetIndex == index ? Icons.arrow_drop_down_rounded : Icons.arrow_left_rounded, 
+                                        color: appColors.secondary,
+                                        size: 24,
+                                      ),
+                                    ],
+                                  )
+                                )
                               ),
-                              child: Row(
-                                spacing: 10,
-                                children: [
-                                  Icon(
-                                    settingItems[index]['icon'], 
-                                    color: appColors.secondary,
-                                    size: 24,
-                                  ),
-                                  Text(
-                                    settingItems[index]['label'],
-                                    style: GoogleFonts.nunito(
-                                      color: appColors.textPrimary,
-                                      fontSize: 24
-                                    ),
-                                  ),
-
-                                  const Spacer(),
-
-                                  Icon(
-                                    Icons.arrow_drop_down_rounded, 
-                                    color: appColors.secondary,
-                                    size: 24,
-                                  ),
-                                ],
-                              )
-                            )
+                              
+                              if (showWidgetIndex == index)
+                                settingItems[index]['widget']
+                            ],
                           );
+                          
+                          
                         },
 
                         separatorBuilder: (context, index) {

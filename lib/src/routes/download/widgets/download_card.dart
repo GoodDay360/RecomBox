@@ -7,7 +7,6 @@ import 'package:recombox/src/routes/view/view.dart';
 import 'package:recombox/src/rust/method/download_provider/get_all_download.dart';
 import 'package:recombox/src/rust/method/metadata_provider/view_content.dart';
 import 'dart:io';
-import 'dart:math';
 
 class DownloadCard extends StatefulWidget {
   const DownloadCard({

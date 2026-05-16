@@ -3,9 +3,9 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
-import '../frb_generated.dart';
-import '../utils/settings.dart';
+import '../../frb_generated.dart';
+import '../../utils/settings.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 Future<Settings> getSettings() =>
-    RustLib.instance.api.crateMethodGetSettingsGetSettings();
+    RustLib.instance.api.crateMethodSettingsGetSettingsGetSettings();

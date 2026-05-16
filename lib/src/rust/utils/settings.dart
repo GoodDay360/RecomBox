@@ -5,52 +5,30 @@
 
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
+part 'settings.freezed.dart';
+part 'settings.g.dart';
 
-class Paths {
-  final String appSupportDir;
-  final String appCacheDir;
-  final String tempDir;
+@freezed
+sealed class Paths with _$Paths {
+  const factory Paths({
+    required String appConfigDir,
+    required String appSupportDir,
+    required String appCacheDir,
+    required String tempDir,
+  }) = _Paths;
 
-  const Paths({
-    required this.appSupportDir,
-    required this.appCacheDir,
-    required this.tempDir,
-  });
-
-  @override
-  int get hashCode =>
-      appSupportDir.hashCode ^ appCacheDir.hashCode ^ tempDir.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Paths &&
-          runtimeType == other.runtimeType &&
-          appSupportDir == other.appSupportDir &&
-          appCacheDir == other.appCacheDir &&
-          tempDir == other.tempDir;
+  factory Paths.fromJson(Map<String, dynamic> json) => _$PathsFromJson(json);
 }
 
-class Settings {
-  final int port;
-  final Paths paths;
-  final String version;
+@freezed
+sealed class Settings with _$Settings {
+  const factory Settings({
+    required int port,
+    required Paths paths,
+    required String version,
+  }) = _Settings;
 
-  const Settings({
-    required this.port,
-    required this.paths,
-    required this.version,
-  });
-
-  @override
-  int get hashCode => port.hashCode ^ paths.hashCode ^ version.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Settings &&
-          runtimeType == other.runtimeType &&
-          port == other.port &&
-          paths == other.paths &&
-          version == other.version;
+  factory Settings.fromJson(Map<String, dynamic> json) =>
+      _$SettingsFromJson(json);
 }
