@@ -10,6 +10,7 @@ import 'package:recombox/src/routes/select_file/select_file.dart';
 import 'package:recombox/src/routes/select_plugin/select_plugin.dart';
 import 'package:recombox/src/routes/select_source/select_source.dart';
 import 'package:recombox/src/routes/select_torrent/select_torrent.dart';
+import 'package:recombox/src/routes/setting/setting.dart';
 import 'package:recombox/src/routes/view/view.dart';
 import 'package:recombox/src/routes/watch/watch.dart';
 import 'dart:async';
@@ -79,7 +80,7 @@ class _AppState extends State<App> {
             },
           ),
           debugShowCheckedModeBanner: false,
-          initialRoute: "/",
+          initialRoute: "/setting",
           title: 'RecomBox',
           routes: {
               "/": (context) => const HomeScreen(),
@@ -93,6 +94,7 @@ class _AppState extends State<App> {
               "/watch": (context) => const WatchScreen(),
               "/favorite": (context) => const FavoriteScreen(),
               "/download": (context) => const DownloadScreen(),
+              "/setting": (context) => const SettingScreen(),
             },
           )
         );

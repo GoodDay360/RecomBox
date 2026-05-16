@@ -13,11 +13,6 @@ import 'dart:async';
 
 import 'package:recombox/src/global/widgets/title_bar.dart';
 
-Map<int, String> availableSorts = {
-  0: "Relevance",
-  1: "Rank",
-  2: "Release Date",
-};
 
 class DownloadScreen extends StatefulWidget {
   const DownloadScreen({super.key});

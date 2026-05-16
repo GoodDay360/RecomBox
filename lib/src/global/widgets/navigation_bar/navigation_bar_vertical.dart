@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:recombox/src/global/app_color.dart';
-import 'package:recombox/src/global/widgets/navigation_bar/navigate_handler.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:recombox/src/global/widgets/navigation_bar/navigation_bar_items.dart';
 import 'dart:io';
@@ -32,7 +31,9 @@ class _NavigationBarVerticalState extends State<NavigationBarVertical> {
     setState(() {
       currentIndex = index;
     });
-    navigateHander(context, index);
+    Navigator.pushNamed(
+      context, navigationItems[index]['route']
+    );
   }
 
   @override
