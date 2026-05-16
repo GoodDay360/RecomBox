@@ -80,7 +80,7 @@ class _AppState extends State<App> {
             },
           ),
           debugShowCheckedModeBanner: false,
-          initialRoute: "/setting",
+          initialRoute: "/",
           title: 'RecomBox',
           routes: {
               "/": (context) => const HomeScreen(),
