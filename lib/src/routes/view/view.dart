@@ -567,6 +567,7 @@ class _ViewState extends State<ViewScreen> with RouteAware {
                                     : "Watch Now",
                                   ),
                                   style: ElevatedButton.styleFrom(
+                                    enabledMouseCursor: SystemMouseCursors.click,
                                     backgroundColor: appColors.secondary,
                                     foregroundColor: appColors.primary,
                                     shape: RoundedRectangleBorder(

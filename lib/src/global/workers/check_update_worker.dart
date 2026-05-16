@@ -4,11 +4,103 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:recombox/main.dart';
 import 'package:recombox/src/global/app_color.dart';
 import 'package:recombox/src/rust/method/check_update.dart';
+import 'package:recombox/src/rust/method/settings/get_settings.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:path/path.dart' as path;
 
 import 'package:ota_update/ota_update.dart';
 
 import 'dart:io';
+
+Future<void> onUpdate(
+  String downloadUrl,
+  void Function(bool state) setIsDownloading,
+  void Function(double state) setDownloadProgress
+) async{
+  try{
+    debugPrint(downloadUrl);
+    if (Platform.isAndroid){
+      setIsDownloading(true);
+      OtaUpdate()
+        .execute(
+          downloadUrl,
+        ).listen(
+          (OtaEvent event) {
+            if (event.status == OtaStatus.DOWNLOADING) {
+              setIsDownloading(true);
+              setDownloadProgress(double.parse(event.value??"0")/100);
+            } else if (event.status == OtaStatus.INSTALLING) {
+              setIsDownloading(false);
+            } else if (event.status == OtaStatus.CHECKSUM_ERROR) {
+              setIsDownloading(false);
+            }
+          },
+        );
+    }else if (Platform.isWindows){
+      setIsDownloading(true);
+      final settings = await getSettings();
+      final tempDir = settings.paths.tempDir;
+
+      final filePath = path.join(tempDir, 'recombox_updater.exe');
+      final file = File(filePath);
+      if (!await file.parent.exists()) {
+        await file.parent.create(recursive: true);
+      }
+
+      final request = await HttpClient().getUrl(Uri.parse(downloadUrl));
+      final response = await request.close();
+
+      if (response.statusCode == 200) {
+        final totalBytes = response.contentLength;
+        int downloadedBytes = 0;
+        final sink = file.openWrite();
+
+        await for (var chunk in response) {
+          downloadedBytes += chunk.length;
+          sink.add(chunk);
+          if (totalBytes > 0) {
+            double progress = downloadedBytes / totalBytes;
+            progress = progress.clamp(0.0, 1.0); 
+            setDownloadProgress(progress);
+          }
+        }
+        await sink.close();
+
+        await Process.start(
+          'powershell',
+          [
+            '-NoProfile',
+            '-NonInteractive',
+            '-Command',
+            'Start-Process -FilePath "$filePath" -ArgumentList "/S" -Verb RunAs'
+          ],
+          mode: ProcessStartMode.detached, 
+        );
+
+        exit(0);
+      } else {
+        debugPrint('Failed to download update: Server returned status ${response.statusCode}');
+      }
+    }else{
+      launchUrl(
+        Uri.parse(downloadUrl),
+        mode: LaunchMode.platformDefault,
+      )
+        .then((value) => debugPrint(value.toString()))
+        .catchError((error) => debugPrint(error.toString()));
+    }
+  }catch(e){
+    debugPrint(e.toString());
+    launchUrl(
+        Uri.parse(downloadUrl),
+        mode: LaunchMode.platformDefault,
+      )
+        .then((value) => debugPrint(value.toString()))
+        .catchError((error) => debugPrint(error.toString()));
+  }finally{
+    setIsDownloading(false);
+  }
+}
 
 Future<void> checkUpdateWorker() async {
   while (true) {
@@ -23,12 +115,32 @@ Future<void> checkUpdateWorker() async {
             context: context,
             barrierDismissible: false,
             builder: (_) {
-
               bool isDownloading = false;
               double downloadProgress = 0;
               AppColorsScheme appColors = appColorsNotifier.value;
+
+              
               return StatefulBuilder( 
                 builder: (context, setState) {
+                  
+
+
+                  void setIsDownloading(bool state){
+                    if (context.mounted){
+                      setState((){
+                        isDownloading = state;
+                      });
+                    }
+                  }
+
+                  void setDownloadProgress(double value){
+                    if (context.mounted){
+                      setState((){
+                        downloadProgress = value;
+                      });
+                    }
+                  }
+
                   return AlertDialog(
                     backgroundColor: appColors.tertiary,
                     title: Column(
@@ -82,44 +194,11 @@ Future<void> checkUpdateWorker() async {
 
                             )
                           ),
-                          onPressed: () {
-                            if (Platform.isAndroid){
-                              debugPrint(checkResult.downloadUrl.trim());
-                              setState((){
-                                isDownloading = true;
-                              });
-                              OtaUpdate()
-                                .execute(
-                                  checkResult.downloadUrl,
-
-                                ).listen(
-                                  (OtaEvent event) {
-                                    if (event.status == OtaStatus.DOWNLOADING) {
-                                      debugPrint(event.value.toString());
-                                      setState((){
-                                        isDownloading = true;
-                                        downloadProgress = double.parse(event.value??"0")/100;
-                                      });
-                                    } else if (event.status == OtaStatus.INSTALLING) {
-                                      setState((){
-                                        isDownloading = false;
-                                      });
-                                    } else if (event.status == OtaStatus.CHECKSUM_ERROR) {
-                                      setState((){
-                                        isDownloading = false;
-                                      });
-                                    }
-                                  },
-                                );
-                            }else{
-                              launchUrl(
-                                Uri.parse(checkResult.downloadUrl),
-                                mode: LaunchMode.platformDefault,
-                              )
-                                .then((value) => debugPrint(value.toString()))
-                                .catchError((error) => debugPrint(error.toString()));
-                            }
-                          },
+                          onPressed: ()=> onUpdate(
+                            checkResult.downloadUrl,
+                            setIsDownloading,
+                            setDownloadProgress
+                          ),
                         ),
                       
                       ],

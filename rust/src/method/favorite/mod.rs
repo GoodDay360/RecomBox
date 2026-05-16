@@ -87,9 +87,20 @@ pub fn get_db() -> Result<Arc<Database>, String> {
     let mut write_gaurd = DATABASE.write()
         .map_err(|e| e.to_string())?;
 
-    
-    let db = Arc::new(Database::create(&db_path)
-        .map_err(|e| e.to_string())?);
+    let raw_db = match Database::create(&db_path)
+        .map_err(|e| e.to_string()){
+            Ok(db) => db,
+            Err(_) => {
+                if db_path.exists() {
+                    fs::remove_file(&db_path)
+                        .map_err(|e| e.to_string())?;
+                }
+                Database::create(&db_path)
+                    .map_err(|e| e.to_string())?
+            }
+        };
+
+    let db = Arc::new(raw_db);
     
     *write_gaurd = Some(db.clone());
     return Ok(db.clone());

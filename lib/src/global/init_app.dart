@@ -89,6 +89,7 @@ Future<void> initApp() async {
     version: packageInfo.version,
     port: await getFreePort(),
 		paths: Paths(
+      appConfigDir: path.join((await getApplicationSupportDirectory()).path, "config"),
       appSupportDir: (await getApplicationSupportDirectory()).path,
       appCacheDir: (await getApplicationCacheDirectory()).path, 
       tempDir: path.join((await getTemporaryDirectory()).path, packageInfo.packageName),

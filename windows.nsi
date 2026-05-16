@@ -4,6 +4,9 @@
 Name "RecomBox"
 OutFile "dist\${APP_NAME}-windows-x86_64.exe"
 InstallDir "$PROGRAMFILES64\RecomBox"
+
+InstallDirRegKey HKLM "Software\RecomBox" "Install_Dir"
+
 RequestExecutionLevel admin
 
 # Use the app icon
@@ -20,7 +23,11 @@ RequestExecutionLevel admin
 !insertmacro MUI_LANGUAGE "English"
 
 Section "MainSection" SEC01
+    AppMutex "RecomBox_Unique_Mutex_String"
+
     SetOutPath "$INSTDIR"
+
+    nsExec::ExecToStack 'taskkill /F /IM "${APP_NAME}.exe"'
     
     # Grabs all flutter build files recursively
     File /r "${BUILD_DIR}\*"
@@ -35,12 +42,23 @@ Section "MainSection" SEC01
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RecomBox" "UninstallString" "$INSTDIR\uninstall.exe"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RecomBox" "DisplayIcon" "$INSTDIR\${APP_NAME}.exe"
     
+    WriteRegStr HKLM "Software\RecomBox" "Install_Dir" "$INSTDIR"
+
     WriteUninstaller "$INSTDIR\uninstall.exe"
+
+    IfSilent 0 +2
+      Exec '"$INSTDIR\${APP_NAME}.exe"'
+
 SectionEnd
 
 Section "Uninstall"
+    nsExec::ExecToStack 'taskkill /F /IM "${APP_NAME}.exe"'
+    
     Delete "$DESKTOP\RecomBox.lnk"
     RMDir /r "$SMPROGRAMS\RecomBox"
     RMDir /r "$INSTDIR"
     DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\RecomBox"
+
+    DeleteRegKey HKLM "Software\RecomBox"
+
 SectionEnd

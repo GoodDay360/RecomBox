@@ -7,7 +7,6 @@ import 'package:recombox/src/routes/view/view.dart';
 import 'package:recombox/src/rust/method/download_provider/get_all_download.dart';
 import 'package:recombox/src/rust/method/metadata_provider/view_content.dart';
 import 'dart:io';
-import 'dart:math';
 
 class DownloadCard extends StatefulWidget {
   const DownloadCard({
@@ -135,34 +134,43 @@ class _DownloadCardState extends State<DownloadCard> {
           ),
           Container(
             width: double.infinity,
-            height: max(300, MediaQuery.of(context).size.height * 0.35),
             alignment: Alignment.topLeft,
             decoration: BoxDecoration(
               color: appColors.primary,
               border: Border.all(color: appColors.strokePrimary),
               borderRadius: BorderRadius.only(bottomLeft: Radius.circular(5), bottomRight: Radius.circular(5))
             ),
-            child: ListView.separated(
-              itemCount: widget.allDownloadItemValueList.length,
-              itemBuilder: (context,index){
-                return DownloadTile(
-                  key: ValueKey(widget.allDownloadItemValueList[index]),
-                  index: index,
-                  allDownloadItemKey: widget.allDownloadItemKey,
-                  allDownloadItemValue: widget.allDownloadItemValueList[index],
-                  onRemoveDownload: ()=> widget.onRemoveDownload(widget.allDownloadItemKey, index),
-                );
-              }, 
-              separatorBuilder: (_,__){
-                return Container(
-                  width: double.infinity,
-                  height: 1,
-                  color: appColors.strokePrimary
-                );
-              }, 
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.35
+              ),
+              child: ListView.separated(
+                shrinkWrap: true,
+                itemCount: widget.allDownloadItemValueList.length,
+                itemBuilder: (context,index){
+                  return DownloadTile(
+                    key: ValueKey(widget.allDownloadItemValueList[index]),
+                    index: index,
+                    allDownloadItemKey: widget.allDownloadItemKey,
+                    allDownloadItemValue: widget.allDownloadItemValueList[index],
+                    onRemoveDownload: ()=> widget.onRemoveDownload(widget.allDownloadItemKey, index),
+                  );
+                }, 
+                separatorBuilder: (_,__){
+                  return Container(
+                    width: double.infinity,
+                    height: 1,
+                    color: appColors.strokePrimary
+                  );
+                }, 
+              )
             )
-          ),
+          )
           
+          
+          
+        
+        
         ],
       )
     );

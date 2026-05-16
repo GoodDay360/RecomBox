@@ -11,6 +11,7 @@ use urlencoding::encode;
 use librqbit::TorrentStatsState;
 
 
+use crate::method::current_watch::get_current_watch_torrent;
 use crate::method::download_provider::get_download_status::get_download_status;
 use crate::method::download_provider::set_download_status::set_download_status;
 use crate::method::download_provider::set_download::set_download;
@@ -208,6 +209,12 @@ async fn spawn_progress_watcher(
                 ).await.map_err(|e| anyhow::Error::msg(e.to_string()))?;
 
                 if downloaded == total {
+                    let current_watch_torrent_source_opt = get_current_watch_torrent().await;
+                    if let Some(current_watch_torrent_source) = current_watch_torrent_source_opt {
+                        if current_watch_torrent_source == download_info.torrent_source {
+                            break;
+                        }
+                    }
                     torrent_handle_builder.clone().pause_file(download_item_value.file_id).await
                         .map_err(|e| anyhow::Error::msg(e.to_string()))?;
                     break;
