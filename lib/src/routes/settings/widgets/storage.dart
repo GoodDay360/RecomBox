@@ -77,18 +77,41 @@ class _StorageState extends State<Storage> {
   }
 
 
-
   Future<void> onExportFavorite() async {
-    String? outputFile = await FilePicker.saveFile(
-      dialogTitle: 'Please select an output file:',
-      fileName: 'favorite-backup.redb',
+    final inputFilePath = path.join(
+      settings!.paths.appSupportDir,
+      "favorite",
+      "favorite.redb",
     );
-
-    if (outputFile != null) {
-      final inputFilePath = path.join(settings!.paths.appSupportDir, "favorite", "favorite.redb");
-      final inputFile = File(inputFilePath);
-      await inputFile.copy(outputFile);
+    final inputFile = File(inputFilePath);
+    if (await inputFile.exists()){
+      final bytes = await inputFile.readAsBytes();
+      await FilePicker.saveFile(
+        dialogTitle: 'Please select an output file:',
+        fileName: 'favorite-backup.redb',
+        bytes: bytes,
+      );
+    }else{
+      showToastWidget(
+        Container(
+          padding: EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            color: appColors.tertiary,
+            borderRadius: BorderRadius.circular(25)
+          ),
+          child: Text(
+            "File does not exist yet",
+            style: GoogleFonts.nunito(
+              color: appColors.textPrimary,
+              fontSize: 16
+            ),
+          ),
+        ),
+        position: ToastPosition.bottom,
+        dismissOtherToast: true,
+      );
     }
+    
   }
 
   Future<void> onImportFavorite() async {
@@ -105,6 +128,26 @@ class _StorageState extends State<Storage> {
       }
 
       String inputFilePath = result.files.single.path!;
+      if (path.extension(inputFilePath).toLowerCase() != ".redb") {
+        showToastWidget(
+          Container(
+            padding: EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              color: appColors.tertiary,
+              borderRadius: BorderRadius.circular(25)
+            ),
+            child: Text(
+              "Invalid file format. Please select a .redb file.",
+              style: GoogleFonts.nunito(
+                color: appColors.textPrimary,
+                fontSize: 16
+              ),
+            ),
+          ),
+          position: ToastPosition.bottom,
+          dismissOtherToast: true,
+        );
+      }
       final inputFile = File(inputFilePath);
 
       final outputFile = path.join(dir.path, "favorite.redb");
@@ -113,16 +156,40 @@ class _StorageState extends State<Storage> {
   }
 
   Future<void> onExportWatchStatus() async {
-    String? outputFile = await FilePicker.saveFile(
-      dialogTitle: 'Please select an output file:',
-      fileName: 'watch_state-backup.redb',
+    final inputFilePath = path.join(
+      settings!.paths.appSupportDir,
+      "state",
+      "watch_state.redb",
     );
-
-    if (outputFile != null) {
-      final inputFilePath = path.join(settings!.paths.appSupportDir, "state", "watch_state.redb");
-      final inputFile = File(inputFilePath);
-      await inputFile.copy(outputFile);
+    final inputFile = File(inputFilePath);
+    if (await inputFile.exists()){
+      final bytes = await inputFile.readAsBytes();
+      await FilePicker.saveFile(
+        dialogTitle: 'Please select an output file:',
+        fileName: 'watch_state-backup.redb',
+        bytes: bytes,
+      );
+    }else{
+      showToastWidget(
+        Container(
+          padding: EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            color: appColors.tertiary,
+            borderRadius: BorderRadius.circular(25)
+          ),
+          child: Text(
+            "File does not exist yet",
+            style: GoogleFonts.nunito(
+              color: appColors.textPrimary,
+              fontSize: 16
+            ),
+          ),
+        ),
+        position: ToastPosition.bottom,
+        dismissOtherToast: true,
+      );
     }
+    
   }
 
   Future<void> onImportWatchStatus() async {
@@ -139,6 +206,28 @@ class _StorageState extends State<Storage> {
       }
 
       String inputFilePath = result.files.single.path!;
+      if (path.extension(inputFilePath).toLowerCase() != ".redb") {
+        showToastWidget(
+          Container(
+            padding: EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              color: appColors.tertiary,
+              borderRadius: BorderRadius.circular(25)
+            ),
+            child: Text(
+              "Invalid file format. Please select a .redb file.",
+              style: GoogleFonts.nunito(
+                color: appColors.textPrimary,
+                fontSize: 16
+              ),
+            ),
+          ),
+          position: ToastPosition.bottom,
+          dismissOtherToast: true,
+        );
+      }
+
+
       final inputFile = File(inputFilePath);
 
       final outputFile = path.join(dir.path, "watch_state.redb");
